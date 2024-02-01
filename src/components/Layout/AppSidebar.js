@@ -20,7 +20,7 @@ export default function AppSidebar() {
             role="menu"
           >
             <li className="nav-item text-left">
-              <a href="/" className="nav-link">
+              <a href="#" className="nav-link">
                 <i className="nav-icon fas fa-file"></i>
                 <p>
                   Resume Parser
@@ -29,13 +29,13 @@ export default function AppSidebar() {
               </a>
               <ul className="nav nav-treeview">
                 <li className="nav-item">
-                  <a href="!" className="nav-link">
+                  <a href="/" className="nav-link">
                     <i className="far fa-circle nav-icon"></i>
                     <p>Dashboard</p>
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a href="!" className="nav-link">
+                  <a href="/" className="nav-link">
                     <i className="far fa-circle nav-icon"></i>
                     <p>Resumes</p>
                   </a>
@@ -58,13 +58,13 @@ export default function AppSidebar() {
               </a>
               <ul className="nav nav-treeview">
                 <li className="nav-item">
-                  <a href="!" className="nav-link">
+                  <a href="/" className="nav-link">
                     <i className="far fa-circle nav-icon"></i>
                     <p>Candidates</p>
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a href="!" className="nav-link">
+                  <a href="/" className="nav-link">
                     <i className="far fa-circle nav-icon"></i>
                     <p>Job Descriptions</p>
                   </a>
@@ -72,6 +72,66 @@ export default function AppSidebar() {
               </ul>
             </li>
           </ul>
+          <ul
+className="nav nav-pills nav-sidebar flex-column"
+data-widget="treeview"
+role="menu"
+>
+<li className="nav-item text-left">
+  <a href="/" className="nav-link">
+  
+  <i className="nav-icon fas fa-smile"></i>
+    <p>
+      Facial Recognition
+      <i className="right fas fa-angle-left"></i>
+    </p>
+  </a>
+  <ul className="nav nav-treeview">
+    <li className="nav-item">
+      <a href="/" className="nav-link">
+        <i className="far fa-circle nav-icon"></i>
+        <p>Attendance List</p>
+      </a>
+    </li>
+    <li className="nav-item">
+      <a href="/" className="nav-link">
+        <i className="far fa-circle nav-icon"></i>
+        <p>Upload Face</p>
+      </a>
+    </li>
+    <li className="nav-item">
+      <a href="/" className="nav-link">
+        <i className="far fa-circle nav-icon"></i>
+        <p>CheckIn CheckOut</p>
+      </a>
+    </li>
+  </ul>
+</li>
+</ul>
+<ul
+className="nav nav-pills nav-sidebar flex-column"
+data-widget="treeview"
+role="menu"
+>
+<li className="nav-item text-left">
+  <a href="/" className="nav-link">
+  
+  <i className="nav-icon fas fa-solid fa-users"></i>
+    <p>
+      Accounts
+      <i className="right fas fa-angle-left"></i>
+    </p>
+  </a>
+  <ul className="nav nav-treeview">
+    <li className="nav-item">
+      <a href="/" className="nav-link">
+        <i className="far fa-circle nav-icon"></i>
+        <p>Users</p>
+      </a>
+    </li>
+  </ul>
+</li>
+</ul>
         </nav>
       </div>
     </aside>
