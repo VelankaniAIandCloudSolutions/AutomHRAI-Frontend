@@ -3,7 +3,7 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import {Modal,Button} from 'react-bootstrap';
-
+import AgGridUserList from '../components/FaceRecognition/AgGridUserList';
 function Users() {
     const [rowData, setRowData] = useState([
         { employeeID: "VAC001", employeeName: "Soniya", email: "soniya.h@velankanigroup.com",mobile:9876543210 },
@@ -22,7 +22,7 @@ const handleClose=()=>{
         <div>
           {/* <button className="btn btn-primary btn-sm" ><i className="fas fa-pen"></i> Edit</button> */}
           <a class="btn btn-primary btn-sm" href="users/edit-user" role="button"><i className="fas fa-pen"></i>  Edit</a>
-          <button className="btn btn-danger btn-sm mx-2" onClick={() => handleDeleteClick(props)}><i className="fas fa-trash"></i> Delete</button>
+          <button className="btn btn-danger btn-sm mx-2 " data-bs-toggle="modal" data-bs-target="#deletemodal" onClick={() => handleDeleteClick(props)}><i className="fas fa-trash" ></i> Delete</button>
         </div>
       );
     }
@@ -67,11 +67,32 @@ const handleClose=()=>{
 
           <div className="ag-theme-quartz" style={{ height: 500 }}>
             {/* The AG Grid component */}
-            <AgGridReact rowData={rowData} columnDefs={colDefs} frameworkComponents={frameworkComponents}  />
+            {/* <AgGridReact rowData={rowData} columnDefs={colDefs} frameworkComponents={frameworkComponents}  /> */}
+            <AgGridUserList rowData={rowData} />
           </div>
         </div>
       </div>
-      <Modal show={showDeleteModal} onHide={handleClose}>
+
+
+  <div class="modal fade" id="deletemodal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Delete User</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      Are you sure you want to delete?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+      {/* <Modal show={showDeleteModal} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Delete User</Modal.Title>
         </Modal.Header>
@@ -86,11 +107,12 @@ const handleClose=()=>{
             Delete
           </Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
 
     </div>
   )
 }
 
 export default Users
+
 
