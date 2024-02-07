@@ -1,6 +1,10 @@
 import React from "react";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function AppSidebar() {
+  
+
   return (
     <aside className="main-sidebar sidebar-dark-primary elevation-4">
       <a href="/" className="brand-link">
@@ -20,7 +24,7 @@ export default function AppSidebar() {
             role="menu"
           >
             <li className="nav-item text-left">
-              <a href="/" className="nav-link">
+              <a href="#" className="nav-link"  >
                 <i className="nav-icon fas fa-file"></i>
                 <p>
                   Resume Parser
@@ -34,10 +38,10 @@ export default function AppSidebar() {
                     <p>Dashboard</p>
                   </a>
                 </li>
-                <li className="nav-item">
-                  <a href="!" className="nav-link">
+                <li className="nav-item" >
+                  <a href="/resume-details" className="nav-link" >
                     <i className="far fa-circle nav-icon"></i>
-                    <p>Resumes</p>
+                    <p>Resumes</p>            
                   </a>
                 </li>
               </ul>
@@ -63,10 +67,11 @@ export default function AppSidebar() {
                     <p>Candidates</p>
                   </a>
                 </li>
+                
                 <li className="nav-item">
                   <a href="!" className="nav-link">
                     <i className="far fa-circle nav-icon"></i>
-                    <p>Job Descriptions</p>
+                    <p>Job Descriptions</p>           
                   </a>
                 </li>
               </ul>
