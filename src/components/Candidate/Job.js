@@ -3,84 +3,96 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload, faEdit, faTrash, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
-
+import { faDownload, faEdit, faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import JobsForm from "./JobsForm";
+import JobGroupGrid from "./JobGroupGrid";
 
-
-
-
-
-const JobGroup = () => {
-
+const Job = () => {
     const [rowData, setRowData] = useState([
-        { id: 1, job_name: "Software Devloper" , job_group: "Information Technology", department: 'Ai and Cloud'},
-        { id: 2,  job_name: "Accountant" , job_group: "Finance", department: 'Accounts'}
+        { id: 1, job_name: "Software Developer", job_group: "Developers", department: 'AI and Cloud', description: "This is a static description for Software Developer." },
+        { id: 2, job_name: "Accountant", job_group: "Accounts", department: 'Finance', description: "This is a static description for Accountant." }
     ]);
 
-    // const toggleCheckbox = (id) => {
-    //     const updatedData = rowData.map(row => {
-    //         if (row.id === id) {
-    //             return { ...row, is_active: !row.is_active };
-    //         }
-    //         return row;
-    //     });
+    const [selectedRows, setSelectedRows] = useState([]);
 
-    //     setRowData(updatedData);
+    console.log("the selected rows", selectedRows)
+    
+    const [showModal, setShowModal] = useState(false);
+    const [selectedJobDescription, setSelectedJobDescription] = useState('');
+    const [selectedRowData, setSelectedRowData] = useState(null);
+   
+
+    
+
+
+    // const handleUpdateJobDepartment = () => {
+    //     setUpdateJobDepartmentModal(true);
     // };
 
+    const handleRowSelected = (selectedData) => {
+        setSelectedRows(selectedData);
+        if (selectedData.length > 0) {
+            setSelectedRows(selectedData[0].job_group);
+        } else {
+            setSelectedRows(null);
+        }
+    };
 
 
-    const [showModal, setShowModal] = useState(false);
+    const handleEyeButtonClick = (row) => {
+        setSelectedJobDescription(row.description);
+    };
 
+    const handleEditClick = (rowData) => {
+        setSelectedRowData(rowData);
+        setSelectedRows([rowData]);
+        setShowModal(true);
+    };
 
+    const handleGridSelection = (event) => {
+        const selectedRows = event.api.getSelectedRows();
+        setSelectedRows(selectedRows); 
+    };
 
-    function ActionsCellRenderer(props) {
-        return (
-            <div>
-                <button className="btn btn-primary btn-sm" onClick={() => props.onEditClick(props)}>Edit</button>
-                <button className="btn btn-danger btn-sm mx-2" onClick={() => props.onDeleteClick(props)}>Delete</button>
-            </div>
-        );
-    }
+    const ActionsCellRenderer = (props) => (
+        <div>
+            <button className="btn btn-primary btn-sm" onClick={() => props.onEditClick(props)}>Edit</button>
+            <button className="btn btn-danger btn-sm mx-2" onClick={() => props.onDeleteClick(props)}>Delete</button>
+        </div>
+    );
 
     const colDefs = [
         { headerName: 'Job Name', field: 'job_name' },
         { headerName: 'Job Group', field: 'job_group', filter: true },
-        { headerName: 'Department', field: 'department' , filter: true},
-
-        // {
-        //     headerName: 'Is Active',
-        //     field: 'is_active',
-        //     cellRenderer: (params) => (
-        //         <div style={{ marginLeft: '70px', marginTop: '8px' }}>
-        //             <input
-        //                 type="checkbox"
-        //                 className="form-check-input"
-        //                 checked={params.value}
-        //                 onChange={() => toggleCheckbox(params.data.id)}
-        //                 style={{ height: '23px', width: '23px', backgroundColor: params.value ? 'green' : 'transparent', cursor: 'pointer' }}
-        //             />
-        //             <label className="form-check-label" style={{ marginLeft: '20px' }}>
-        //                 {params.value ? '' : ''}
-        //             </label>
-        //         </div>
-        //     ),
-        // },
-
-
+        { headerName: 'Department', field: 'department', filter: true },
+        {
+            headerName: 'Job Description',
+            field: 'description',
+            cellRenderer: (params) => (
+                <div style={{ marginLeft: '55px' }}>
+                    <button
+                        type="button"
+                        className="btn btn-link btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#descriptionmodal"
+                        onClick={() => handleEyeButtonClick(params.data)}
+                    >
+                        <FontAwesomeIcon icon={faEye} />
+                    </button>
+                </div>
+            ),
+        },
         {
             headerName: 'Edit',
-            cellRenderer: () => (
+            cellRenderer: (params) => (
                 <div style={{ marginLeft: '55px' }}>
                     <button
                         type="button"
                         className="btn btn-primary btn-sm"
                         data-bs-toggle="modal"
-                        data-bs-target="#candidatemodal"
-
+                        data-bs-target="#jobeditmodal"
+                        onClick={() => handleEditClick(params.data)}
                     >
                         <FontAwesomeIcon icon={faEdit} />
                     </button>
@@ -108,44 +120,76 @@ const JobGroup = () => {
             <div className="content">
                 <div className="container-fluid">
                     <div className="ag-theme-quartz" style={{ height: 400 }}>
-                        <AgGridReact rowData={rowData} columnDefs={colDefs} frameworkComponents={frameworkComponents} />
+                        <AgGridReact rowData={rowData} columnDefs={colDefs} frameworkComponents={frameworkComponents} onSelectionChanged={handleGridSelection} />
                     </div>
                 </div>
             </div>
 
-
-            <div class="modal fade" id="candidatemodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-                <div class="modal-dialog  modal-dialog-centered modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Update Job </h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div className="modal fade" id="jobeditmodal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabIndex="-1">
+                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="exampleModalToggleLabel">Update Job</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
-                            <JobsForm />
+                        <div className="modal-body">
+                            <JobsForm rowData={selectedRowData} selectedRows={selectedRows} mode={selectedRowData ? 'update' : 'create'}  />
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-primary">Save</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Delete modal */}
-            <div class="modal fade" id="deletemodal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Job </h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div className="modal fade" id="updatejobdepartmentmodal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabIndex="-1">
+                <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="exampleModalToggleLabel2">Select Job Group and Department</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
+                        <div className="modal-body">
+                            <JobGroupGrid onRowSelected={handleRowSelected} selectedRows={selectedRows} />
+                        </div>
+                        <div className="modal-footer">
+                            <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#jobeditmodal">Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="modal fade" id="deletemodal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="exampleModalLabel">Delete Job </h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
                             Are you sure you want to delete?
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Confirm</button>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-primary">Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="modal fade" id="descriptionmodal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+                <div className="modal-dialog modal-dialog-centered modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="exampleModalLabel">Job Description </h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            {selectedJobDescription}
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -154,5 +198,4 @@ const JobGroup = () => {
     );
 };
 
-export default JobGroup;
-
+export default Job;

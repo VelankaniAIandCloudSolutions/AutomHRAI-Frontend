@@ -71,7 +71,7 @@ const JobGroup = () => {
 
 
         {
-            headerName: 'Action',
+            headerName: 'Edit',
             cellRenderer: () => (
                 <div style={{ marginLeft: '55px' }}>
                     <button
@@ -87,7 +87,7 @@ const JobGroup = () => {
             ),
         },
         {
-            headerName: 'Action',
+            headerName: 'Delete',
             cellRenderer: (params) => (
                 <div style={{ marginLeft: '55px' }}>
                     <a href={params.value} target="_blank" rel="noopener noreferrer" className="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deletemodal">

@@ -1,7 +1,44 @@
 // UpdateCandidateModal.js
 import React, { useState, useEffect } from 'react';
 
-const UpdateCandidateModal = () => {
+const UpdateCandidateModal = ({candidate}) => {
+
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    education: '',
+    company_name: '',
+    designation: '',
+    total_experience: '',
+    phone_number: '',
+    skills: '',
+    college_name: '',
+    experiance: '',
+  });
+
+  useEffect(() => {
+    if (candidate) {
+      setFormData({
+        first_name: candidate.first_name || '',
+        last_name: candidate.last_name || '',
+        email: candidate.email || '',
+        education: candidate.education || '',
+        company_name: candidate.company_name || '',
+        designation: candidate.designation || '',
+        total_experience: candidate.total_experience || '',
+        phone_number: candidate.phone_number || '',
+        skills: candidate.skills || '',
+        college_name: candidate.college_name || '',
+        experiance: candidate.experiance || '',
+      });
+    }
+  }, [candidate]);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
 
 
   return (
@@ -11,7 +48,8 @@ const UpdateCandidateModal = () => {
       {/* First Name */}
       <div className="mb-3">
         <label htmlFor="first_name" className="form-label">First Name:</label>
-        <input type="text" className="form-control" id="first_name" name="first_name" />
+        <input type="text" className="form-control" id="first_name" name="first_name" value={formData.first_name} onChange={handleChange} />
+
       </div>
 
       
@@ -19,7 +57,7 @@ const UpdateCandidateModal = () => {
       {/* Email */}
       <div className="mb-3">
         <label htmlFor="email" className="form-label">Email:</label>
-        <input type="email" className="form-control" id="email" name="email" />
+        <input type="email" className="form-control" id="email" name="email" value={formData.email} onChange={handleChange} />
       </div>
 
       <div className="mb-3">
@@ -58,12 +96,12 @@ const UpdateCandidateModal = () => {
       {/* Last Name */}
       <div className="mb-3">
         <label htmlFor="last_name" className="form-label">Last Name:</label>
-        <input type="text" className="form-control" id="last_name" name="last_name" />
+        <input type="text" className="form-control" id="last_name" name="last_name" value={formData.last_name} onChange={handleChange} />
       </div>
 
       <div className="mb-3">
         <label htmlFor="phone_number" className="form-label">Phone Number:</label>
-        <input type="number" className="form-control" id="phone_number" name="phone_number" />
+        <input type="number" className="form-control" id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleChange} />
       </div>
 
       <div className="mb-3">
