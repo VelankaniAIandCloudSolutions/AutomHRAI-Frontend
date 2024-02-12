@@ -28,29 +28,28 @@ function CheckInCheckOut() {
   };
 
   return (
-    <div className="content-wrapper">
-      <div className="content">
-        <div className="container-fluid">
+    <div className="container">
+      <div className="row align-items-center">
+        <div className="col-md-9 mt-4">
           <div className="d-flex align-items-center">
-            {/* <div className="col-3"> */}
-              <h1>Attendance</h1>
-            {/* </div>           */}
-            {/* <div className="col-0"> */}
+           
+            <h2 className="mb-0">Attendance</h2>
+           
               <span className="mx-3">|</span>
-            {/* </div> */}
-            {/* <div className="col-9"> */}
+           
+            
               <nav aria-label="breadcrumb" className="mt-3">
                 <ol className="breadcrumb">
                   <li className="breadcrumb-item"><a href="/"> <i className="fas fa-home"></i> Home</a></li>
                   <li className="breadcrumb-item active" aria-current="page"><i className="fas fa-list"> </i> Attendance</li>
                 </ol>
               </nav>
-            {/* </div> */}
+           
             
            
           </div>
         </div>
-
+        </div>
         <div className="card-container mt-4 mx-auto" style={{ maxWidth: '400px' }}>
 
         <div className="card mx-auto" style={{ width: '100%' }}>
@@ -87,7 +86,7 @@ function CheckInCheckOut() {
             </div>
           </div>
         </div>
-      </div>
+      
 
 
       <Modal show={showWebcamModal} onHide={handleClose} centered>

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-quartz.css';
 import AgGridAttendanceList from '../components/FaceRecognition/AgGridAttendanceList';
 
 function AttendanceList() {
@@ -34,43 +32,51 @@ function AttendanceList() {
   }, [selectedDate, originalRowData]);
 
   return (
-    <div className="content-wrapper">
-      <div className="content">
-        <div className="container-fluid">
-          <div className="d-flex align-items-center">
-            <div className="col-3">
-              <h1>Attendance List</h1>
-            </div>
-            <div className="col-0">
-              <span className="mx-0">|</span>
-            </div>
-            <div className="col-6">
-              <nav aria-label="breadcrumb" className="mt-3">
-                <ol className="breadcrumb">
-                  <li className="breadcrumb-item"><a href="/"> <i className="fas fa-home"></i> Home</a></li>
-                  <li className="breadcrumb-item active" aria-current="page"><i className="fas fa-list"> </i> Attendance List</li>
-                </ol>
-              </nav>
-            </div>
-            <div className='col-3'>
-              <input
-                type="date"
-                className="form-control"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-              />
-              
-            </div>
-          </div>
 
-          <div className="ag-theme-quartz" style={{ height: 500 }}>
-            {/* The AG Grid component */}
-            {/* <AgGridReact rowData={rowData} columnDefs={colDefs} /> */}
-            <AgGridAttendanceList rowData={rowData}  />
+
+
+<div className="container">
+
+
+  <div className="row align-items-center">
+      <div className="col-md-9 mt-4">
+          <div className="d-flex align-items-center">
+              <h2 className="mb-0">Attendance List</h2>
+              <span className="ms-3 fs-4 text-muted">|</span>
+              <nav aria-label="breadcrumb" className="d-inline-block ms-3">
+                  <ol className="breadcrumb bg-transparent m-0 p-0">
+                      <li className="breadcrumb-item">
+                          <a href="/">
+                              <i className="fas fa-home me-1"></i>Home
+                          </a>
+                      </li>
+                      <li className="breadcrumb-item active" aria-current="page"><i className="fas fa-list"> </i> Attendance List</li>
+                  </ol>
+              </nav>
           </div>
-        </div>
       </div>
+
+      <div className="col-md-3 d-flex justify-content-end mt-4" >
+      <input
+            type="date"
+            className="form-control"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+      />
+
+       
     </div>
+  </div>
+
+  <div className="container" style={{ marginTop: "25px" }}>
+    {/* The AG Grid component */}
+    {/* <AgGridReact rowData={rowData} columnDefs={colDefs} /> */}
+    <AgGridAttendanceList rowData={rowData}  />
+  </div>
+  
+</div>
+      
+    
   );
 }
 

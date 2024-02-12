@@ -8,6 +8,7 @@ import Users from "./pages/Users";
 import CreateUser from "./pages/CreateUser";
 import EditUser from "./pages/EditUser";
 import CheckInCheckOut from "./pages/CheckInCheckOut";
+import RankCandidates from "./pages/Candidates/RankCandidates";
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
             <Route path="/users/edit-user" component={EditUser}/>
             <Route path="/users" component={Users}/>
             <Route path="/checkin"component={CheckInCheckOut}/>
+            <Route path="/rank-candidates" component={RankCandidates}/>
           </Switch>
         </Router>
       </div>

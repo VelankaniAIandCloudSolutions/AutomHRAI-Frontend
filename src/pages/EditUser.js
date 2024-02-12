@@ -2,17 +2,17 @@ import React from 'react'
 
 function EditUser() {
   return (
-    <div className="content-wrapper">
-    <div className="content">
-      <div className="container-fluid">
+    <div className="container">
+    <div className="row align-items-center">
+      <div className="col-md-9 mt-4">
         <div className="d-flex align-items-center">
-          <div className="col-1">
-            <h1>Users</h1>
-          </div>
-          <div className="col-0">
-            <span className="mx-2">|</span>
-          </div>
-          <div className="col-9">
+          
+        <h2 className="mb-0">Users</h2>
+          
+          
+        <span className="ms-3 fs-4 text-muted">|</span>
+          
+          
             <nav aria-label="breadcrumb" className="mt-3">
               <ol className="breadcrumb">
                 <li className="breadcrumb-item"><a href="/"> <i className="fas fa-home"></i> Home</a></li>
@@ -20,11 +20,12 @@ function EditUser() {
                 <li className="breadcrumb-item active" aria-current="page"><i className="fas fa-pen"> </i> Update User</li>
               </ol>
             </nav>
-          </div>
-          <div className='col-2'>
+         </div>
+      </div>
+      <div className='col-md-3 d-flex justify-content-end mt-4'>
             <a class="btn btn-primary" href="#" role="button"><i className="fas fa-pen"> </i> Update User</a>
-          </div>
-        </div>
+      </div>
+    </div>
 
         <div className="card-container mt-4">
           <div className="card">
@@ -66,9 +67,8 @@ function EditUser() {
             </div>
           </div>
         </div>
-      </div>
     </div>
-  </div>
+   
   )
 }
 
