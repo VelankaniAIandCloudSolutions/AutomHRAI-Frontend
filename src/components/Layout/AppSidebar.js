@@ -62,7 +62,7 @@ export default function AppSidebar() {
               </a>
               <ul className="nav nav-treeview">
                 <li className="nav-item">
-                  <a href="!" className="nav-link">
+                  <a href="/candidate-list" className="nav-link">
                     <i className="far fa-circle nav-icon"></i>
                     <p>Candidates</p>
                   </a>
@@ -72,6 +72,19 @@ export default function AppSidebar() {
                   <a href="!" className="nav-link">
                     <i className="far fa-circle nav-icon"></i>
                     <p>Job Descriptions</p>           
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a href="/job-groups" className="nav-link">
+                    <i className="far fa-circle nav-icon"></i>
+                    <p>Job Groups</p>
+                  </a>
+                </li>
+
+                <li className="nav-item">
+                  <a href="/jobs" className="nav-link">
+                    <i className="far fa-circle nav-icon"></i>
+                    <p>Jobs</p>
                   </a>
                 </li>
               </ul>
