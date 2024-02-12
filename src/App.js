@@ -7,7 +7,6 @@ import Candidates from "./pages/Candidates/Candidates";
 import Jobgroups from "./pages/Candidates/JobGroups";
 import Jobs from "./pages/Candidates/Jobs";
 import ResumeDetails from "./pages/UploadResume/ResumeDetails";
-// import ShowResume from "./components/UploadResume/ShowParseResumes";
 import attendanceList from "./pages/attendanceList";
 import Users from "./pages/Users";
 import CreateUser from "./pages/CreateUser";
@@ -16,18 +15,15 @@ import CheckInCheckOut from "./pages/CheckInCheckOut";
 import RankCandidates from "./pages/Candidates/RankCandidates";
 
 export default function App() {
-  const baseUrl = "https://localhost:3000/";
   return (
     <div className="wrapper">
       <AppHeader />
       <AppSidebar />
       <div className="content-wrapper">
-        <Router basename={baseUrl}>
+        <Router>
           <Switch>
             <Route path="/" exact component={Dashboard} />
             <Route path="/resume-details" component={ResumeDetails} />
-            {/* <Route path="/show-resume" component={ShowResume} /> */}
-
             <Route path="/candidate-list" exact component={Candidates} />
             <Route path="/job-groups" exact component={Jobgroups} />
             <Route path="/jobs" exact component={Jobs} />
