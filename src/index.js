@@ -5,8 +5,10 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "admin-lte/dist/css/adminlte.min.css";
 import "admin-lte/plugins/fontawesome-free/css/all.min.css";
-import "admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css";
+// import "admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css";
 import "admin-lte/dist/js/adminlte.min.js";
+import "bootstrap/dist/css/bootstrap.css"
+import "bootstrap/dist/js/bootstrap.js"
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
