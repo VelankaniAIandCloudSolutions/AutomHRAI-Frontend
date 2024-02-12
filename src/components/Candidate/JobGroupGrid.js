@@ -15,15 +15,19 @@ const JobGroupGrid = ({ onRowSelected, selectedRows }) => {
 
     useEffect(() => {
         console.log('selectedRows789:', selectedRows);
-        // Update selected rows when selectedRows prop changes
+        
         selectRows(selectedRows);
     }, [selectedRows]);
-    
+
+    // useEffect(() => {
+    //     console.log('selectedRows789:', selectedRows);
+        
+    // }, [selectedRows]);
 
     const gridOptions = {
         rowSelection: 'multiple',
         columnDefs: [
-            { checkboxSelection: true, headerCheckboxSelection: true, width: 50 },
+            { checkboxSelection: true,  width: 50 },
             { headerName: 'Job Group', field: 'job_group' },
             { headerName: 'Department', field: 'department' }
         ],
@@ -37,15 +41,13 @@ const JobGroupGrid = ({ onRowSelected, selectedRows }) => {
     const onGridReady = (params) => {
         console.log("Grid is ready!");
         gridApiRef.current = params.api;
-        // Select rows when grid is ready
+       
         selectRows(selectedRows);
     };
 
     const selectRows = (selectedRows) => {
         if (!gridApiRef.current || !Array.isArray(selectedRows) || selectedRows.length === 0) return;
-        
-        gridApiRef.current.deselectAll(); // Deselect all rows first
-        
+                
         gridApiRef.current.forEachNode((node) => {
             selectedRows.forEach((selectedRow) => {
                 if (node.data.job_group === selectedRow.job_group && node.data.department === selectedRow.department) {
