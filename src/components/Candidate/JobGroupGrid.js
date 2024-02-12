@@ -2,15 +2,11 @@ import React, { useState, useRef, useEffect } from "react";
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const JobGroupGrid = ({ onRowSelected, selectedRows }) => {
-
     const [rowData, setRowData] = useState([
-        { job_group: "Developers", department: "Ai and Cloud" },
+        { job_group: "Developers", department: "AI and Cloud" },
         { job_group: "Accounts", department: "Finance" },
     ]);
 
@@ -19,7 +15,10 @@ const JobGroupGrid = ({ onRowSelected, selectedRows }) => {
 
     useEffect(() => {
         console.log('selectedRows789:', selectedRows);
+        // Update selected rows when selectedRows prop changes
+        selectRows(selectedRows);
     }, [selectedRows]);
+    
 
     const gridOptions = {
         rowSelection: 'multiple',
@@ -31,34 +30,32 @@ const JobGroupGrid = ({ onRowSelected, selectedRows }) => {
         onSelectionChanged: () => {
             const selectedNodes = gridApiRef.current.getSelectedNodes();
             const selectedData = selectedNodes.map((node) => node.data);
-            onRowSelected(selectedData); 
+            onRowSelected(selectedData);
         },
     };
 
     const onGridReady = (params) => {
-        console.log("Grid is ready!"); // Add this line to check if onGridReady is triggered
+        console.log("Grid is ready!");
         gridApiRef.current = params.api;
-    
-        if (selectedRows && selectedRows.length > 0) {
+        // Select rows when grid is ready
+        selectRows(selectedRows);
+    };
+
+    const selectRows = (selectedRows) => {
+        if (!gridApiRef.current || !Array.isArray(selectedRows) || selectedRows.length === 0) return;
+        
+        gridApiRef.current.deselectAll(); // Deselect all rows first
+        
+        gridApiRef.current.forEachNode((node) => {
             selectedRows.forEach((selectedRow) => {
-                gridApiRef.current.forEachNode((node) => {
-                    // Check if both job_group and department match
-                    if (node.data.job_group === selectedRow.job_group && node.data.department === selectedRow.department) {
-                        // Set the row as selected
-                        node.setSelected(true);
-                    }
-                });
+                if (node.data.job_group === selectedRow.job_group && node.data.department === selectedRow.department) {
+                    node.setSelected(true);
+                }
             });
-        }
+        });
     };
     
     
-    
-    
-    
-    
-    
-
     const onSearchTermChange = (e) => {
         const term = e.target.value;
         setSearchTerm(term);
@@ -92,11 +89,15 @@ const JobGroupGrid = ({ onRowSelected, selectedRows }) => {
                 </div>
             </div>
             <div className="ag-theme-quartz" style={{ height: 300 }}>
-            <AgGridReact columnDefs={gridOptions.columnDefs} gridOptions={gridOptions} rowData={rowData} onGridReady={onGridReady} />
-
+                <AgGridReact columnDefs={gridOptions.columnDefs} gridOptions={gridOptions} rowData={rowData} onGridReady={onGridReady} />
             </div>
         </div>
     );
 };
 
 export default JobGroupGrid;
+
+
+
+
+
