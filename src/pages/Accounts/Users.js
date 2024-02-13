@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AgGridUserList from "../components/FaceRecognition/AgGridUserList";
+import AgGridUserList from "../../components/FaceRecognition/AgGridUserList";
 function Users() {
   const [rowData, setRowData] = useState([
     {

@@ -1,34 +1,29 @@
 // import React from "react";
-import React, { useState } from "react"
-import CandidateList from "../../components/Candidate/CandidateList";
+import React, { useState } from "react";
+import CandidateList from "../../components/CandidateRanking/CandidateList";
 
 // import axios from 'axios'
 
 const Candidates = () => {
-
   // const [candidates, setCandidates] = useState([]);
 
   // const fetchData = async () => {
   //   try {
-  //     const response = await axios.get('http://localhost:8000/api/v1/resume-parser/get_candidates_list'); 
+  //     const response = await axios.get('http://localhost:8000/api/v1/resume-parser/get_candidates_list');
   //     // setCandidates(response.data);
   //     console.log('Fetched data:', response.data);
   //   } catch (error) {
   //     console.error('Error fetching data:', error);
   //   }
   // };
-  
+
   // // Call the fetchData function inside the useEffect to ensure it runs after component mount
   // useEffect(() => {
   //   fetchData();
   // }, []);
-  
-
-
-
 
   return (
-    <div className="container" >
+    <div className="container">
       <div className="col-md-6 mt-4">
         <div className="d-flex align-items-center">
           <h2 className="mb-0">Candidates List</h2>
@@ -49,11 +44,8 @@ const Candidates = () => {
         </div>
       </div>
 
-      <div className="container" style={{marginTop: '25px'}}>
-       
-        <CandidateList 
-           
-        />
+      <div className="container" style={{ marginTop: "25px" }}>
+        <CandidateList />
       </div>
     </div>
   );

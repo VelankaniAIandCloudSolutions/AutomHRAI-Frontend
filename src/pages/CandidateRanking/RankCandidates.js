@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import AgGridJob from "../../components/Candidate/AgGridJob";
-import "../../resources/SelectJobs.css";
-import Leaderboard from "../../components/Candidate/Leaderboard";
+import AgGridJob from "../../components/CandidateRanking/AgGridJob";
+import "../CandidateRanking/SelectJobs.css";
+import Leaderboard from "../../components/CandidateRanking/Leaderboard";
 
 function RankCandidates() {
   const [rowData, setRowData] = useState([

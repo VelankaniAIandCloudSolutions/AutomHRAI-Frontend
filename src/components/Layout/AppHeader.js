@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function AppHeader() {
   return (
@@ -10,16 +11,16 @@ export default function AppHeader() {
           </a>
         </li>
         <li className="nav-item">
-          <a href="/" className="nav-link">
+          <Link to="/" className="nav-link">
             <i className="fas fa-home"></i>
-          </a>
+          </Link>
         </li>
       </ul>
       <ul className="navbar-nav ml-auto">
         <li className="nav-item">
-          <a href="/" className="nav-link">
+          <Link to="/" className="nav-link">
             <i className="fas fa-sign-out-alt"></i>
-          </a>
+          </Link>
         </li>
       </ul>
     </nav>

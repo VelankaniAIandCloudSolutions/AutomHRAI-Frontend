@@ -3,24 +3,24 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import AppHeader from "./components/Layout/AppHeader";
 import AppSidebar from "./components/Layout/AppSidebar";
-import Candidates from "./pages/Candidates/Candidates";
-import Jobgroups from "./pages/Candidates/JobGroups";
-import Jobs from "./pages/Candidates/Jobs";
-import ResumeDetails from "./pages/UploadResume/ResumeDetails";
-import attendanceList from "./pages/attendanceList";
-import Users from "./pages/Users";
-import CreateUser from "./pages/CreateUser";
-import EditUser from "./pages/EditUser";
-import CheckInCheckOut from "./pages/CheckInCheckOut";
-import RankCandidates from "./pages/Candidates/RankCandidates";
+import Candidates from "./pages/CandidateRanking/Candidates";
+import Jobgroups from "./pages/CandidateRanking/JobGroups";
+import Jobs from "./pages/CandidateRanking/Jobs";
+import ResumeDetails from "./pages/ResumeParsing/ResumeDetails";
+import attendanceList from "./pages/FaceRecognition/attendanceList";
+import Users from "./pages/Accounts/Users";
+import CreateUser from "./pages/Accounts/CreateUser";
+import EditUser from "./pages/Accounts/EditUser";
+import CheckInCheckOut from "./pages/FaceRecognition/CheckInCheckOut";
+import RankCandidates from "./pages/CandidateRanking/RankCandidates";
 
 export default function App() {
   return (
-    <div className="wrapper">
-      <AppHeader />
-      <AppSidebar />
-      <div className="content-wrapper">
-        <Router>
+    <Router>
+      <div className="wrapper">
+        <AppHeader />
+        <AppSidebar />
+        <div className="content-wrapper">
           <Switch>
             <Route path="/" exact component={Dashboard} />
             <Route path="/resume-details" component={ResumeDetails} />
@@ -34,8 +34,8 @@ export default function App() {
             <Route path="/checkin" component={CheckInCheckOut} />
             <Route path="/rank-candidates" component={RankCandidates} />
           </Switch>
-        </Router>
+        </div>
       </div>
-    </div>
+    </Router>
   );
 }

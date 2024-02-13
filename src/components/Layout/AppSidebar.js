@@ -1,9 +1,10 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function AppSidebar() {
   return (
     <aside className="main-sidebar sidebar-dark-primary elevation-4">
-      <a href="/" className="brand-link">
+      <Link to="/" className="brand-link">
         <img
           src="/automhrlogo.png"
           alt="AutomHR Logo"
@@ -11,7 +12,7 @@ export default function AppSidebar() {
           style={{ opacity: 0.8 }}
         />
         <span className="brand-text font-weight-light">AutomHR</span>
-      </a>
+      </Link>
       <div className="sidebar">
         <nav className="mt-2">
           <ul
@@ -20,77 +21,94 @@ export default function AppSidebar() {
             role="menu"
           >
             <li className="nav-item has-treeview">
-              <a href="#" className="nav-link">
+              <Link to="#" className="nav-link">
+                <i className="nav-icon fas fa-user"></i>
+                <p>
+                  Accounts
+                  <i className="right fas fa-angle-left"></i>
+                </p>
+              </Link>
+              <ul className="nav nav-treeview">
+                <li className="nav-item">
+                  <Link to="/users" className="nav-link">
+                    <i className="far fa-circle nav-icon"></i>
+                    <p>Users</p>
+                  </Link>
+                </li>
+              </ul>
+            </li>
+            <li className="nav-item has-treeview">
+              <Link to="#" className="nav-link">
                 <i className="nav-icon fas fa-file"></i>
                 <p>
                   Resume Parser
                   <i className="right fas fa-angle-left"></i>
                 </p>
-              </a>
+              </Link>
               <ul className="nav nav-treeview">
                 <li className="nav-item">
-                  <a href="#" className="nav-link">
-                    <i className="far fa-circle nav-icon"></i>
-                    <p>Dashboard</p>
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a href="#" className="nav-link">
+                  <Link to="/resume-details" className="nav-link">
                     <i className="far fa-circle nav-icon"></i>
                     <p>Resumes</p>
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </li>
             <li className="nav-item has-treeview">
-              <a href="#" className="nav-link">
+              <Link to="#" className="nav-link">
                 <i className="nav-icon fas fa-users"></i>
                 <p>
                   Candidate Ranking
                   <i className="right fas fa-angle-left"></i>
                 </p>
-              </a>
+              </Link>
               <ul className="nav nav-treeview">
                 <li className="nav-item">
-                  <a href="#" className="nav-link">
+                  <Link to="/candidate-list" className="nav-link">
                     <i className="far fa-circle nav-icon"></i>
                     <p>Candidates</p>
-                  </a>
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <a href="#" className="nav-link">
+                  <Link to="/job-groups" className="nav-link">
                     <i className="far fa-circle nav-icon"></i>
                     <p>Job Groups</p>
-                  </a>
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <a href="#" className="nav-link">
+                  <Link to="/jobs" className="nav-link">
                     <i className="far fa-circle nav-icon"></i>
                     <p>Jobs</p>
-                  </a>
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/rank-candidates" className="nav-link">
+                    <i className="far fa-circle nav-icon"></i>
+                    <p>Rank Candidates</p>
+                  </Link>
                 </li>
               </ul>
             </li>
             <li className="nav-item has-treeview">
-              <a href="#" className="nav-link">
+              <Link to="#" className="nav-link">
                 <i className="nav-icon fas fa-camera-retro"></i>
                 <p>
                   Face Recognition
                   <i className="right fas fa-angle-left"></i>
                 </p>
-              </a>
+              </Link>
               <ul className="nav nav-treeview">
                 <li className="nav-item">
-                  <a href="#" className="nav-link">
+                  <Link to="/attendance" className="nav-link">
                     <i className="far fa-circle nav-icon"></i>
                     <p>Attendance</p>
-                  </a>
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <a href="#" className="nav-link">
+                  <Link to="/checkin" className="nav-link">
                     <i className="far fa-circle nav-icon"></i>
                     <p>Check In / Check Out</p>
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </li>
