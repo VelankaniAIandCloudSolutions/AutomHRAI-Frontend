@@ -27,15 +27,15 @@ function AttendanceList() {
 
   const [rowData, setRowData] = useState(originalRowData);
 
-  const [colDefs, setColDefs] = useState([
-    { headerName: "Employee ID", field: "employeeID", filter: true },
-    { headerName: "Employee Name", field: "employeeName", filter: true },
-    { headerName: "Email", field: "email", width: 250, filter: true },
-    { headerName: "Date", field: "date", filter: true },
-    { headerName: "CheckIn Time", field: "checkInTime", width: 150 },
-    { headerName: "CheckOut Time", field: "checkOutTime", width: 150 },
-    { headerName: "Status", field: "status", filter: true },
-  ]);
+  // const [colDefs, setColDefs] = useState([
+  //   { headerName: "Employee ID", field: "employeeID", filter: true },
+  //   { headerName: "Employee Name", field: "employeeName", filter: true },
+  //   { headerName: "Email", field: "email", width: 250, filter: true },
+  //   { headerName: "Date", field: "date", filter: true },
+  //   { headerName: "CheckIn Time", field: "checkInTime", width: 150 },
+  //   { headerName: "CheckOut Time", field: "checkOutTime", width: 150 },
+  //   { headerName: "Status", field: "status", filter: true },
+  // ]);
 
   useEffect(() => {
     if (selectedDate) {

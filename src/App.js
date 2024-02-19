@@ -29,7 +29,7 @@ export default function App() {
             <Route path="/jobs" exact component={Jobs} />
             <Route path="/attendance" component={attendanceList} />
             <Route path="/users/create-user" component={CreateUser} />
-            <Route path="/users/edit-user" component={EditUser} />
+            <Route path="/users/edit-user/:id" component={EditUser} />
             <Route path="/users" component={Users} />
             <Route path="/checkin" component={CheckInCheckOut} />
             <Route path="/rank-candidates" component={RankCandidates} />

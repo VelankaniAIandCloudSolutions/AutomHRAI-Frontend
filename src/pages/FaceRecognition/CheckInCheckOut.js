@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import Webcam from "react-webcam";
+import { Modal } from "react-bootstrap";
 
 function CheckInCheckOut() {
   const webcamRef = useRef(null);
@@ -103,7 +104,7 @@ function CheckInCheckOut() {
         </div>
       </div>
 
-      {/* <Modal show={showWebcamModal} onHide={handleClose} centered>
+      <Modal show={showWebcamModal} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>Attendance</Modal.Title>
         </Modal.Header>
@@ -119,7 +120,7 @@ function CheckInCheckOut() {
             videoConstraints={{ width: 320, height: 240 }}
           />
         </Modal.Body>
-      </Modal> */}
+      </Modal>
 
       {/* <div class="modal fade" id="WebcamModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
