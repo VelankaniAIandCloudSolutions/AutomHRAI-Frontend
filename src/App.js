@@ -13,6 +13,7 @@ import CreateUser from "./pages/Accounts/CreateUser";
 import EditUser from "./pages/Accounts/EditUser";
 import CheckInCheckOut from "./pages/FaceRecognition/CheckInCheckOut";
 import RankCandidates from "./pages/CandidateRanking/RankCandidates";
+import MyComponent from "./pages/FaceRecognition/checkintest";
 
 export default function App() {
   return (
@@ -33,6 +34,8 @@ export default function App() {
             <Route path="/users" component={Users} />
             <Route path="/checkin" component={CheckInCheckOut} />
             <Route path="/rank-candidates" component={RankCandidates} />
+            <Route path="/test-component" component={MyComponent} />
+
           </Switch>
         </div>
       </div>

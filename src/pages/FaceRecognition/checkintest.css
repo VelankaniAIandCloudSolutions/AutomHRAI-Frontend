@@ -1,0 +1,146 @@
+.not-visible {
+    display: none;
+}
+
+
+.captured-image {
+    max-width: 100%; 
+    max-height: 100%;
+    margin: auto;
+  }
+  
+/* Body */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+  }
+  
+  /* Container */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Card */
+  .card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 10px;
+  }
+  
+  .card-header {
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  
+  .card-body {
+    padding: 20px;
+  }
+  
+  /* Check-in/out Circle */
+  .check-circle {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 5px solid #007bff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+  }
+  
+  .check-circle h4 {
+    margin: 0;
+    font-size: 24px;
+    color: #007bff;
+  }
+  
+  .check-circle p {
+    margin: 5px 0;
+    color: #555;
+  }
+  
+  /* Modal */
+  .modal-content {
+    border-radius: 10px;
+  }
+  
+  .modal-header {
+    background-color: #007bff;
+    color: #fff;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  
+  .modal-body {
+    padding: 20px;
+  }
+  
+  .modal-footer {
+    justify-content: center;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  
+  /* Buttons */
+  .btn-primary,
+  .btn-info {
+    margin-top: 10px;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    border: none;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+  
+  .btn-info {
+    background-color: #17a2b8;
+    border: none;
+  }
+  
+  .btn-info:hover {
+    background-color: #117a8b;
+  }
+  
+  /* Alerts */
+  .alert {
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+  
+  .alert-success {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  .alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  
+  /* Stopwatch */
+  .stopwatch {
+    font-size: 36px;
+    font-weight: bold;
+    color: #007bff;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  /* Timestamp */
+  .timestamp {
+    font-size: 14px;
+    color: #777;
+    text-align: center;
+  }
+  

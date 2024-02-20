@@ -2,40 +2,34 @@ import React, { useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import AgGridAttendanceList from "../../components/FaceRecognition/AgGridAttendanceList";
 
+import axios from "axios";
+
 function AttendanceList() {
   const [selectedDate, setSelectedDate] = useState("");
   const [originalRowData, setOriginalRowData] = useState([
-    {
-      employeeID: "VAC001",
-      email: "soniya@velankanigroup.com",
-      employeeName: "Soniya",
-      checkInTime: "08.00 AM",
-      checkOutTime: "04.00 PM",
-      date: "2024-02-01",
-      status: true,
-    },
-    {
-      employeeID: "VAC002",
-      email: "test@velankanigroup.com",
-      employeeName: "Test",
-      checkInTime: "08.00 AM",
-      checkOutTime: "04.00 PM",
-      date: "2024-01-31",
-      status: true,
-    },
+    // {
+    //   employeeID: "VAC001",
+    //   email: "soniya@velankanigroup.com",
+    //   employeeName: "Soniya",
+    //   checkInTime: "08.00 AM",
+    //   checkOutTime: "04.00 PM",
+    //   date: "2024-02-01",
+    //   status: true,
+    // },
+    // {
+    //   employeeID: "VAC002",
+    //   email: "test@velankanigroup.com",
+    //   employeeName: "Test",
+    //   checkInTime: "08.00 AM",
+    //   checkOutTime: "04.00 PM",
+    //   date: "2024-01-31",
+    //   status: true,
+    // },
   ]);
 
   const [rowData, setRowData] = useState(originalRowData);
 
-  const [colDefs, setColDefs] = useState([
-    { headerName: "Employee ID", field: "employeeID", filter: true },
-    { headerName: "Employee Name", field: "employeeName", filter: true },
-    { headerName: "Email", field: "email", width: 250, filter: true },
-    { headerName: "Date", field: "date", filter: true },
-    { headerName: "CheckIn Time", field: "checkInTime", width: 150 },
-    { headerName: "CheckOut Time", field: "checkOutTime", width: 150 },
-    { headerName: "Status", field: "status", filter: true },
-  ]);
+
 
   useEffect(() => {
     if (selectedDate) {
@@ -48,6 +42,22 @@ function AttendanceList() {
       setRowData(originalRowData);
     }
   }, [selectedDate, originalRowData]);
+
+
+  
+  useEffect(() => {
+    // Make GET request to fetch all check-in data
+    axios.get("facial-recognition/get_attendance_list/")
+      .then(response => {
+
+        console.log("the attendance list", response.data)
+        setRowData(response.data); // Set fetched data to rowData state
+      })
+      .catch(error => {
+        console.error("Error fetching check-in data:", error);
+        setRowData([]); // Set empty array in case of error
+      });
+  }, []); 
 
   return (
     <div className="container">
