@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
@@ -7,35 +7,26 @@ import { faDownload, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const DepartmentGrid = ({ onRowSelected }) => {
-
-    const [rowData, setRowData] = useState([
-        { department_name: "AI and Cloud Solutions", company: "Velankani" },
-        { department_name: "Electronics", company: "Infosys" },
-
-    ]);
-
+const DepartmentGrid = ({ onRowSelected, departments, handleUpdateJobGroup }) => {
+    const [rowData, setRowData] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
     const gridApiRef = useRef(null);
     const [searchTerm, setSearchTerm] = useState("");
 
-
     const gridOptions = {
-        rowSelection: 'multiple', // or 'single' for single-row selection
+        rowSelection: 'multiple',
         columnDefs: [
             { checkboxSelection: true, headerCheckboxSelection: true, width: 50 },
-            { headerName: 'Department Name', field: 'department_name' },
+            { headerName: 'Department Name', field: 'name' },
             { headerName: 'Company', field: 'company' }
         ],
         onSelectionChanged: () => {
             const selectedNodes = gridApiRef.current.getSelectedNodes();
             const selectedData = selectedNodes.map((node) => node.data);
             setSelectedRows(selectedData);
-            onRowSelected(selectedData); 
+            onRowSelected(selectedData);
         },
-
     };
-
 
     const onGridReady = (params) => {
         gridApiRef.current = params.api;
@@ -51,15 +42,16 @@ const DepartmentGrid = ({ onRowSelected }) => {
         gridApiRef.current.setQuickFilter(term);
     };
 
+    useEffect(() => {
+        setRowData(departments);
+    }, [departments]);
+
     const showSelectedDepartment = () => {
-        // Logic to handle selected data (e.g., update state)
         console.log('Selected Department Data:', selectedRows);
     };
 
-
     return (
         <div className="container">
-
             <div className="mb-3 position-relative">
                 <label htmlFor="search" className="form-label visually-hidden">Search:</label>
                 <div className="input-group">
@@ -81,24 +73,16 @@ const DepartmentGrid = ({ onRowSelected }) => {
                 </div>
             </div>
 
-
             <div className="ag-theme-quartz" style={{ height: 300 }}>
-                <AgGridReact columnDefs={gridOptions.columnDefs} gridOptions={gridOptions} rowData={rowData} onGridReady={onGridReady} />
+                <AgGridReact
+                    columnDefs={gridOptions.columnDefs}
+                    gridOptions={gridOptions}
+                    rowData={rowData}
+                    onGridReady={onGridReady}
+                />
             </div>
-
-
-
-
-
-
-
-
-
         </div>
     );
 };
 
 export default DepartmentGrid;
-
-
-

@@ -1,18 +1,41 @@
 import React, { useState, useEffect } from 'react';
 
-const JobGroupsForm = ({ selectedRows }) => {
+const JobGroupsForm = ({ selectedRows , mode, onJobGroupChange}) => {
+    console.log(selectedRows)
     const [isActive, setIsActive] = useState(true);
     const [selectedDepartment, setSelectedDepartment] = useState(null);
+    
+    const [jobGroup, setJobGroup] = useState('');
+
+    const handleJobGroupInputChange = (e) => {
+        const value = e.target.value;
+        setJobGroup(value);
+        onJobGroupChange(value);
+    
+    };
 
     useEffect(() => {
         if (selectedRows?.length > 0) {
-            // Update the selected department with the department name of the first selected row
-            setSelectedDepartment(`${selectedRows[0].department_name} - ${selectedRows[0].company}`);
+            setSelectedDepartment(`${selectedRows[0].name} - ${selectedRows[0].company}`);
+            
         } else {
-            // Reset selected department if no row is selected
             setSelectedDepartment(null);
         }
     }, [selectedRows]);
+
+    useEffect(() => {
+        if (mode !== 'create') {
+            if (selectedRows?.length > 0) {
+                
+                const departmentLabel = selectedRows[0].department_name || `${selectedRows[0].name} - ${selectedRows[0].company}`;
+                setSelectedDepartment(departmentLabel);
+            } else {
+                setSelectedDepartment(null);
+            }
+        }
+    }, [mode, selectedRows]);
+
+    
 
     return (
         <form>
@@ -20,7 +43,7 @@ const JobGroupsForm = ({ selectedRows }) => {
                 <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="job_group" className="form-label">Job Group:</label>
-                        <input type="text" className="form-control" id="job_group" name="job_group" />
+                        <input type="text" className="form-control" id="job_group" name="job_group" value={jobGroup} onChange={handleJobGroupInputChange}/>
                     </div>
 
                     <div className="mb-3 d-flex align-items-center">
@@ -48,7 +71,7 @@ const JobGroupsForm = ({ selectedRows }) => {
 
                 <div className="mb-3">
                     <label htmlFor="email" className="form-label">Department:</label>
-                    <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#departmentmodal">
+                    <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target={mode === 'create' ? "#departmentmodal" : "#updatejogroupmodal"}>
                         Select Department
                     </button>
                 </div>
@@ -59,3 +82,6 @@ const JobGroupsForm = ({ selectedRows }) => {
 };
 
 export default JobGroupsForm;
+
+
+// 

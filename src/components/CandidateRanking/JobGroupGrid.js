@@ -4,7 +4,7 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const JobGroupGrid = ({ onRowSelected, selectedRows }) => {
+const JobGroupGrid = ({ onRowSelected, selectedRows, jobgroup, }) => {
     const [rowData, setRowData] = useState([
         { job_group: "Developers", department: "AI and Cloud" },
         { job_group: "Accounts", department: "Finance" },
@@ -24,8 +24,8 @@ const JobGroupGrid = ({ onRowSelected, selectedRows }) => {
         rowSelection: 'multiple',
         columnDefs: [
             { checkboxSelection: true, headerCheckboxSelection: true, width: 50 },
-            { headerName: 'Job Group', field: 'job_group' },
-            { headerName: 'Department', field: 'department' }
+            { headerName: 'Job Group', field: 'name' },
+            { headerName: 'Department', field: 'department_name' }
         ],
         onSelectionChanged: () => {
             const selectedNodes = gridApiRef.current.getSelectedNodes();
@@ -44,11 +44,11 @@ const JobGroupGrid = ({ onRowSelected, selectedRows }) => {
     const selectRows = (selectedRows) => {
         if (!gridApiRef.current || !Array.isArray(selectedRows) || selectedRows.length === 0) return;
         
-        gridApiRef.current.deselectAll(); // Deselect all rows first
+       
         
         gridApiRef.current.forEachNode((node) => {
             selectedRows.forEach((selectedRow) => {
-                if (node.data.job_group === selectedRow.job_group && node.data.department === selectedRow.department) {
+                if (node.data.name === selectedRow.name && node.data.department_name === selectedRow.department_name) {
                     node.setSelected(true);
                 }
             });
@@ -89,7 +89,7 @@ const JobGroupGrid = ({ onRowSelected, selectedRows }) => {
                 </div>
             </div>
             <div className="ag-theme-quartz" style={{ height: 300 }}>
-                <AgGridReact columnDefs={gridOptions.columnDefs} gridOptions={gridOptions} rowData={rowData} onGridReady={onGridReady} />
+                <AgGridReact columnDefs={gridOptions.columnDefs} gridOptions={gridOptions} rowData={jobgroup} onGridReady={onGridReady} />
             </div>
         </div>
     );

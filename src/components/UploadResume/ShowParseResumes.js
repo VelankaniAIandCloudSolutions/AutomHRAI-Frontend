@@ -3,8 +3,6 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const ResumeGrid = ({ rowData, onEdit  }) => {
   const [gridApi, setGridApi] = useState(null);
@@ -88,17 +86,6 @@ const ResumeGrid = ({ rowData, onEdit  }) => {
       { headerName: 'Company Name', field: 'company_name', editable: true },
       { headerName: 'Experience', field: 'experience', editable: true },
       { headerName: 'Total Experience', field: 'total_experience', editable: true },
-      {
-        headerName: 'Download Resume',
-        field: 'resume',
-        cellRenderer: (params) => (
-          <div style={{ marginLeft: '55px' }}>
-            <a href={params.value} target="_blank" rel="noopener noreferrer" className="btn btn-success btn-sm">
-              <FontAwesomeIcon icon={faDownload} />
-            </a>
-          </div>
-        ),
-      },
       {
         headerName: 'Update',
         cellRenderer: UpdateButtonRenderer,
