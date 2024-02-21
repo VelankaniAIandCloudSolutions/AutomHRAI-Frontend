@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
@@ -8,11 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import JobsForm from "./JobsForm";
 import JobGroupGrid from "./JobGroupGrid";
 
-const Job = () => {
-    const [rowData, setRowData] = useState([
-        { id: 1, job_name: "Software Developer", job_group: "Developers", department: 'AI and Cloud', description: "This is a static description for Software Developer." },
-        { id: 2, job_name: "Accountant", job_group: "Accounts", department: 'Finance', description: "This is a static description for Accountant." }
-    ]);
+const Job = ({joblist ,onSelectedRowsChange, handleUpdateForm, jobgroup }) => {
 
     const [selectedRows, setSelectedRows] = useState([]);
 
@@ -22,13 +18,13 @@ const Job = () => {
     const [selectedJobDescription, setSelectedJobDescription] = useState('');
     const [selectedRowData, setSelectedRowData] = useState(null);
    
-
+    console.log("the joblist coming:", joblist)   
     
 
 
-    // const handleUpdateJobDepartment = () => {
-    //     setUpdateJobDepartmentModal(true);
-    // };
+    useEffect(() => {
+        onSelectedRowsChange(selectedRows);
+    }, [selectedRows, onSelectedRowsChange]);
 
     const handleRowSelected = (selectedData) => {
         setSelectedRows(selectedData);
@@ -37,11 +33,13 @@ const Job = () => {
         } else {
             setSelectedRows(null);
         }
+        onSelectedRowsChange(selectedRows);
+
     };
 
 
     const handleEyeButtonClick = (row) => {
-        setSelectedJobDescription(row.description);
+        setSelectedJobDescription(row.job_description);
     };
 
     const handleEditClick = (rowData) => {
@@ -63,12 +61,12 @@ const Job = () => {
     );
 
     const colDefs = [
-        { headerName: 'Job Name', field: 'job_name' },
+        { headerName: 'Job Name', field: 'name' },
         { headerName: 'Job Group', field: 'job_group', filter: true },
         { headerName: 'Department', field: 'department', filter: true },
         {
             headerName: 'Job Description',
-            field: 'description',
+            field: 'job_description',
             cellRenderer: (params) => (
                 <div style={{ marginLeft: '55px' }}>
                     <button
@@ -103,7 +101,7 @@ const Job = () => {
             headerName: 'Delete',
             cellRenderer: (params) => (
                 <div style={{ marginLeft: '55px' }}>
-                    <a href={params.value} target="_blank" rel="noopener noreferrer" className="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deletemodal">
+                    <a href={params.value} target="_blank" rel="noopener noreferrer" className="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deletemodal" >
                         <FontAwesomeIcon icon={faTrash} />
                     </a>
                 </div>
@@ -115,15 +113,17 @@ const Job = () => {
         actionsCellRenderer: ActionsCellRenderer,
     };
 
+   
     return (
         <div className="row align-items-center">
             <div className="content">
                 <div className="container-fluid">
                     <div className="ag-theme-quartz" style={{ height: 400 }}>
-                        <AgGridReact rowData={rowData} columnDefs={colDefs} frameworkComponents={frameworkComponents} onSelectionChanged={handleGridSelection} />
+                        <AgGridReact rowData={joblist} columnDefs={colDefs} frameworkComponents={frameworkComponents} onSelectionChanged={handleGridSelection} />
                     </div>
                 </div>
             </div>
+ 
 
             <div className="modal fade" id="jobeditmodal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabIndex="-1">
                 <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
@@ -137,7 +137,7 @@ const Job = () => {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary">Save</button>
+                            <button type="button" className="btn btn-primary" onClick={handleUpdateForm}  >Save</button>
                         </div>
                     </div>
                 </div>
@@ -151,7 +151,7 @@ const Job = () => {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <JobGroupGrid onRowSelected={handleRowSelected} selectedRows={selectedRows} />
+                            <JobGroupGrid onRowSelected={handleRowSelected} selectedRows={selectedRows} jobgroup={jobgroup}/>
                         </div>
                         <div className="modal-footer">
                             <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#jobeditmodal">Back</button>
@@ -172,7 +172,7 @@ const Job = () => {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary">Confirm</button>
+                            <button type="button" className="btn btn-primary" >Confirm</button>
                         </div>
                     </div>
                 </div>

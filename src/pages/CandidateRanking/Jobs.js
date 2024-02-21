@@ -9,17 +9,108 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import JobsForm from "../../components/CandidateRanking/JobsForm";
 import Job from "../../components/CandidateRanking/Job";
 import JobGroupGrid from "../../components/CandidateRanking/JobGroupGrid";
+import axios from 'axios';
 
 const Jobs = () => {
   const [selectedRows, setSelectedRows] = useState([]);
+  const [ joblist , setjobslist] = useState([]);
+  const [ jobgroup , setjobgroup] = useState([]);
+  const [parentSelectedRows, setParentSelectedRows] = useState([]);
+
+  
+
+
+
+ 
+
 
   const handleRowSelected = (selectedData) => {
     setSelectedRows(selectedData);
   };
 
+
+  const fetchJobGroups = async () => {
+    try{
+      const response = await axios.get('candidate-ranking/jobgroup_list/');
+      console.log(response.data);
+      setjobgroup(response.data);
+    } catch (error) {
+      console.error('Error fetching Jobgroups:', error);
+    }
+  };
   useEffect(() => {
+    fetchJobGroups();
+  }, []);
+
+  const handleSelectedRowsChange = (selectedRows) => {
+    setParentSelectedRows(selectedRows);
+  };
+
+  const handleUpdateForm = async ( formData) => {
+    console.log('this is :',parentSelectedRows)
+    const jobId = parentSelectedRows[0].id
+    console.log('ID:',jobId)
+    
+    try {
+      const response = await axios.put(`candidate-ranking/update_job/${jobId}/`, formData); 
+        console.log('Job Updated successfully:', response.data);
+
+      
+  
+      console.log('Response from update job API:', response.data);
+  
+    } catch (error) {
+      console.error('Error updating job:', error);
+    }
+  };
+
+
+ 
+
+  const handleFormSubmit = (formData) => {
+    console.log('Form data submitted in parent:', formData);
+    handleCreateJob(formData);
+  };
+
+  const fetchJobs = async () => {
+    try{
+      const response = await axios.get('candidate-ranking/get_jobs/');
+      console.log("the jobs data",response.data);
+      setjobslist(response.data);
+    } catch (error) {
+      console.error('Error fetching Jobgroups:', error);
+    }
+  };
+  const handleCreateJob = async (formData) => {
+    const job_group_id = selectedRows[0].id; 
+
+    try {
+      const response = await axios.post(`candidate-ranking/create_job/${job_group_id}/`,formData );
+      console.log('Job created successfully:', response.data);
+    } catch (error) {
+      console.error('Error creating job:', error);
+    }
+  };
+  const handleDeleteJob = async () => {
+    const jobId = parentSelectedRows[0].id;
+    console.log('DELETE ID:',jobId)
+  
+    try {
+      const response = await axios.delete(`candiate-ranking/delete_job/${jobId}/`);
+      console.log('Job deleted successfully:', response.data);
+    } catch (error) {
+      console.log('Error deleting job:', error);
+    }
+  };
+  
+
+
+  useEffect(() => {
+    fetchJobs()
     console.log("selectedRows in Jobs:", selectedRows);
-  }, [selectedRows]);
+  }, [selectedRows],[]);
+
+
 
   return (
     <div className="container">
@@ -56,7 +147,9 @@ const Jobs = () => {
       </div>
 
       <div className="container" style={{ marginTop: "25px" }}>
-        <Job />
+       
+        <Job joblist={joblist} onSelectedRowsChange={handleSelectedRowsChange}  handleUpdateForm={handleUpdateForm}  jobgroup={jobgroup}/>
+        
       </div>
 
       <div
@@ -64,7 +157,7 @@ const Jobs = () => {
         id="jobmodal"
         aria-hidden="true"
         aria-labelledby="exampleModalToggleLabel"
-        tabindex="-1"
+        tabIndex="-1"
       >
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
           <div class="modal-content">
@@ -80,9 +173,9 @@ const Jobs = () => {
               ></button>
             </div>
             <div class="modal-body">
-              <JobsForm selectedRows={selectedRows} mode="create" />
+              <JobsForm selectedRows={selectedRows} mode="create" onFormSubmit={handleFormSubmit} onUpdateForm={handleUpdateForm} />
             </div>
-            <div class="modal-footer">
+            {/* <div class="modal-footer">
               <button
                 type="button"
                 class="btn btn-secondary"
@@ -90,10 +183,10 @@ const Jobs = () => {
               >
                 Close
               </button>
-              <button type="button" class="btn btn-primary">
+              <button type="button" class="btn btn-primary" onClick={handleFormSubmit}>
                 Save
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -122,6 +215,9 @@ const Jobs = () => {
               <JobGroupGrid
                 onRowSelected={handleRowSelected}
                 selectedRows={selectedRows}
+                jobgroup={jobgroup}
+
+
               />
             </div>
 
