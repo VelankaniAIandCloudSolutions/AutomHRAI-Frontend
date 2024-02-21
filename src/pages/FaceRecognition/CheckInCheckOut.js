@@ -32,7 +32,7 @@ function CheckInCheckOut() {
     const fetchCheckinData = async () => {
       console.log("Hii");
       try {
-        const userId = 2;
+        const userId = 1;
         const response = await axios.get(`/facial-recognition/get_checkin_data/${userId}`);
 
         const { checkin_data , timesheet_data } = response.data;
@@ -235,6 +235,17 @@ function CheckInCheckOut() {
       });
   };  
 
+  const formatWithLeadingZero = (value) => {
+    return value < 10 ? `0${value}` : value;
+  };
+
+  // Helper function to format time with spaces between hours and minutes
+  const formatTimeWithSpaces = (hours, minutes) => {
+    const formattedHours = formatWithLeadingZero(hours);
+    const formattedMinutes = formatWithLeadingZero(minutes);
+    return `${formattedHours} : ${formattedMinutes}`;
+  };
+
   useEffect(() => {
     setupCamera();
   }, []);
@@ -264,9 +275,15 @@ function CheckInCheckOut() {
               <p>Check In</p>
             </div> */}
 
-            <div className="bg-light p-2 mt-4" style={{ borderRadius: "50%", width: "150px", height: "150px", border: "5px solid #e3e3e3", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-              <h4>{latestEntryType === 'checkin' ? `${Math.floor(workingTime / 3600)} : ${Math.floor((workingTime % 3600) / 60)} : ${workingTime % 60}` : `${totalHours} : ${totalMinutes} Hrs`}</h4>
-            </div>
+          <div className="bg-light p-2 mt-4" style={{ borderRadius: "50%", width: "150px", height: "150px", border: "5px solid #e3e3e3", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+            <h5>{latestEntryType === 'checkin' ? <h4>{formatTimeWithSpaces(Math.floor(workingTime / 3600), Math.floor((workingTime % 3600) / 60))}</h4> : `${totalHours} Hrs : ${totalMinutes} Mins`}</h5>
+
+          </div>
+
+          {/* <div className="bg-light p-2 mt-4" style={{ borderRadius: "50%", width: "150px", height: "150px", border: "5px solid #e3e3e3", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+              <h4>{latestEntryType === 'checkin' ? `${Math.floor(workingTime / 3600)} : ${Math.floor((workingTime % 3600) / 60)} ` : `${totalHours} : ${totalMinutes} Hrs`}</h4>
+            </div> */}
+
            
 
             {/* <div className="bg-light p-2 mt-4" style={{ borderRadius: "50%", width: "150px", height: "150px", border: "5px solid #e3e3e3", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
