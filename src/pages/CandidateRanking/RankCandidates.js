@@ -2,59 +2,65 @@ import React, { useEffect, useState } from "react";
 import AgGridJob from "../../components/CandidateRanking/AgGridJob";
 import "../CandidateRanking/SelectJobs.css";
 import Leaderboard from "../../components/CandidateRanking/Leaderboard";
+import axios from 'axios'
 
 function RankCandidates() {
-  const [rowData, setRowData] = useState([
-    {
-      jobName: "Software Developer",
-      jobGroup: "Software",
-      department: "IT",
-      jobDesc:
-        "This book is a treatise on the theory of ethics, very popular during the Renaissance.",
-      attachment: "attachments",
-    },
-    {
-      jobName: "Business Executive",
-      jobGroup: "MAnagement",
-      department: "Management",
-      jobDesc:
-        "This book is a treatise on the theory of ethics, very popular during the Renaissance.",
-      attachment: "attachments",
-    },
-  ]);
+  const [rowData, setRowData] = useState([]);
+  const [selectedRow, setSelectedRow] = useState(null);
 
-  const [rankData, setRankData] = useState([
-    {
-      name: "Test",
-      points: "100",
-      imageSrc:
-        "https://img.freepik.com/free-vector/portrait-boy-with-brown-hair-brown-eyes_1308-146018.jpg?size=626&ext=jpg&ga=GA1.1.1448711260.1707177600&semt=ais",
-      imagePrize:
-        "https://raw.githubusercontent.com/malunaridev/Challenges-iCodeThis-01-to-10/master/4-leaderboard/assets/gold-medal.png",
-    },
-    {
-      name: "Test2",
-      points: "80",
-      imageSrc: "https://cdn-icons-png.flaticon.com/512/5231/5231019.png",
-    },
-    {
-      name: "Test3",
-      points: "78",
-      imageSrc:
-        "https://i.pinimg.com/736x/73/b7/53/73b753791ea4234b6f7190d797cdc1c5.jpg",
-    },
-    {
-      name: "Test4",
-      points: "70",
-      imageSrc:
-        "https://t4.ftcdn.net/jpg/01/13/99/57/360_F_113995750_dAEGvjqxnsYD6asKjeDWJoVoSqjFvdGO.jpg",
-    },
-  ]);
+
+  const [rankData, setRankData] = useState([]);
+
+
+  const handleRowSelected = (rowData) => {
+    setSelectedRow(rowData);
+    console.log(rowData)
+  };
   const [ShowLeaderboard, setShowLeaderboard] = useState(false);
 
-  const handleRankCandidatesClick = () => {
-    setShowLeaderboard(true);
+  const handleRankCandidates = async () => {
+    const jobId = selectedRow.id ;
+    try {
+      const response = await axios.post(`candidate-ranking/rank_candidates/${jobId}/`);
+      console.log('Rank Candidates Response', response.data);
+      const rankedResumesData = response.data.ranked_resumes;
+
+
+      setRankData(rankedResumesData);
+      setShowLeaderboard(true);
+
+    } catch (error) {
+      console.error('Error ranking candidates:', error);
+    }
   };
+
+  
+  
+  const fetchJobs = async () => {
+    try{
+      const response = await axios.get('candidate-ranking/get_jobs/');
+      console.log("the jobs data",response.data);
+      setRowData(response.data);
+    } catch (error) {
+      console.error('Error fetching Jobgroups:', error);
+    }
+  };
+
+  const fetchCandidateList = async () => {
+    try{
+      const response = await axios.get('resume-parser/candidate_list/');
+      console.log('the Candidate List', response.data);
+      
+
+    }catch(error){
+      console.error('Error fetching Candidates:',error)
+    }
+
+  }
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
 
   return (
     <div className="container">
@@ -131,7 +137,7 @@ function RankCandidates() {
             <div className="modal-body">
               <div className="ag-theme-quartz" style={{ height: 500 }}>
                 {/* The AG Grid component */}
-                <AgGridJob rowData={rowData} />
+                <AgGridJob rowData={rowData} onRowSelected={handleRowSelected} />
               </div>
             </div>
             <div className="modal-footer">
@@ -145,7 +151,7 @@ function RankCandidates() {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={handleRankCandidatesClick}
+                onClick={handleRankCandidates}
                 data-bs-dismiss="modal"
               >
                 Rank Candidates
