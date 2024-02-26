@@ -15,32 +15,49 @@ import EditUser from "./pages/Accounts/EditUser";
 import CheckInCheckOut from "./pages/FaceRecognition/CheckInCheckOut";
 import RankCandidates from "./pages/CandidateRanking/RankCandidates";
 import MyComponent from "./pages/FaceRecognition/checkintest";
+import { Login } from "./pages/Accounts/LogIn";
+import { useState, useEffect } from "react";
 
 export default function App() {
-  return (
-    <Router>
-      <div className="wrapper">
-        <AppHeader />
-        <AppSidebar />
-        <div className="content-wrapper">
-          <Switch>
-            <Route path="/" exact component={Dashboard} />
-            <Route path="/resume-details" component={ResumeDetails} />
-            <Route path="/candidate-list" exact component={Candidates} />
-            <Route path="/job-groups" exact component={Jobgroups} />
-            <Route path="/jobs" exact component={Jobs} />
-            <Route path="/attendance" component={attendanceList} />
-            <Route path="/employee-attendance" exact component={EmployeeAttendance}/>
-            <Route path="/users/create-user" component={CreateUser} />
-            <Route path="/users/edit-user/:id" component={EditUser} />
-            <Route path="/users" component={Users} />
-            <Route path="/checkin" component={CheckInCheckOut} />
-            <Route path="/rank-candidates" component={RankCandidates} />
-            <Route path="/test-component" component={MyComponent} />
+  const [isAuth, setIsAuth] = useState(false);
+  useEffect(() => {
+    if (localStorage.getItem("access_token") !== null) {
+      setIsAuth(true);
+    }
+  }, [isAuth]);
 
-          </Switch>
+  if (isAuth) {
+    return (
+      <Router>
+        <div className="wrapper">
+          <AppHeader />
+          <AppSidebar />
+          <div className="content-wrapper">
+            <Switch>
+              <Route path="/" exact component={Dashboard} />
+              <Route path="/login" exact component={Login} />
+              <Route path="/resume-details" component={ResumeDetails} />
+              <Route path="/candidate-list" exact component={Candidates} />
+              <Route path="/job-groups" exact component={Jobgroups} />
+              <Route path="/jobs" exact component={Jobs} />
+              <Route path="/attendance" component={attendanceList} />
+              <Route
+                path="/employee-attendance"
+                exact
+                component={EmployeeAttendance}
+              />
+              <Route path="/users/create-user" component={CreateUser} />
+              <Route path="/users/edit-user/:id" component={EditUser} />
+              <Route path="/users" component={Users} />
+              <Route path="/checkin" component={CheckInCheckOut} />
+              <Route path="/rank-candidates" component={RankCandidates} />
+              <Route path="/test-component" component={MyComponent} />
+            </Switch>
+          </div>
         </div>
-      </div>
-    </Router>
-  );
+      </Router>
+    );
+  } else {
+    return <Login />;
+  }
 }
