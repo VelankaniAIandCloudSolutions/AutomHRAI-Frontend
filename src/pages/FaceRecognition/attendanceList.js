@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { AgGridReact } from "ag-grid-react";
 import AgGridAttendanceList from "../../components/FaceRecognition/AgGridAttendanceList";
 
 function AttendanceList() {
