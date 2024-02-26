@@ -7,7 +7,6 @@ import "../FaceRecognition/checkintest.css";
 import { useHistory } from "react-router-dom";
 import { Modal } from "bootstrap";
 import { type } from "@testing-library/user-event/dist/type";
-import { Modal } from "react-bootstrap";
 
 function CheckInCheckOut() {
   const [videoStream, setVideoStream] = useState(null);
