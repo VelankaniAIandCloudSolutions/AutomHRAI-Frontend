@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { AgGridReact } from "ag-grid-react";
 import AgGridAttendanceList from "../../components/FaceRecognition/AgGridAttendanceList";
 
 import axios from "axios";
@@ -29,8 +28,6 @@ function AttendanceList() {
 
   const [rowData, setRowData] = useState(originalRowData);
 
-
-
   useEffect(() => {
     if (selectedDate) {
       const formattedDate = new Date(selectedDate).toISOString().split("T")[0];
@@ -43,21 +40,19 @@ function AttendanceList() {
     }
   }, [selectedDate, originalRowData]);
 
-
-  
   useEffect(() => {
     // Make GET request to fetch all check-in data
-    axios.get("facial-recognition/get_attendance_list/")
-      .then(response => {
-
-        console.log("the attendance list", response.data)
+    axios
+      .get("facial-recognition/get_attendance_list/")
+      .then((response) => {
+        console.log("the attendance list", response.data);
         setRowData(response.data); // Set fetched data to rowData state
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error fetching check-in data:", error);
         setRowData([]); // Set empty array in case of error
       });
-  }, []); 
+  }, []);
 
   return (
     <div className="container">

@@ -1,61 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
 import AgGridUserList from "../../components/FaceRecognition/AgGridUserList";
 function Users() {
-  const [rowData, setRowData] = useState([
-    {
-      employeeID: "VAC001",
-      employeeName: "Soniya",
-      email: "soniya.h@velankanigroup.com",
-      mobile: 9876543210,
-    },
-    {
-      employeeID: "VAC002",
-      employeeName: "Test",
-      email: "test@velankanigroup.com",
-      mobile: 9087654321,
-    },
-  ]);
-  const [showDeleteModal, setshowDeleteModal] = useState(false);
-  const handleDeleteClick = (props) => {
-    setshowDeleteModal(true);
-  };
-  const handleClose = () => {
-    setshowDeleteModal(false);
-  };
+  const [rowData, setRowData] = useState([]);
+  // const [showDeleteModal, setshowDeleteModal] = useState(false);
+  
+  
+  const fetchAllUsers=()=>{
+    axios.get('/accounts/users/')
+    .then((response) => {
 
-  function ActionsCellRenderer(props) {
-    return (
-      <div>
-        {/* <button className="btn btn-primary btn-sm" ><i className="fas fa-pen"></i> Edit</button> */}
-        <a class="btn btn-primary btn-sm" href="users/edit-user" role="button">
-          <i className="fas fa-pen"></i> Edit
-        </a>
-        <button
-          className="btn btn-danger btn-sm mx-2 "
-          data-bs-toggle="modal"
-          data-bs-target="#deletemodal"
-          onClick={() => handleDeleteClick(props)}
-        >
-          <i className="fas fa-trash"></i> Delete
-        </button>
-      </div>
-    );
+      
+      const modifiedData=response.data.users.map(user=>({
+        ...user,
+         employeeName: `${user.first_name || ''} ${user.last_name || ''}`
+
+      }))
+      setRowData(modifiedData)
+      console.log("api data",response.data)
+    })  
+    .catch((error) => console.error("Error fetching data:", error));
   }
-  const colDefs = [
-    { headerName: "Employee ID", field: "employeeID" },
-    { headerName: "Employee Name", field: "employeeName" },
-    { headerName: "Email", field: "email", width: 250 },
-    { headerName: "Mobile No", field: "mobile" },
-    {
-      headerName: "Actions",
-      //   cellRendererFramework: ActionsCellRenderer,
-      width: 300,
-      cellRenderer: ActionsCellRenderer,
-    },
-  ];
-  const frameworkComponents = {
-    actionsCellRenderer: ActionsCellRenderer,
-  };
+
+  useEffect(() => {
+   
+    fetchAllUsers();
+  }, []); 
+
+  const handleDeleteUser=(userId)=>{
+    axios.delete(`/accounts/users/delete/${userId}/`).then((response)=>{
+console.log('User deleted successfully:',response.data)
+fetchAllUsers();
+    })
+    .catch(error=>{
+      console.error('Error deleting user:',error)
+    })
+  }
+
+  
   return (
     <div className="container">
       <div className="row align-items-center">
@@ -79,14 +62,14 @@ function Users() {
         </div>
 
         <div className="col-md-3 d-flex justify-content-end mt-4">
-          <a class="btn btn-primary" href="users/create-user" role="button">
+          <a class="btn btn-primary" href="/users/create-user/" role="button">
             <i className="fas fa-user-plus"> </i> Create New User
           </a>
         </div>
 
         <div className="container" style={{ marginTop: "25px" }}>
           {/* The AG Grid component */}
-          <AgGridUserList rowData={rowData} />
+          <AgGridUserList rowData={rowData} onDeleteUser={handleDeleteUser} />
         </div>
       </div>
 
@@ -126,23 +109,6 @@ function Users() {
           </div>
         </div>
       </div>
-
-      {/* <Modal show={showDeleteModal} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Delete User</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to delete?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button variant="danger" >
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal> */}
     </div>
   );
 }
