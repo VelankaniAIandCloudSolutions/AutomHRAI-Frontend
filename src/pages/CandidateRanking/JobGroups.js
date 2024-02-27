@@ -1,4 +1,4 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
@@ -10,7 +10,7 @@ import JobGroup from "../../components/CandidateRanking/JobGroup";
 import DepartmentGrid from "../../components/CandidateRanking/DepartmentGrid";
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import axios from 'axios'
+import axios from "axios";
 
 const Jobgroups = () => {
   const [rowData, setRowData] = useState([
@@ -22,118 +22,110 @@ const Jobgroups = () => {
   const [deleteRows, setDeleteRows] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [jobgroups, setjobgroups] = useState([]);
-  const [jobGroup, setJobGroup] = useState('');
-
-
+  const [jobGroup, setJobGroup] = useState("");
 
   const handleRowSelected = (selectedData) => {
     setSelectedRows(selectedData);
   };
   const handleSelectedRows = (selectedRows) => {
-    console.log('Selected Rows:', selectedRows);
+    console.log("Selected Rows:", selectedRows);
     setDeleteRows(selectedRows);
-    setSelectedRows(selectedRows)
+    setSelectedRows(selectedRows);
   };
   const handleJobGroupChange = (value) => {
     setJobGroup(value);
   };
 
-
   const fetchJobGroups = async () => {
-    try{
-      const response = await axios.get('candidate-ranking/jobgroup_list/');
+    try {
+      const response = await axios.get("candidate-ranking/jobgroup_list/");
       console.log(response.data);
       setjobgroups(response.data);
     } catch (error) {
-      console.error('Error fetching Jobgroups:', error);
+      console.error("Error fetching Jobgroups:", error);
     }
   };
-
-
- 
 
   const fetchDepartments = async () => {
     try {
-      const response = await axios.get('candidate-ranking/department_list/');
+      const response = await axios.get("candidate-ranking/department_list/");
       console.log(response.data);
       setDepartments(response.data);
     } catch (error) {
-      console.error('Error fetching departments:', error);
+      console.error("Error fetching departments:", error);
     }
   };
-
 
   useEffect(() => {
     fetchDepartments();
     fetchJobGroups();
   }, []);
 
-
-
   const handleJobGroupSave = () => {
     const department_id = selectedRows.length > 0 ? selectedRows[0].id : null;
 
     if (department_id) {
-      axios.post(`candidate-ranking/create_job_group/${department_id}/`, {
-        name: jobGroup,
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then(response => {
-          console.log('JobGroup created successfully:', response.data);
+      axios
+        .post(
+          `candidate-ranking/create_job_group/${department_id}/`,
+          {
+            name: jobGroup,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((response) => {
+          console.log("JobGroup created successfully:", response.data);
         })
-        .catch(error => {
-          console.error('Error creating JobGroup:', error);
+        .catch((error) => {
+          console.error("Error creating JobGroup:", error);
         });
     } else {
-      console.error('No department selected.');
+      console.error("No department selected.");
     }
   };
 
-
   const handleUpdateJobGroup = (jobGroup) => {
-    console.log('Coming jobGroup:',jobGroup);
-    const jobGroupId = jobGroup.id
-    console.log('Coming jobGroupId:',jobGroupId , jobGroup.department_id);
+    console.log("Coming jobGroup:", jobGroup);
+    const jobGroupId = jobGroup.id;
+    console.log("Coming jobGroupId:", jobGroupId, jobGroup.department_id);
 
     if (jobGroupId) {
-
-        axios.put(`candidate-ranking/update_job_group/${jobGroupId}/`, {
+      axios
+        .put(`candidate-ranking/update_job_group/${jobGroupId}/`, {
           name: jobGroup.name,
-          id: jobGroup.department_id
-
-    
+          id: jobGroup.department_id,
         })
-            .then(response => {
-                console.log('JobGroup updated successfully:', response.data);
-            })
-            .catch(error => {
-                console.error('Error updating JobGroup:', error);
-            });
+        .then((response) => {
+          console.log("JobGroup updated successfully:", response.data);
+        })
+        .catch((error) => {
+          console.error("Error updating JobGroup:", error);
+        });
     } else {
-        console.error('No JobGroup selected.');
+      console.error("No JobGroup selected.");
     }
   };
 
   const handleDeleteJobGroup = () => {
     const jobGroupId = deleteRows.length > 0 ? deleteRows[0].id : null;
 
-    if(jobGroupId){
-      axios.delete(`candidate-ranking/delete_job_group/${jobGroupId}/`)
-      .then(response => {
-        console.log('JobGroup Deleted successfully', response.data);
-      })
-      .catch(error => {
-        console.error('Error updating JobGroup:', error);
-      })
-    }else{
-      console.error('No jobGroup Selected')
+    if (jobGroupId) {
+      axios
+        .delete(`candidate-ranking/delete_job_group/${jobGroupId}/`)
+        .then((response) => {
+          console.log("JobGroup Deleted successfully", response.data);
+        })
+        .catch((error) => {
+          console.error("Error updating JobGroup:", error);
+        });
+    } else {
+      console.error("No jobGroup Selected");
     }
-  }
-
-  
+  };
 
   return (
     <div className="container">
@@ -170,11 +162,18 @@ const Jobgroups = () => {
       </div>
 
       <div className="container" style={{ marginTop: "25px" }}>
-        <JobGroup rowData={rowData} handleUpdateJobGroup={handleUpdateJobGroup} departments={departments} jobgroups={jobgroups} handleSelectedRows={handleSelectedRows} handleDeleteJobGroup={handleDeleteJobGroup} />
+        <JobGroup
+          rowData={rowData}
+          handleUpdateJobGroup={handleUpdateJobGroup}
+          departments={departments}
+          jobgroups={jobgroups}
+          handleSelectedRows={handleSelectedRows}
+          handleDeleteJobGroup={handleDeleteJobGroup}
+        />
       </div>
 
       <div
-        class="modal fade"
+        className="modal fade"
         id="jobgroupmodal"
         aria-hidden="true"
         aria-labelledby="exampleModalToggleLabel"
@@ -194,7 +193,7 @@ const Jobgroups = () => {
               ></button>
             </div>
             <div className="modal-body">
-              <JobGroupsForm selectedRows={selectedRows} mode="create"   />
+              <JobGroupsForm selectedRows={selectedRows} mode="create" />
             </div>
             <div className="modal-footer">
               <button
@@ -204,7 +203,11 @@ const Jobgroups = () => {
               >
                 Close
               </button>
-              <button type="button" className="btn btn-primary" onClick={handleJobGroupSave}>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleJobGroupSave}
+              >
                 Save
               </button>
             </div>
@@ -221,25 +224,28 @@ const Jobgroups = () => {
         aria-labelledby="exampleModalToggleLabel2"
         tabindex="-1"
       >
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalToggleLabel2">
                 Select Department
               </h1>
               <button
                 type="button"
-                class="btn-close"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">
-              <DepartmentGrid onRowSelected={handleRowSelected} departments={departments}  />
+            <div className="modal-body">
+              <DepartmentGrid
+                onRowSelected={handleRowSelected}
+                departments={departments}
+              />
             </div>
-            <div class="modal-footer">
-            <button
-                class="btn btn-primary"
+            <div className="modal-footer">
+              <button
+                className="btn btn-primary"
                 data-bs-target="#jobgroupmodal"
                 data-bs-toggle="modal"
               >
@@ -252,6 +258,5 @@ const Jobgroups = () => {
     </div>
   );
 };
-
 
 export default Jobgroups;

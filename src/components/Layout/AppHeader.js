@@ -34,9 +34,13 @@ export default function AppHeader() {
       </ul>
       <ul className="navbar-nav ml-auto">
         <li className="nav-item">
-          <a onClick={logout} className="nav-link">
+          <span
+            style={{ cursor: "pointer" }}
+            onClick={logout}
+            className="nav-link"
+          >
             <i className="fas fa-sign-out-alt"></i>
-          </a>
+          </span>
         </li>
       </ul>
     </nav>

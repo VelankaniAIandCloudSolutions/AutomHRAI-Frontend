@@ -63,11 +63,6 @@ const Jobs = () => {
     }
   };
 
-  const handleFormSubmit = (formData) => {
-    console.log("Form data submitted in parent:", formData);
-    handleCreateJob(formData);
-  };
-
   const fetchJobs = async () => {
     try {
       const response = await axios.get("candidate-ranking/get_jobs/");
@@ -185,7 +180,7 @@ const Jobs = () => {
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <JobsForm
                 selectedRows={selectedRows}
                 mode="create"
