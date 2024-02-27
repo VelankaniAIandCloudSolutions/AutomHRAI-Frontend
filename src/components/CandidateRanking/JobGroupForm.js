@@ -1,41 +1,52 @@
 import React, { useState, useEffect } from 'react';
 
-const JobGroupsForm = ({ selectedRows , mode, onJobGroupChange}) => {
-    console.log(selectedRows)
+const JobGroupsForm = ({ selectedRows, mode, onJobGroupChange }) => {
+    console.log(selectedRows);
     const [isActive, setIsActive] = useState(true);
     const [selectedDepartment, setSelectedDepartment] = useState(null);
-    
-    const [jobGroup, setJobGroup] = useState('');
+
+    const [formData, setFormData] = useState({
+        id: '',
+        name: '',
+        department: '',
+        department_id: '',
+    });
 
     const handleJobGroupInputChange = (e) => {
-        const value = e.target.value;
-        setJobGroup(value);
-        onJobGroupChange(value);
-    
+        const { name, value } = e.target;
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: value,
+        }));
+
+        if (mode !== 'create') {
+            onJobGroupChange(formData);
+        }
+        console.log(formData)
     };
 
     useEffect(() => {
         if (selectedRows?.length > 0) {
-            setSelectedDepartment(`${selectedRows[0].name} - ${selectedRows[0].company}`);
-            
+            const departmentLabel = selectedRows[0].department_name || `${selectedRows[0].name} - ${selectedRows[0].company}`;
+            setSelectedDepartment(departmentLabel);
+
+            // Update formData with selected row values
+            setFormData({
+                id: selectedRows[0].id,
+                name: selectedRows[0].name,
+                department: departmentLabel,
+                department_id: selectedRows[0].department_id,
+            });
         } else {
             setSelectedDepartment(null);
-        }
-    }, [selectedRows]);
-
-    useEffect(() => {
-        if (mode !== 'create') {
-            if (selectedRows?.length > 0) {
-                
-                const departmentLabel = selectedRows[0].department_name || `${selectedRows[0].name} - ${selectedRows[0].company}`;
-                setSelectedDepartment(departmentLabel);
-            } else {
-                setSelectedDepartment(null);
-            }
+            setFormData({
+                id: '',
+                name: '',
+                department: '',
+                department_id: '',
+            });
         }
     }, [mode, selectedRows]);
-
-    
 
     return (
         <form>
@@ -43,7 +54,7 @@ const JobGroupsForm = ({ selectedRows , mode, onJobGroupChange}) => {
                 <div className="col-md-6">
                     <div className="mb-3">
                         <label htmlFor="job_group" className="form-label">Job Group:</label>
-                        <input type="text" className="form-control" id="job_group" name="job_group" value={jobGroup} onChange={handleJobGroupInputChange}/>
+                        <input type="text" className="form-control" id="job_group" name="name" value={formData.name} onChange={handleJobGroupInputChange} />
                     </div>
 
                     <div className="mb-3 d-flex align-items-center">
@@ -62,26 +73,23 @@ const JobGroupsForm = ({ selectedRows , mode, onJobGroupChange}) => {
                 </div>
 
                 <div className="col-md-6">
-                <div className="mb-3">
-                    <label htmlFor="email" className="form-label">Selected Department:</label>
-                    <ul style={{ listStyleType: 'circle' }}>
-                        {selectedDepartment ? <li>{selectedDepartment}</li> : <li>None</li>}
-                    </ul>
-                </div>
+                    <div className="mb-3">
+                        <label htmlFor="email" className="form-label">Selected Department:</label>
+                        <ul style={{ listStyleType: 'circle' }}>
+                            {selectedDepartment ? <li>{selectedDepartment}</li> : <li>None</li>}
+                        </ul>
+                    </div>
 
-                <div className="mb-3">
-                    <label htmlFor="email" className="form-label">Department:</label>
-                    <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target={mode === 'create' ? "#departmentmodal" : "#updatejogroupmodal"}>
-                        Select Department
-                    </button>
+                    <div className="mb-3">
+                        <label htmlFor="email" className="form-label">Department:</label>
+                        <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target={mode === 'create' ? "#departmentmodal" : "#updatejogroupmodal"}>
+                            Select Department
+                        </button>
+                    </div>
                 </div>
-            </div>
             </div>
         </form>
     );
 };
 
 export default JobGroupsForm;
-
-
-// 

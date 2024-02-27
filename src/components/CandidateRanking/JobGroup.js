@@ -37,20 +37,25 @@ const JobGroup = ({ handleUpdateJobGroup, departments,  jobgroups,  handleSelect
 
     const [showModal, setShowModal] = useState(false);
     const [selectedRows, setSelectedRows] = useState([]);
+    const [updatedJobGroup, setUpdatedJobGroup] = useState([]);
 
     const handleRowSelected = (selectedData) => {
         setSelectedRows(selectedData);
         handleSelectedRows(selectedData);
-        handleUpdateJobGroup(selectedData);
-    };
+        // handleUpdateJobGroup(selectedData);
+    };       
+    
 
+    const handleJobGroupChange = (jobGroupValue) => {
+        setUpdatedJobGroup(jobGroupValue)
+        console.log('Job Group Value in Parent:', updatedJobGroup);
+    };
    
 
 
 
     function ActionsCellRenderer(props) {
         const handleEditClick = () => {
-            handleUpdateJobGroup(props.data);
         };
         return (
             <div>
@@ -121,7 +126,7 @@ const JobGroup = ({ handleUpdateJobGroup, departments,  jobgroups,  handleSelect
             <div className="content">
                 <div className="container-fluid">
                     <div className="ag-theme-quartz" style={{ height: 400 }}>
-                        <AgGridReact rowData={jobgroups} columnDefs={colDefs} frameworkComponents={frameworkComponents}  handleUpdateJobGroup={handleUpdateJobGroup} />
+                        <AgGridReact rowData={jobgroups} columnDefs={colDefs} frameworkComponents={frameworkComponents}  />
                     </div>
                 </div>
             </div>
@@ -135,11 +140,11 @@ const JobGroup = ({ handleUpdateJobGroup, departments,  jobgroups,  handleSelect
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <JobGroupsForm selectedRows={ selectedRows} departments={departments} modalName="updatejogroupmodal" />
+                            <JobGroupsForm selectedRows={ selectedRows} departments={departments} modalName="updatejogroupmodal" onJobGroupChange={handleJobGroupChange} />
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onClick={() => handleUpdateJobGroup(selectedRows)}>Save changes</button>
+                            <button type="button" class="btn btn-primary" onClick={() => handleUpdateJobGroup(updatedJobGroup)}>Save changes</button>
                         </div>
                     </div>
                 </div>

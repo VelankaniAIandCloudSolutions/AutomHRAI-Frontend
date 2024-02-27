@@ -32,6 +32,10 @@ const Jobgroups = () => {
   const handleSelectedRows = (selectedRows) => {
     console.log('Selected Rows:', selectedRows);
     setDeleteRows(selectedRows);
+    setSelectedRows(selectedRows)
+  };
+  const handleJobGroupChange = (value) => {
+    setJobGroup(value);
   };
 
 
@@ -46,11 +50,7 @@ const Jobgroups = () => {
   };
 
 
-    const handleJobGroupChange = (value) => {
-        setJobGroup(value);
-        console.log('Job Group in Parent Component:', value);
-    };
-
+ 
 
   const fetchDepartments = async () => {
     try {
@@ -93,15 +93,17 @@ const Jobgroups = () => {
   };
 
 
-  const handleUpdateJobGroup = () => {
-    const jobGroupId = selectedRows.length > 0 ? selectedRows[0].id : null;
+  const handleUpdateJobGroup = (jobGroup) => {
+    console.log('Coming jobGroup:',jobGroup);
+    const jobGroupId = jobGroup.id
+    console.log('Coming jobGroupId:',jobGroupId , jobGroup.department_id);
 
     if (jobGroupId) {
-        const { name, id } = selectedRows[0];
 
         axios.put(`candidate-ranking/update_job_group/${jobGroupId}/`, {
-            name,
-            id,
+          name: jobGroup.name,
+          id: jobGroup.department_id
+
     
         })
             .then(response => {
@@ -178,31 +180,31 @@ const Jobgroups = () => {
         aria-labelledby="exampleModalToggleLabel"
         tabindex="-1"
       >
-        <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalToggleLabel">
+        <div className="modal-dialog  modal-dialog-centered modal-dialog-scrollable modal-lg">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalToggleLabel">
                 Create Job Group
               </h1>
               <button
                 type="button"
-                class="btn-close"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">
-              <JobGroupsForm selectedRows={selectedRows} mode="create" onJobGroupChange={handleJobGroupChange} />
+            <div className="modal-body">
+              <JobGroupsForm selectedRows={selectedRows} mode="create"   />
             </div>
-            <div class="modal-footer">
+            <div className="modal-footer">
               <button
                 type="button"
-                class="btn btn-secondary"
+                className="btn btn-secondary"
                 data-bs-dismiss="modal"
               >
                 Close
               </button>
-              <button type="button" class="btn btn-primary" onClick={handleJobGroupSave}>
+              <button type="button" className="btn btn-primary" onClick={handleJobGroupSave}>
                 Save
               </button>
             </div>
@@ -213,7 +215,7 @@ const Jobgroups = () => {
       {/* Department Modal */}
 
       <div
-        class="modal fade"
+        className="modal fade"
         id="departmentmodal"
         aria-hidden="true"
         aria-labelledby="exampleModalToggleLabel2"
@@ -236,7 +238,7 @@ const Jobgroups = () => {
               <DepartmentGrid onRowSelected={handleRowSelected} departments={departments}  />
             </div>
             <div class="modal-footer">
-              <button
+            <button
                 class="btn btn-primary"
                 data-bs-target="#jobgroupmodal"
                 data-bs-toggle="modal"

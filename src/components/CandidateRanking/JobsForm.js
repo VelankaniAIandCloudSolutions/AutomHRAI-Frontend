@@ -1,78 +1,106 @@
 import React, { useState, useEffect } from 'react';
 
-const JobsForm = ({  selectedRows, rowData, mode , onFormSubmit }) => {
+const JobsForm = ({ selectedRows, rowData, mode, onFormSubmit, onChangeData }) => {
     const [selectedJobGroup, setSelectedJobGroup] = useState(null);
     const [selectedDepartment, setSelectedDepartment] = useState('');
     const [formData, setFormData] = useState({
         name: '',
         job_description: '',
         job_group: '',
-        department: ''
+        department: '',
+        attachment: null, 
     });
-  
-    
-
-    
-
-    
 
     useEffect(() => {
-        // Update formData when rowData changes
         if (rowData) {
-            setFormData(rowData);
+            setFormData({
+                ...rowData,
+                job_group: rowData.job_group,
+                department: rowData.department,
+                attachment: rowData.attachment, 
+            });
             setSelectedJobGroup(rowData.job_group);
             setSelectedDepartment(rowData.department);
         } else {
-            // Reset formData if rowData is null or undefined
-            setFormData({ job_name: '', job_group: '', department: '', job_description: '' });
+            setFormData({
+                name: '',
+                job_group: '',
+                department: '',
+                job_description: '',
+                attachment: null,
+            });
             setSelectedJobGroup('');
             setSelectedDepartment('');
         }
     }, [rowData]);
+
     useEffect(() => {
         if (mode === 'create') {
-            // Update selected job group when selectedRows change for create mode
             if (selectedRows && selectedRows.length > 0) {
                 setSelectedJobGroup(selectedRows[0].name);
                 setSelectedDepartment(selectedRows[0].department_name);
             } else {
-                setFormData({ name: '', job_group: '', department: '', job_description: '' });
+                setFormData({
+                    name: '',
+                    job_group: '',
+                    department: '',
+                    job_description: '',
+                    attachment: null,
+                });
                 setSelectedJobGroup('');
                 setSelectedDepartment('');
             }
         } else {
-            // Update selected job group when selectedRows change for other modes
             if (selectedRows && selectedRows.length > 0) {
                 setSelectedJobGroup(selectedRows[0].job_group);
                 setSelectedDepartment(selectedRows[0].department);
             } else {
-                setFormData({ name: '', job_group: '', department: '', job_description: '' });
+                setFormData({
+                    name: '',
+                    job_group: '',
+                    department: '',
+                    job_description: '',
+                    attachment: null,
+                });
                 setSelectedJobGroup('');
                 setSelectedDepartment('');
             }
         }
     }, [mode, selectedRows]);
-    
 
     // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('formData',formData);
-        onFormSubmit(formData); 
+        console.log('formData', formData);
+        onFormSubmit(formData);
         window.location.reload();
     };
 
-    // Handle input change
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            [name]: value,
-            job_group: selectedJobGroup,
-            department: selectedDepartment 
-        }));
-        
+        const { name, value, type } = e.target;
+
+        if (type === 'file') {
+           const file = e.target.files[0];
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: file,
+                job_group: selectedJobGroup,
+                department: selectedDepartment,
+            }));
+        } else {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: value,
+                job_group: selectedJobGroup,
+                department: selectedDepartment,
+            }));
+        }
+
+        if (mode !== 'create') {
+            onChangeData(formData);
+        }
+
+        console.log(formData);
     };
 
 
@@ -109,7 +137,7 @@ const JobsForm = ({  selectedRows, rowData, mode , onFormSubmit }) => {
                 </div>
                 <div className="mb-3">
                     <label htmlFor="formFileMultiple" className="form-label">Select File:</label>
-                    <input className="form-control" type="file" id="formFileMultiple" multiple />
+                    <input className="form-control" type="file" id="formFileMultiple" name="attachment"  onChange={handleChange} multiple />
                 </div>
             </div>
             <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">Submit</button>
