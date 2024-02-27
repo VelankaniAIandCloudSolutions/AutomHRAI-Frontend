@@ -6,8 +6,6 @@ import reportWebVitals from "./reportWebVitals";
 import "admin-lte/dist/css/adminlte.min.css";
 import "admin-lte/plugins/fontawesome-free/css/all.min.css";
 import "admin-lte/dist/js/adminlte.min.js";
-import "bootstrap/dist/css/bootstrap.css";
-import "bootstrap/dist/js/bootstrap.js";
 import "./interceptors/axios";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
