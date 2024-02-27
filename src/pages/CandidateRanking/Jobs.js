@@ -105,7 +105,7 @@ const Jobs = () => {
             const response = await axios.delete(`candidate-ranking/delete_job/${jobId}/`);
             console.log('Job deleted successfully:', response.data);
             fetchJobs(); 
-            win
+            window.location.reload();
         } catch (error) {
             console.log('Error deleting job:', error);
         }
