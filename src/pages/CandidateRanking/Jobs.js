@@ -40,21 +40,27 @@ const Jobs = () => {
   };
   useEffect(() => {
     fetchJobGroups();
+    
   }, []);
 
   const handleSelectedRowsChange = (selectedRows) => {
     setParentSelectedRows(selectedRows);
+    console.log(parentSelectedRows);
   };
 
   const handleUpdateForm = async ( formData) => {
-    console.log('this is :',parentSelectedRows)
+    console.log('This is updatedData',formData)
     const jobId = parentSelectedRows[0].id
     console.log('ID:',jobId)
     
     try {
-      const response = await axios.put(`candidate-ranking/update_job/${jobId}/`, formData); 
+      const response = await axios.put(`candidate-ranking/update_job/${jobId}/`, formData,{
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }); 
         console.log('Job Updated successfully:', response.data);
-
+        window.location.reload();
       
   
       console.log('Response from update job API:', response.data);
@@ -66,12 +72,6 @@ const Jobs = () => {
 
 
  
-
-  const handleFormSubmit = (formData) => {
-    console.log('Form data submitted in parent:', formData);
-    handleCreateJob(formData);
-  };
-
   const fetchJobs = async () => {
     try{
       const response = await axios.get('candidate-ranking/get_jobs/');
@@ -91,17 +91,27 @@ const Jobs = () => {
       console.error('Error creating job:', error);
     }
   };
-  const handleDeleteJob = async () => {
-    const jobId = parentSelectedRows[0].id;
-    console.log('DELETE ID:',jobId)
-  
-    try {
-      const response = await axios.delete(`candiate-ranking/delete_job/${jobId}/`);
-      console.log('Job deleted successfully:', response.data);
-    } catch (error) {
-      console.log('Error deleting job:', error);
-    }
+
+  const handleFormSubmit = (formData) => {
+    console.log('Form data submitted in parent:', formData);
+    handleCreateJob(formData);
   };
+
+  const handleDeleteJob = async () => {
+        const jobId = parentSelectedRows[0].id
+        console.log('DELETE ID:', jobId);
+
+        try {
+            const response = await axios.delete(`candidate-ranking/delete_job/${jobId}/`);
+            console.log('Job deleted successfully:', response.data);
+            fetchJobs(); 
+            win
+        } catch (error) {
+            console.log('Error deleting job:', error);
+        }
+    
+  };
+
   
 
 
@@ -148,7 +158,7 @@ const Jobs = () => {
 
       <div className="container" style={{ marginTop: "25px" }}>
        
-        <Job joblist={joblist} onSelectedRowsChange={handleSelectedRowsChange}  handleUpdateForm={handleUpdateForm}  jobgroup={jobgroup}/>
+        <Job joblist={joblist} onSelectedRowsChange={handleSelectedRowsChange}  handleUpdateForm={handleUpdateForm}  jobgroup={jobgroup}  handleDeleteJob={handleDeleteJob} />
         
       </div>
 
@@ -173,7 +183,7 @@ const Jobs = () => {
               ></button>
             </div>
             <div class="modal-body">
-              <JobsForm selectedRows={selectedRows} mode="create" onFormSubmit={handleFormSubmit} onUpdateForm={handleUpdateForm} />
+              <JobsForm selectedRows={selectedRows} mode="create" onFormSubmit={handleFormSubmit}  />
             </div>
             {/* <div class="modal-footer">
               <button

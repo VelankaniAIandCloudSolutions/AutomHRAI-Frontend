@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import JobsForm from "./JobsForm";
 import JobGroupGrid from "./JobGroupGrid";
 
-const Job = ({joblist ,onSelectedRowsChange, handleUpdateForm, jobgroup }) => {
+const Job = ({joblist ,onSelectedRowsChange, handleUpdateForm, jobgroup, handleDeleteJob }) => {
 
     const [selectedRows, setSelectedRows] = useState([]);
 
@@ -17,6 +17,9 @@ const Job = ({joblist ,onSelectedRowsChange, handleUpdateForm, jobgroup }) => {
     const [showModal, setShowModal] = useState(false);
     const [selectedJobDescription, setSelectedJobDescription] = useState('');
     const [selectedRowData, setSelectedRowData] = useState(null);
+    const [ updatedFormData , setUpdatedFormData] = useState('');
+    const [selectDeletedData , setSelectedDeleteData] = useState('');
+    
    
     console.log("the joblist coming:", joblist)   
     
@@ -30,6 +33,8 @@ const Job = ({joblist ,onSelectedRowsChange, handleUpdateForm, jobgroup }) => {
         setSelectedRows(selectedData);
         if (selectedData.length > 0) {
             setSelectedRows(selectedData[0].job_group);
+            
+          
         } else {
             setSelectedRows(null);
         }
@@ -47,6 +52,12 @@ const Job = ({joblist ,onSelectedRowsChange, handleUpdateForm, jobgroup }) => {
         setSelectedRows([rowData]);
         setShowModal(true);
     };
+    const handleDeleteClick = (rowData) =>{
+        setSelectedRowData(rowData);
+        setSelectedRows([rowData]);
+        setShowModal(true);
+    }
+    
 
     const handleGridSelection = (event) => {
         const selectedRows = event.api.getSelectedRows();
@@ -56,9 +67,16 @@ const Job = ({joblist ,onSelectedRowsChange, handleUpdateForm, jobgroup }) => {
     const ActionsCellRenderer = (props) => (
         <div>
             <button className="btn btn-primary btn-sm" onClick={() => props.onEditClick(props)}>Edit</button>
-            <button className="btn btn-danger btn-sm mx-2" onClick={() => props.onDeleteClick(props)}>Delete</button>
+        <button className="btn btn-danger btn-sm mx-2" onClick={() => props.onDeleteClick(props)}>Delete</button>
         </div>
     );
+
+    const handleUpdatedData = (formData) => {
+        setUpdatedFormData(formData);
+        console.log('Print this:', JSON.stringify(updatedFormData, null, 2));
+    }
+ 
+ 
 
     const colDefs = [
         { headerName: 'Job Name', field: 'name' },
@@ -101,7 +119,7 @@ const Job = ({joblist ,onSelectedRowsChange, handleUpdateForm, jobgroup }) => {
             headerName: 'Delete',
             cellRenderer: (params) => (
                 <div style={{ marginLeft: '55px' }}>
-                    <a href={params.value} target="_blank" rel="noopener noreferrer" className="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deletemodal" >
+                    <a href={params.value} target="_blank" rel="noopener noreferrer" className="btn btn-danger btn-sm" onClick={() => handleDeleteClick(params.data)} data-bs-toggle="modal" data-bs-target="#deletemodal"  >
                         <FontAwesomeIcon icon={faTrash} />
                     </a>
                 </div>
@@ -133,11 +151,11 @@ const Job = ({joblist ,onSelectedRowsChange, handleUpdateForm, jobgroup }) => {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <JobsForm rowData={selectedRowData} selectedRows={selectedRows} mode={selectedRowData ? 'update' : 'create'}  />
+                            <JobsForm rowData={selectedRowData} selectedRows={selectedRows} onChangeData={handleUpdatedData} mode={selectedRowData ? 'update' : 'create'}  />
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary" onClick={handleUpdateForm}  >Save</button>
+                            <button type="button" className="btn btn-primary" onClick={() => {handleUpdateForm(updatedFormData);}}  >Save</button>
                         </div>
                     </div>
                 </div>
@@ -172,7 +190,7 @@ const Job = ({joblist ,onSelectedRowsChange, handleUpdateForm, jobgroup }) => {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary" >Confirm</button>
+                            <button type="button" className="btn btn-primary" onClick={handleDeleteJob} data-bs-dismiss="modal" >Confirm</button>
                         </div>
                     </div>
                 </div>

@@ -7,7 +7,7 @@ import { faDownload, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const DepartmentGrid = ({ onRowSelected, departments, handleUpdateJobGroup }) => {
+const DepartmentGrid = ({ onRowSelected, departments }) => {
     const [rowData, setRowData] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
     const gridApiRef = useRef(null);
