@@ -18,8 +18,22 @@ export const Login = () => {
     localStorage.setItem("access_token", data.access);
     localStorage.setItem("refresh_token", data.refresh);
     axios.defaults.headers.common["Authorization"] = `Bearer ${data["access"]}`;
-    window.location.href = "/";
+    getUserAccount();
   };
+
+  const getUserAccount = async () => {
+    await axios
+      .get("/accounts/get-user-account/")
+      .then((response) => {
+        const data = response.data;
+        localStorage.setItem("userAccount", JSON.stringify(data));
+        window.location.href = "/";
+      })
+      .catch((error) => {
+        console.error("Error fetching user account:", error);
+      });
+  };
+
   return (
     <div className="Auth-form-container">
       <form className="Auth-form" onSubmit={submit}>
