@@ -8,9 +8,7 @@ import "admin-lte/plugins/fontawesome-free/css/all.min.css";
 import "admin-lte/dist/js/adminlte.min.js";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
-import axios from "axios";
-
-axios.defaults.baseURL = "http://localhost:8000/api/v1/";
+import "./interceptors/axios";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
