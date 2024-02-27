@@ -9,33 +9,25 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import JobsForm from "../../components/CandidateRanking/JobsForm";
 import Job from "../../components/CandidateRanking/Job";
 import JobGroupGrid from "../../components/CandidateRanking/JobGroupGrid";
-import axios from 'axios';
+import axios from "axios";
 
 const Jobs = () => {
   const [selectedRows, setSelectedRows] = useState([]);
-  const [ joblist , setjobslist] = useState([]);
-  const [ jobgroup , setjobgroup] = useState([]);
+  const [joblist, setjobslist] = useState([]);
+  const [jobgroup, setjobgroup] = useState([]);
   const [parentSelectedRows, setParentSelectedRows] = useState([]);
-
-  
-
-
-
- 
-
 
   const handleRowSelected = (selectedData) => {
     setSelectedRows(selectedData);
   };
 
-
   const fetchJobGroups = async () => {
-    try{
-      const response = await axios.get('candidate-ranking/jobgroup_list/');
+    try {
+      const response = await axios.get("candidate-ranking/jobgroup_list/");
       console.log(response.data);
       setjobgroup(response.data);
     } catch (error) {
-      console.error('Error fetching Jobgroups:', error);
+      console.error("Error fetching Jobgroups:", error);
     }
   };
   useEffect(() => {
@@ -46,71 +38,73 @@ const Jobs = () => {
     setParentSelectedRows(selectedRows);
   };
 
-  const handleUpdateForm = async ( formData) => {
-    console.log('this is :',parentSelectedRows)
-    const jobId = parentSelectedRows[0].id
-    console.log('ID:',jobId)
-    
-    try {
-      const response = await axios.put(`candidate-ranking/update_job/${jobId}/`, formData); 
-        console.log('Job Updated successfully:', response.data);
+  const handleUpdateForm = async (formData) => {
+    console.log("this is :", parentSelectedRows);
+    const jobId = parentSelectedRows[0].id;
+    console.log("ID:", jobId);
 
-      
-  
-      console.log('Response from update job API:', response.data);
-  
+    try {
+      const response = await axios.put(
+        `candidate-ranking/update_job/${jobId}/`,
+        formData
+      );
+      console.log("Job Updated successfully:", response.data);
+
+      console.log("Response from update job API:", response.data);
     } catch (error) {
-      console.error('Error updating job:', error);
+      console.error("Error updating job:", error);
     }
   };
 
-
- 
-
   const handleFormSubmit = (formData) => {
-    console.log('Form data submitted in parent:', formData);
+    console.log("Form data submitted in parent:", formData);
     handleCreateJob(formData);
   };
 
   const fetchJobs = async () => {
-    try{
-      const response = await axios.get('candidate-ranking/get_jobs/');
-      console.log("the jobs data",response.data);
+    try {
+      const response = await axios.get("candidate-ranking/get_jobs/");
+      console.log("the jobs data", response.data);
       setjobslist(response.data);
     } catch (error) {
-      console.error('Error fetching Jobgroups:', error);
+      console.error("Error fetching Jobgroups:", error);
     }
   };
   const handleCreateJob = async (formData) => {
-    const job_group_id = selectedRows[0].id; 
+    const job_group_id = selectedRows[0].id;
 
     try {
-      const response = await axios.post(`candidate-ranking/create_job/${job_group_id}/`,formData );
-      console.log('Job created successfully:', response.data);
+      const response = await axios.post(
+        `candidate-ranking/create_job/${job_group_id}/`,
+        formData
+      );
+      console.log("Job created successfully:", response.data);
     } catch (error) {
-      console.error('Error creating job:', error);
+      console.error("Error creating job:", error);
     }
   };
   const handleDeleteJob = async () => {
     const jobId = parentSelectedRows[0].id;
-    console.log('DELETE ID:',jobId)
-  
+    console.log("DELETE ID:", jobId);
+
     try {
-      const response = await axios.delete(`candiate-ranking/delete_job/${jobId}/`);
-      console.log('Job deleted successfully:', response.data);
+      const response = await axios.delete(
+        `candiate-ranking/delete_job/${jobId}/`
+      );
+      console.log("Job deleted successfully:", response.data);
     } catch (error) {
-      console.log('Error deleting job:', error);
+      console.log("Error deleting job:", error);
     }
   };
-  
 
-
-  useEffect(() => {
-    fetchJobs()
-    console.log("selectedRows in Jobs:", selectedRows);
-  }, [selectedRows],[]);
-
-
+  useEffect(
+    () => {
+      fetchJobs();
+      console.log("selectedRows in Jobs:", selectedRows);
+    },
+    [selectedRows],
+    []
+  );
 
   return (
     <div className="container">
@@ -147,43 +141,51 @@ const Jobs = () => {
       </div>
 
       <div className="container" style={{ marginTop: "25px" }}>
-       
-        <Job joblist={joblist} onSelectedRowsChange={handleSelectedRowsChange}  handleUpdateForm={handleUpdateForm}  jobgroup={jobgroup}/>
-        
+        <Job
+          joblist={joblist}
+          onSelectedRowsChange={handleSelectedRowsChange}
+          handleUpdateForm={handleUpdateForm}
+          jobgroup={jobgroup}
+        />
       </div>
 
       <div
-        class="modal fade"
+        className="modal fade"
         id="jobmodal"
         aria-hidden="true"
         aria-labelledby="exampleModalToggleLabel"
         tabIndex="-1"
       >
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalToggleLabel">
+        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalToggleLabel">
                 Create Job
               </h1>
               <button
                 type="button"
-                class="btn-close"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">
-              <JobsForm selectedRows={selectedRows} mode="create" onFormSubmit={handleFormSubmit} onUpdateForm={handleUpdateForm} />
+            <div className="modal-body">
+              <JobsForm
+                selectedRows={selectedRows}
+                mode="create"
+                onFormSubmit={handleFormSubmit}
+                onUpdateForm={handleUpdateForm}
+              />
             </div>
-            {/* <div class="modal-footer">
+            {/* <div className="modal-footer">
               <button
                 type="button"
-                class="btn btn-secondary"
+                className="btn btn-secondary"
                 data-bs-dismiss="modal"
               >
                 Close
               </button>
-              <button type="button" class="btn btn-primary" onClick={handleFormSubmit}>
+              <button type="button" className="btn btn-primary" onClick={handleFormSubmit}>
                 Save
               </button>
             </div> */}
@@ -192,38 +194,36 @@ const Jobs = () => {
       </div>
 
       <div
-        class="modal fade"
+        className="modal fade"
         id="jobdepartmentmodal"
         aria-hidden="true"
         aria-labelledby="exampleModalToggleLabel2"
         tabindex="-1"
       >
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalToggleLabel2">
                 Select Job Group and Department
               </h1>
               <button
                 type="button"
-                class="btn-close"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <JobGroupGrid
                 onRowSelected={handleRowSelected}
                 selectedRows={selectedRows}
                 jobgroup={jobgroup}
-
-
               />
             </div>
 
-            <div class="modal-footer">
+            <div className="modal-footer">
               <button
-                class="btn btn-primary"
+                className="btn btn-primary"
                 data-bs-target="#jobmodal"
                 data-bs-toggle="modal"
               >

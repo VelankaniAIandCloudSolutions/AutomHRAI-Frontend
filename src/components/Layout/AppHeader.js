@@ -34,9 +34,9 @@ export default function AppHeader() {
       </ul>
       <ul className="navbar-nav ml-auto">
         <li className="nav-item">
-          <Link onClick={logout} className="nav-link">
+          <a onClick={logout} className="nav-link">
             <i className="fas fa-sign-out-alt"></i>
-          </Link>
+          </a>
         </li>
       </ul>
     </nav>
