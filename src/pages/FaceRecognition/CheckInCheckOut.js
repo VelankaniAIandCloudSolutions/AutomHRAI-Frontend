@@ -86,27 +86,60 @@ function CheckInCheckOut() {
     fetchCheckinData();
   }, []);
 
+  const formatBreakTime = (breakTime) => {
+    if (!breakTime) return 'N/A';
+  
+    // Parse ISO 8601 duration format (e.g., "P0DT00H14M51.889825S")
+    const match = breakTime.match(/T(\d+)H(\d+)M/);
+    if (match) {
+      const hours = parseInt(match[1], 10);
+      const minutes = parseInt(match[2], 10);
+      return `${hours} Hrs ${minutes} Mins`;
+    }
+    return 'N/A';
+  };
+
   useEffect(() => {
     console.log("Latest entry type:", latestEntryType);
-    const storedStartTime = localStorage.getItem('startTime');
-    console.log("Stored start time:", storedStartTime);
-    if (latestEntryType === 'checkin' && !storedStartTime) {
+    const storedStartTime = localStorage.getItem("startTime");
+    const storedBreakInTime = localStorage.getItem("BreakInTime");
+    const storedCheckInTime = localStorage.getItem("CheckInTime");
+  
+    if (latestEntryType === "checkin" && !storedStartTime) {
       // Start the stopwatch and store the start time when the latest entry type is 'checkin' and there is no stored start time
       console.log("Starting stopwatch...");
       const startTime = Date.now();
-      localStorage.setItem('startTime', startTime.toString());
+      localStorage.setItem("startTime", startTime.toString());
+      localStorage.setItem("CheckInTime", startTime.toString());
   
       // Start the stopwatch
       const id = setInterval(() => {
-        setWorkingTime(prevTime => prevTime + 1);
+        setWorkingTime((prevTime) => prevTime + 1);
       }, 1000);
       setTimerId(id);
-    } else if (latestEntryType === 'checkout') {
+    } else if (latestEntryType === "checkout") {
       // Stop the stopwatch
       clearInterval(timerId);
       // Clear the stored start time from localStorage when the user checks out
-      localStorage.removeItem('startTime');
-    } else if (latestEntryType === 'checkin' && storedStartTime) {
+      localStorage.removeItem("startTime");
+      localStorage.removeItem("CheckInTime");
+    } else if (latestEntryType === "breakin" && !storedBreakInTime) {
+      // Store break in time in localStorage when the user breaks in and there is no stored break in time
+      localStorage.setItem("BreakInTime", Date.now().toString());
+    } else if ((latestEntryType === "breakin" || latestEntryType === "breakout") && storedBreakInTime) {
+      // Calculate the elapsed time since the break in time stored in localStorage
+      console.log("Resuming stopwatch...");
+      const breakInTime = parseInt(storedBreakInTime, 10);
+      const currentTime = Date.now();
+      const elapsedTime = Math.floor((currentTime - breakInTime) / 1000);
+  
+      // Update the working time with the elapsed time
+      setWorkingTime(elapsedTime);
+      const id = setInterval(() => {
+        setWorkingTime((prevTime) => prevTime + 1);
+      }, 1000);
+      setTimerId(id);
+    } else if (latestEntryType === "checkin" && storedStartTime) {
       // Calculate the elapsed time since the start time stored in localStorage
       console.log("Resuming stopwatch...");
       const startTime = parseInt(storedStartTime, 10);
@@ -116,11 +149,79 @@ function CheckInCheckOut() {
       // Start the stopwatch with the elapsed time
       setWorkingTime(elapsedTime);
       const id = setInterval(() => {
-        setWorkingTime(prevTime => prevTime + 1);
+        setWorkingTime((prevTime) => prevTime + 1);
+      }, 1000);
+      setTimerId(id);
+    } else if (latestEntryType === "breakout" && storedCheckInTime) {
+      // Calculate the elapsed time since the check-in time stored in localStorage
+      console.log("Resuming stopwatch...");
+      const checkInTime = parseInt(storedCheckInTime, 10);
+      const currentTime = Date.now();
+      const elapsedTime = Math.floor((currentTime - checkInTime) / 1000);
+  
+      // Start the stopwatch with the elapsed time
+      setWorkingTime(elapsedTime);
+      const id = setInterval(() => {
+        setWorkingTime((prevTime) => prevTime + 1);
       }, 1000);
       setTimerId(id);
     }
   }, [latestEntryType]);
+  
+  
+
+  // useEffect(() => {
+  //   console.log("Latest entry type:", latestEntryType);
+  //   const storedStartTime = localStorage.getItem("startTime");
+  //   const storedBreakInTime = localStorage.getItem("BreakInTime");
+  
+  //   if (latestEntryType === "checkin" && !storedStartTime) {
+  //     // Start the stopwatch and store the start time when the latest entry type is 'checkin' and there is no stored start time
+  //     console.log("Starting stopwatch...");
+  //     const startTime = Date.now();
+  //     localStorage.setItem("startTime", startTime.toString());
+  
+  //     // Start the stopwatch
+  //     const id = setInterval(() => {
+  //       setWorkingTime((prevTime) => prevTime + 1);
+  //     }, 1000);
+  //     setTimerId(id);
+  //   } else if (latestEntryType === "checkout") {
+  //     // Stop the stopwatch
+  //     clearInterval(timerId);
+  //     // Clear the stored start time from localStorage when the user checks out
+  //     localStorage.removeItem("startTime");
+  //   } else if (latestEntryType === "breakin" && !storedBreakInTime) {
+  //     // Store break in time in localStorage when the user breaks in and there is no stored break in time
+  //     localStorage.setItem("BreakInTime", Date.now());
+  //   } else if (latestEntryType === "breakout" && storedBreakInTime) {
+  //     // Calculate the elapsed break time since the break in time stored in localStorage
+  //     console.log("Resuming stopwatch...");
+  //     const breakInTime = parseInt(storedBreakInTime, 10);
+  //     const currentTime = Date.now();
+  //     const elapsedBreakTime = Math.floor((currentTime - breakInTime) / 1000);
+  
+  //     // Update the working time with the elapsed break time
+  //     setWorkingTime(prevTime => prevTime + elapsedBreakTime);
+  
+  //     // Clear the break in time from localStorage
+  //     localStorage.removeItem("BreakInTime");
+  //   } else if (latestEntryType === "checkin" && storedStartTime) {
+  //     // Calculate the elapsed time since the start time stored in localStorage
+  //     console.log("Resuming stopwatch...");
+  //     const startTime = parseInt(storedStartTime, 10);
+  //     const currentTime = Date.now();
+  //     const elapsedTime = Math.floor((currentTime - startTime) / 1000);
+  
+  //     // Start the stopwatch with the elapsed time
+  //     setWorkingTime(elapsedTime);
+  //     const id = setInterval(() => {
+  //       setWorkingTime((prevTime) => prevTime + 1);
+  //     }, 1000);
+  //     setTimerId(id);
+  //   }
+  // }, [latestEntryType]);
+  
   
   
 
@@ -257,6 +358,22 @@ function CheckInCheckOut() {
               console.log(resp.data);
               setIsLoading(false);
               setSuccessMessage('User detected successfully');
+
+              if (type === "breakin") {
+                // Store break in time in localStorage
+                localStorage.setItem("BreakInTime", Date.now());
+              } else if (type === "breakout") {
+                // Calculate break duration and update working time
+                const breakInTime = localStorage.getItem("BreakInTime");
+                if (breakInTime) {
+                  const elapsedBreakTime = Math.floor((Date.now() - parseInt(breakInTime)) / 1000);
+                  setWorkingTime(prevTime => prevTime + elapsedBreakTime);
+                }
+                // Clear break in time from localStorage
+                localStorage.removeItem("BreakInTime");
+              }
+
+
               setLatestEntryType(type === 'breakin' ? 'breakout' : 'breakin');
               setTimeout(() => {
                 closeModal();
@@ -343,19 +460,19 @@ function CheckInCheckOut() {
         <h5 className="card-header">Attendance</h5>
         <div className="card-body text-center">
 
+          {latestEntryType === 'breakin' && <h3>Break Time</h3>}
+          {latestEntryType === 'breakout' && <h3>Check In Time</h3>}
 
           <div className="d-flex align-items-center justify-content-center">
             {/* <div className="bg-light p-2 mt-4" style={{ borderRadius: "50%", width: "150px", height: "150px", border: "5px solid #e3e3e3", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
               <h4>{checkinTime ? checkinTime.toLocaleTimeString() : 'N/A'}</h4>
               <p>Check In</p>
             </div> */}
+             <div className="bg-light p-2 mt-4" style={{ borderRadius: "50%", width: "150px", height: "150px", border: "5px solid #e3e3e3", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+              <h5>{(latestEntryType === 'checkin' || latestEntryType === 'breakin' || latestEntryType === 'breakout') ? <h4>{formatTimeWithSpaces(Math.floor(workingTime / 3600), Math.floor((workingTime % 3600) / 60))}</h4> : `${totalHours} Hrs : ${totalMinutes} Mins`}</h5>
+            </div>
 
-          <div className="bg-light p-2 mt-4" style={{ borderRadius: "50%", width: "150px", height: "150px", border: "5px solid #e3e3e3", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-            <h5>{latestEntryType === 'checkin' ? <h4>{formatTimeWithSpaces(Math.floor(workingTime / 3600), Math.floor((workingTime % 3600) / 60))}</h4> : `${totalHours} Hrs : ${totalMinutes} Mins`}</h5>
-
-          </div>
-
-          {/* <div className="bg-light p-2 mt-4" style={{ borderRadius: "50%", width: "150px", height: "150px", border: "5px solid #e3e3e3", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+            {/* <div className="bg-light p-2 mt-4" style={{ borderRadius: "50%", width: "150px", height: "150px", border: "5px solid #e3e3e3", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
               <h4>{latestEntryType === 'checkin' ? `${Math.floor(workingTime / 3600)} : ${Math.floor((workingTime % 3600) / 60)} ` : `${totalHours} : ${totalMinutes} Hrs`}</h4>
             </div> */}
 
@@ -366,14 +483,38 @@ function CheckInCheckOut() {
               <p>Check Out</p>
             </div> */}
           </div>
-          {/* Render total working time */}
-          {latestEntryType === 'checkin' && (
-            <div className="mt-3 text-center">
+          <br></br>
+
+          {/* <div className="mt-3 text-center">
               <p> Check-In At : { checkinTime ? checkinTime.toLocaleTimeString() : 'N/A'}</p>
               <p> Check-Out At : {checkoutTime ? checkoutTime.toLocaleTimeString() : 'N/A'}</p>
-              {/* <h4>Total Working Time: {totalHours} Hrs {totalMinutes} Mins</h4> */}
-            </div>
-          )}
+              <p> Total Break Time : {formatBreakTime(timesheetData[0]?.break_time)}</p>
+
+             
+            </div> */}
+            
+          {/* <div className="break-time"> */}
+            {/* <h5>Total Break Time:</h5><p>{formatBreakTime(timesheetData[0]?.break_time)}</p> */}
+            
+          {/* </div> */}
+
+
+          
+          {/* Render total working time */}
+          <div className="mt-3 text-center">
+            <p> Check-In At : {checkinTime ? checkinTime.toLocaleTimeString() : 'N/A'}</p>
+            <p> Check-Out At : {checkoutTime ? checkoutTime.toLocaleTimeString() : 'N/A'}</p>
+
+            {/* Display Total Break Time when latestEntryType is 'checkin' or 'checkout' */}
+            {(latestEntryType === 'checkin' || latestEntryType === 'checkout') && (
+              <p> Total Break Time : {formatBreakTime(timesheetData[0]?.break_time)}</p>
+            )}
+
+            {/* Uncomment to display Total Working Time */}
+            {/* <h4>Total Working Time: {totalHours} Hrs {totalMinutes} Mins</h4> */}
+          </div>
+
+
           
           <div className="mt-5 mb-5">
             {latestEntryType === "checkin" && (
@@ -428,15 +569,15 @@ function CheckInCheckOut() {
             )}
             {/* When no data is available or the latest entry type is check out, display the Check In button */}
             {(!latestEntryType || latestEntryType === "checkout") && (
-  <button
-    className="btn btn-primary mx-2"
-    data-bs-toggle="modal"
-    data-bs-target="#exampleModal"
-    onClick={() => handleCapture("checkin")}
-  >
-    <i className="fas fa-user-check"></i> Check In
-  </button>
-)}
+              <button
+                className="btn btn-primary mx-2"
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal"
+                onClick={() => handleCapture("checkin")}
+              >
+                <i className="fas fa-user-check"></i> Check In
+              </button>
+            )}
 
           </div>
 
@@ -663,3 +804,4 @@ export default CheckInCheckOut;
 //     setIsLoading(false);
 //   }
 // }
+

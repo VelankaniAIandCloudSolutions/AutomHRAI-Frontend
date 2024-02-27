@@ -1,11 +1,32 @@
 // import React from "react";
+import axios from "axios";
+import { async } from "q";
 import React, { useState } from "react";
+import { useEffect } from "react";
 import CandidateList from "../../components/CandidateRanking/CandidateList";
 
 // import axios from 'axios'
 
 const Candidates = () => {
-  // const [candidates, setCandidates] = useState([]);
+
+
+  const [candidates, setCandidates] = useState([]);
+
+  const fetchCandidates = async () => {
+    try {
+      const response = await axios.get('resume-parser/get_candidate_list/');
+      console.log("The candidates data:", response.data);
+      setCandidates(response.data); 
+    } catch (error) {
+      console.error('Error fetching candidates:', error);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchCandidates();
+    }, []);
+
 
   // const fetchData = async () => {
   //   try {
@@ -45,7 +66,7 @@ const Candidates = () => {
       </div>
 
       <div className="container" style={{ marginTop: "25px" }}>
-        <CandidateList />
+        <CandidateList  candidates={candidates}/>
       </div>
     </div>
   );
