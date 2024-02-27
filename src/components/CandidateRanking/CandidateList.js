@@ -1,29 +1,37 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 
+import axios from "axios";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import UpdateCandidate from "./UpdateCandidate";
 
-const CandidateList = () => {
-  const [rowData, setRowData] = useState([
-    {
-      first_name: "MD",
-      last_name: "Adil",
-      email: "md.adil@velankanigroup.com",
-      phone_number: "9742560329",
-    },
-    {
-      first_name: "Sahana",
-      last_name: "MS",
-      email: "test@velankanigroup.com",
-      phone_number: "9742560329",
-    },
-  ]);
+const CandidateList = ({ candidates }) => {
+  const [rowData, setRowData] = useState(candidates)
+
+  useEffect(() => {
+    setRowData(candidates);
+  }, [candidates]);
+    // {
+    //   first_name: "MD",
+    //   last_name: "Adil",
+    //   email: "md.adil@velankanigroup.com",
+    //   phone_number: "9742560329",
+    // },
+    // {
+    //   first_name: "Sahana",
+    //   last_name: "MS",
+    //   email: "test@velankanigroup.com",
+    //   phone_number: "9742560329",
+    // },
+  
+
+  
 
   const [showModal, setShowModal] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
@@ -31,6 +39,21 @@ const CandidateList = () => {
   const handleEditClick = (candidate) => {
     setSelectedCandidate(candidate);
     setShowModal(true);
+  };
+
+  const downloadResume = (resumeId) => {
+    axios.get(`resume-parser/download_resume/${resumeId}`, { responseType: 'blob' })
+      .then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `resume_${resumeId}.pdf`); 
+        document.body.appendChild(link);
+        link.click();
+      })
+      .catch(error => {
+        console.error('Error downloading resume:', error);
+      });
   };
 
   // function ActionsCellRenderer(props) {
@@ -47,31 +70,52 @@ const CandidateList = () => {
     { headerName: "Last Name", field: "last_name" },
     { headerName: "Email", field: "email" },
     { headerName: "Phone Number", field: "phone_number" },
+
     {
       headerName: "Download Resume",
-      field: "resume",
-      cellRenderer: (params) => (
-        <div style={{ marginLeft: "55px" }}>
-          <a
-            href={params.value}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-success btn-sm"
-          >
-            <FontAwesomeIcon icon={faDownload} />
-          </a>
-        </div>
-      ),
+      cellRenderer: (params) => {
+        console.log("the params data",params.data); 
+        return (
+          <div style={{ marginLeft: "55px" }}>
+            <button
+              className="btn btn-success btn-sm"
+              onClick={(e) => { e.preventDefault(); downloadResume(params.data.id); }}
+            >
+              <FontAwesomeIcon icon={faDownload} />
+            </button>
+          </div>
+        );
+      },
     },
+    
+    // {
+    //   headerName: "Download Resume",
+    //   field: "resume",
+    //   cellRenderer: (params) => (
+    //     <div style={{ marginLeft: "55px" }}>
+    //       <a
+    //         href={params.value}
+    //         target="_blank"
+    //         rel="noopener noreferrer"
+    //         className="btn btn-success btn-sm"
+    //       >
+    //         <FontAwesomeIcon icon={faDownload} />
+    //       </a>
+    //     </div>
+    //   ),
+    // },
+
+   
     {
       headerName: "Edit",
       cellRenderer: (params) => (
-        <div style={{ marginLeft: "55px" }}>
+        <div style={{ marginLeft: "55px", marginBottom: '56px' }}>
           <button
             type="button"
             className="btn btn-primary btn-sm"
             data-bs-toggle="modal"
             data-bs-target="#candidatemodal"
+            style={{ marginBottom : '35px' }}
             onClick={() => handleEditClick(params.data)}
           >
             <FontAwesomeIcon icon={faEdit} />
@@ -79,10 +123,11 @@ const CandidateList = () => {
         </div>
       ),
     },
+    
     {
       headerName: "Delete",
       cellRenderer: (params) => (
-        <div style={{ marginLeft: "55px" }}>
+        <div style={{ marginLeft: "55px"  }}>
           <a
             href={params.value}
             target="_blank"
@@ -102,9 +147,9 @@ const CandidateList = () => {
   //   actionsCellRenderer: ActionsCellRenderer,
   // };
 
-  const closeModal = () => {
-    setShowModal(false);
-  };
+  // const closeModal = () => {
+  //   setShowModal(false);
+  // };
 
   return (
     <div className="row align-items-center">
@@ -117,37 +162,37 @@ const CandidateList = () => {
       </div>
 
       <div
-        class="modal fade"
+        className="modal fade"
         id="candidatemodal"
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">
+        <div className="modal-dialog modal-dialog-centered modal-lg">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">
                 Update Candidate
               </h1>
               <button
                 type="button"
-                class="btn-close"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <UpdateCandidate candidate={selectedCandidate} />
             </div>
-            <div class="modal-footer">
+            <div className="modal-footer">
               <button
                 type="button"
-                class="btn btn-secondary"
+                className="btn btn-secondary"
                 data-bs-dismiss="modal"
               >
                 Close
               </button>
-              <button type="button" class="btn btn-primary">
+              <button type="button" className="btn btn-primary">
                 Save changes
               </button>
             </div>
@@ -157,35 +202,35 @@ const CandidateList = () => {
 
       {/* Delete modal */}
       <div
-        class="modal fade"
+        className="modal fade"
         id="deletemodal"
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">
                 Delete Candidate
               </h1>
               <button
                 type="button"
-                class="btn-close"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">Are you sure you want to delete?</div>
-            <div class="modal-footer">
+            <div className="modal-body">Are you sure you want to delete?</div>
+            <div className="modal-footer">
               <button
                 type="button"
-                class="btn btn-secondary"
+                className="btn btn-secondary"
                 data-bs-dismiss="modal"
               >
                 Close
               </button>
-              <button type="button" class="btn btn-primary">
+              <button type="button" className="btn btn-primary">
                 Confirm
               </button>
             </div>
