@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { AgGridReact } from "ag-grid-react";
+// import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -55,7 +55,7 @@ const Jobs = () => {
         }
       );
       console.log("Job Updated successfully:", response.data);
-      window.location.reload();
+      // window.location.reload();
 
       console.log("Response from update job API:", response.data);
     } catch (error) {
@@ -187,7 +187,7 @@ const Jobs = () => {
                 onFormSubmit={handleFormSubmit}
               />
             </div>
-            {/* <div className="modal-footer">
+            <div className="modal-footer">
               <button
                 type="button"
                 className="btn btn-secondary"
@@ -198,7 +198,7 @@ const Jobs = () => {
               <button type="button" className="btn btn-primary" onClick={handleFormSubmit}>
                 Save
               </button>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>

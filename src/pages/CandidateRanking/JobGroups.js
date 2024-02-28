@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { AgGridReact } from "ag-grid-react";
+// import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -32,8 +32,8 @@ const Jobgroups = () => {
     setDeleteRows(selectedRows);
     setSelectedRows(selectedRows);
   };
-  const handleJobGroupChange = (value) => {
-    setJobGroup(value);
+  const handleJobGroupChange = (formData) => {
+    setJobGroup(formData.name);
   };
 
   const fetchJobGroups = async () => {
@@ -59,10 +59,12 @@ const Jobgroups = () => {
   useEffect(() => {
     fetchDepartments();
     fetchJobGroups();
+
   }, []);
 
   const handleJobGroupSave = () => {
     const department_id = selectedRows.length > 0 ? selectedRows[0].id : null;
+
 
     if (department_id) {
       axios
@@ -70,6 +72,7 @@ const Jobgroups = () => {
           `candidate-ranking/create_job_group/${department_id}/`,
           {
             name: jobGroup,
+            
           },
           {
             headers: {
@@ -193,7 +196,8 @@ const Jobgroups = () => {
               ></button>
             </div>
             <div className="modal-body">
-              <JobGroupsForm selectedRows={selectedRows} mode="create" />
+              <JobGroupsForm selectedRows={selectedRows} mode="create" onJobGroupChange={handleJobGroupChange}
+ />
             </div>
             <div className="modal-footer">
               <button

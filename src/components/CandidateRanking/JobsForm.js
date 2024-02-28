@@ -73,7 +73,6 @@ const JobsForm = ({ selectedRows, rowData, mode, onFormSubmit, onChangeData }) =
         e.preventDefault();
         console.log('formData', formData);
         onFormSubmit(formData);
-        window.location.reload();
     };
 
     const handleChange = (e) => {
