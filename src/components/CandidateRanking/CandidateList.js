@@ -4,6 +4,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { toast } from 'react-toastify';
 
 import axios from "axios";
 
@@ -14,22 +15,11 @@ import UpdateCandidate from "./UpdateCandidate";
 const CandidateList = ({ candidates }) => {
   const [rowData, setRowData] = useState(candidates)
 
+
   useEffect(() => {
     setRowData(candidates);
   }, [candidates]);
-    // {
-    //   first_name: "MD",
-    //   last_name: "Adil",
-    //   email: "md.adil@velankanigroup.com",
-    //   phone_number: "9742560329",
-    // },
-    // {
-    //   first_name: "Sahana",
-    //   last_name: "MS",
-    //   email: "test@velankanigroup.com",
-    //   phone_number: "9742560329",
-    // },
-  
+   
 
   
 
@@ -41,21 +31,25 @@ const CandidateList = ({ candidates }) => {
     setShowModal(true);
   };
 
-  const downloadResume = (resumeId) => {
-    axios.get(`resume-parser/download_resume/${resumeId}`, { responseType: 'blob' })
+  const handleDeleteClick = (candidate) => {
+    setSelectedCandidate(candidate);
+  };
+  
+  const confirmDelete = () => {
+    axios.delete(`resume-parser/delete_candidate/${selectedCandidate.id}/`)
       .then(response => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `resume_${resumeId}.pdf`); 
-        document.body.appendChild(link);
-        link.click();
+        toast.success('Candidate deleted successfully');
+        setShowModal(false);
+        // Update the candidate list by removing the deleted candidate
+        setRowData(rowData.filter(candidate => candidate.id !== selectedCandidate.id));
       })
       .catch(error => {
-        console.error('Error downloading resume:', error);
+        console.error('Error deleting candidate:', error);
+        // Handle error scenarios
       });
   };
 
+  
   // function ActionsCellRenderer(props) {
   //   return (
   //     <div>
@@ -74,19 +68,22 @@ const CandidateList = ({ candidates }) => {
     {
       headerName: "Download Resume",
       cellRenderer: (params) => {
-        console.log("the params data",params.data); 
+        console.log("the params data", params.data); 
         return (
           <div style={{ marginLeft: "55px" }}>
-            <button
+            <a
+              href={params.data.resume.resume_file_path}
+              target="_blank"
               className="btn btn-success btn-sm"
-              onClick={(e) => { e.preventDefault(); downloadResume(params.data.id); }}
+              download={`resume_${params.data.id}.pdf`}
             >
               <FontAwesomeIcon icon={faDownload} />
-            </button>
+            </a>
           </div>
         );
       },
     },
+    
     
     // {
     //   headerName: "Download Resume",
@@ -135,6 +132,7 @@ const CandidateList = ({ candidates }) => {
             className="btn btn-danger btn-sm"
             data-bs-toggle="modal"
             data-bs-target="#deletemodal"
+            onClick={() => handleDeleteClick(params.data)}
           >
             <FontAwesomeIcon icon={faTrash} />
           </a>
@@ -184,7 +182,7 @@ const CandidateList = ({ candidates }) => {
             <div className="modal-body">
               <UpdateCandidate candidate={selectedCandidate} />
             </div>
-            <div className="modal-footer">
+            {/* <div className="modal-footer">
               <button
                 type="button"
                 className="btn btn-secondary"
@@ -195,9 +193,9 @@ const CandidateList = ({ candidates }) => {
               <button type="button" className="btn btn-primary">
                 Save changes
               </button>
-            </div>
+            </div> */}
           </div>
-        </div>
+        </div> 
       </div>
 
       {/* Delete modal */}
@@ -208,34 +206,23 @@ const CandidateList = ({ candidates }) => {
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalLabel">
-                Delete Candidate
-              </h1>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">Are you sure you want to delete?</div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button type="button" className="btn btn-primary">
-                Confirm
-              </button>
-            </div>
+        
+      <div className="modal-dialog">
+        <div className="modal-content">
+          <div className="modal-header bg-danger text-white">
+            <h5 className="modal-title">Confirm Delete</h5>
+            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div className="modal-body">
+            <p>Are you sure you want to delete this candidate?</p>
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" className="btn btn-danger" onClick={confirmDelete}>Delete</button>
           </div>
         </div>
+      </div>
+
       </div>
     </div>
   );
