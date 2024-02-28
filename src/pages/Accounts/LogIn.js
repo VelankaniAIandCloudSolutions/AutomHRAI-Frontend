@@ -35,10 +35,17 @@ export const Login = () => {
   };
 
   return (
+    
+    <div className="container-fluid">
+            <div className="row min-vh-100 justify-content-center align-items-center">
+        <div className="col-md-4">
+
     <div className="Auth-form-container">
-      <form className="Auth-form" onSubmit={submit}>
-        <div className="Auth-form-content">
-          <h3 className="Auth-form-title">Sign In</h3>
+    <div className="card-container">
+            <div className="card">
+      <form className="Auth-form mx-5 my-5" onSubmit={submit} >
+        <div className="Auth-form-content ">
+          <h3 className="Auth-form-title text-center">Sign In</h3>
           <div className="form-group mt-3">
             <label>Email</label>
             <input
@@ -70,6 +77,11 @@ export const Login = () => {
           </div>
         </div>
       </form>
+      </div>
+      </div>
+    </div>
+    </div>
+    </div>
     </div>
   );
 };
