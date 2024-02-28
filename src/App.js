@@ -1,4 +1,8 @@
 import React from "react";
+
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import AppHeader from "./components/Layout/AppHeader";
@@ -55,6 +59,7 @@ export default function App() {
             </Switch>
           </div>
         </div>
+        <ToastContainer position="bottom-right" autoClose={3000} />
       </Router>
     );
   } else {

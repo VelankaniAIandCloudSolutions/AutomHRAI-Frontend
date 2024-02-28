@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+import axios from 'axios';
 
 const UpdateCandidateModal = ({ candidate }) => {
   const [formData, setFormData] = useState({
@@ -33,9 +38,30 @@ const UpdateCandidateModal = ({ candidate }) => {
     }
   }, [candidate]);
 
+
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  const handleSaveChanges = () => {
+    axios.put(`resume-parser/update_candidate/${candidate.id}/`, formData)
+      .then(response => {
+        console.log('Candidate updated successfully:', response.data);
+        toast.success('Candidate updated successfully');
+        
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000); // 3000 milliseconds = 3 seconds
+      
+        // Handle any success actions, such as closing the modal or updating state
+      })
+      .catch(error => {
+        console.error('Error updating candidate:', error);
+        // Handle error scenarios
+      });
+  };
+
 
   return (
     <form>
@@ -99,8 +125,13 @@ const UpdateCandidateModal = ({ candidate }) => {
           </div>
         </div>
       </div>
+      
+      <button type="button" className="btn btn-primary" onClick={handleSaveChanges}>
+        Save changes
+      </button>
     </form>
   );
 };
+
 
 export default UpdateCandidateModal;
