@@ -119,6 +119,12 @@ export default function AppSidebar() {
                     <p>Check In / Check Out</p>
                   </Link>
                 </li>
+                <li className="nav-item">
+                  <Link to="/employee-attendance" className="nav-link">
+                    <i className="far fa-circle nav-icon"></i>
+                    <p>Employee Attendance</p>
+                  </Link>
+                </li>
               </ul>
             </li>
             </>
