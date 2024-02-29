@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import AgGridJobGroup from "./CandidateRanking/AgGridJobGroup";
 import axios from "axios";
 const Dashboard = () => {
   const [jobGroups, setJobGroups] = useState([]);
@@ -104,7 +103,6 @@ const Dashboard = () => {
           >
             Open first modal
           </button>
-          <AgGridJobGroup rowData={jobGroups} />
         </div>
       </div>
     </div>

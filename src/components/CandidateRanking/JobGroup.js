@@ -15,7 +15,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import JobGroupsForm from "./JobGroupForm";
 import DepartmentGrid from "./DepartmentGrid";
-import AgGridJobGroup from "./AgGridJobGroup";
 
 const JobGroup = ({
   handleUpdateJobGroup,
