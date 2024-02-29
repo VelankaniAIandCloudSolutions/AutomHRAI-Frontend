@@ -9,20 +9,18 @@
     margin: auto;
   }
   
-/* Body */
+/* Body
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
   }
   
-  /* Container */
   .container {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
   }
   
-  /* Card */
   .card {
     border: none;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -42,7 +40,6 @@ body {
     padding: 20px;
   }
   
-  /* Check-in/out Circle */
   .check-circle {
     width: 150px;
     height: 150px;
@@ -66,7 +63,6 @@ body {
     color: #555;
   }
   
-  /* Modal */
   .modal-content {
     border-radius: 10px;
   }
@@ -88,7 +84,6 @@ body {
     border-bottom-right-radius: 10px;
   }
   
-  /* Buttons */
   .btn-primary,
   .btn-info {
     margin-top: 10px;
@@ -112,7 +107,6 @@ body {
     background-color: #117a8b;
   }
   
-  /* Alerts */
   .alert {
     border-radius: 5px;
     margin-top: 10px;
@@ -127,8 +121,7 @@ body {
     background-color: #f8d7da;
     color: #721c24;
   }
-  
-  /* Stopwatch */
+*/
   .stopwatch {
     font-size: 36px;
     font-weight: bold;
@@ -137,7 +130,6 @@ body {
     margin-bottom: 10px;
   }
   
-  /* Timestamp */
   .timestamp {
     font-size: 14px;
     color: #777;

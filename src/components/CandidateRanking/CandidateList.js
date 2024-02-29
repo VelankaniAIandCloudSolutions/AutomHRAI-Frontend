@@ -1,10 +1,10 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 import axios from "axios";
 
@@ -13,15 +13,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import UpdateCandidate from "./UpdateCandidate";
 
 const CandidateList = ({ candidates }) => {
-  const [rowData, setRowData] = useState(candidates)
-
+  const [rowData, setRowData] = useState(candidates);
 
   useEffect(() => {
     setRowData(candidates);
   }, [candidates]);
-   
-
-  
 
   const [showModal, setShowModal] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
@@ -34,22 +30,24 @@ const CandidateList = ({ candidates }) => {
   const handleDeleteClick = (candidate) => {
     setSelectedCandidate(candidate);
   };
-  
+
   const confirmDelete = () => {
-    axios.delete(`resume-parser/delete_candidate/${selectedCandidate.id}/`)
-      .then(response => {
-        toast.success('Candidate deleted successfully');
+    axios
+      .delete(`resume-parser/delete_candidate/${selectedCandidate.id}/`)
+      .then((response) => {
+        toast.success("Candidate deleted successfully");
         setShowModal(false);
         // Update the candidate list by removing the deleted candidate
-        setRowData(rowData.filter(candidate => candidate.id !== selectedCandidate.id));
+        setRowData(
+          rowData.filter((candidate) => candidate.id !== selectedCandidate.id)
+        );
       })
-      .catch(error => {
-        console.error('Error deleting candidate:', error);
+      .catch((error) => {
+        console.error("Error deleting candidate:", error);
         // Handle error scenarios
       });
   };
 
-  
   // function ActionsCellRenderer(props) {
   //   return (
   //     <div>
@@ -67,8 +65,9 @@ const CandidateList = ({ candidates }) => {
 
     {
       headerName: "Download Resume",
+      field: "id",
       cellRenderer: (params) => {
-        console.log("the params data", params.data); 
+        console.log("the params data", params.data);
         return (
           <div style={{ marginLeft: "55px" }}>
             <a
@@ -83,8 +82,7 @@ const CandidateList = ({ candidates }) => {
         );
       },
     },
-    
-    
+
     // {
     //   headerName: "Download Resume",
     //   field: "resume",
@@ -102,17 +100,17 @@ const CandidateList = ({ candidates }) => {
     //   ),
     // },
 
-   
     {
       headerName: "Edit",
+      field: "id",
       cellRenderer: (params) => (
-        <div style={{ marginLeft: "55px", marginBottom: '56px' }}>
+        <div style={{ marginLeft: "55px", marginBottom: "56px" }}>
           <button
             type="button"
             className="btn btn-primary btn-sm"
             data-bs-toggle="modal"
             data-bs-target="#candidatemodal"
-            style={{ marginBottom : '35px' }}
+            style={{ marginBottom: "35px" }}
             onClick={() => handleEditClick(params.data)}
           >
             <FontAwesomeIcon icon={faEdit} />
@@ -120,11 +118,12 @@ const CandidateList = ({ candidates }) => {
         </div>
       ),
     },
-    
+
     {
       headerName: "Delete",
+      field: "id",
       cellRenderer: (params) => (
-        <div style={{ marginLeft: "55px"  }}>
+        <div style={{ marginLeft: "55px" }}>
           <a
             href={params.value}
             target="_blank"
@@ -195,7 +194,7 @@ const CandidateList = ({ candidates }) => {
               </button>
             </div> */}
           </div>
-        </div> 
+        </div>
       </div>
 
       {/* Delete modal */}
@@ -206,23 +205,38 @@ const CandidateList = ({ candidates }) => {
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header bg-danger text-white">
-            <h5 className="modal-title">Confirm Delete</h5>
-            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div className="modal-body">
-            <p>Are you sure you want to delete this candidate?</p>
-          </div>
-          <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" className="btn btn-danger" onClick={confirmDelete}>Delete</button>
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header bg-danger text-white">
+              <h5 className="modal-title">Confirm Delete</h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <p>Are you sure you want to delete this candidate?</p>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-danger"
+                onClick={confirmDelete}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-
       </div>
     </div>
   );

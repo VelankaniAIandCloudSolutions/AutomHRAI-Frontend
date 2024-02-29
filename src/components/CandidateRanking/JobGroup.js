@@ -15,6 +15,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import JobGroupsForm from "./JobGroupForm";
 import DepartmentGrid from "./DepartmentGrid";
+import AgGridJobGroup from "./AgGridJobGroup";
 
 const JobGroup = ({
   handleUpdateJobGroup,
@@ -110,6 +111,7 @@ const JobGroup = ({
 
     {
       headerName: "Edit",
+      field: "id",
       cellRenderer: (params) => (
         <div style={{ marginLeft: "55px" }}>
           <button
@@ -126,6 +128,7 @@ const JobGroup = ({
     },
     {
       headerName: "Delete",
+      field: "id",
       cellRenderer: (params) => (
         <div style={{ marginLeft: "55px" }}>
           <a
@@ -160,6 +163,7 @@ const JobGroup = ({
               frameworkComponents={frameworkComponents}
             />
           </div>
+          {/* <AgGridJobGroup rowData={jobgroups} /> */}
         </div>
       </div>
 

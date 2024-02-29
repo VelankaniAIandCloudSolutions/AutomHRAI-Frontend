@@ -1,6 +1,23 @@
-import React from "react";
-
+import React, { useEffect, useState } from "react";
+import AgGridJobGroup from "./CandidateRanking/AgGridJobGroup";
+import axios from "axios";
 const Dashboard = () => {
+  const [jobGroups, setJobGroups] = useState([]);
+
+  const fetchJobGroups = async () => {
+    try {
+      const response = await axios.get("candidate-ranking/jobgroup_list/");
+      console.log(response.data);
+      setJobGroups(response.data);
+    } catch (error) {
+      console.error("Error fetching Jobgroups:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchJobGroups();
+  }, []);
+
   return (
     <div className="content-wrapper">
       <div className="content">
@@ -87,6 +104,7 @@ const Dashboard = () => {
           >
             Open first modal
           </button>
+          <AgGridJobGroup rowData={jobGroups} />
         </div>
       </div>
     </div>

@@ -2,19 +2,17 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import ResumeGrid from "../../components/ResumeParsing/ResumeGrid.js";
 import ShowParseResumes from "../../components/ResumeParsing/ShowParsedResumes";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDownload, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const GridComponent = ({ joblist }) => {
   const [rowData, setRowData] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [showParseResumesData, setShowParseResumesData] = useState([]);
   const [editedData, setEditedData] = useState([]);
-  const [jobslist , setjobslist] = useState([]);
-  const [selectedJobId, setSelectedJobId] = useState('');
-  const [selectedJobName, setSelectedJobName] = useState('');
-
-
+  const [jobslist, setjobslist] = useState([]);
+  const [selectedJobId, setSelectedJobId] = useState("");
+  const [selectedJobName, setSelectedJobName] = useState("");
 
   const fileInputRef = useRef(null);
 
@@ -23,17 +21,17 @@ const GridComponent = ({ joblist }) => {
   };
 
   const fetchJobs = async () => {
-    try{
-      const response = await axios.get('candidate-ranking/get_jobs/');
-      console.log("the jobs data",response.data);
+    try {
+      const response = await axios.get("candidate-ranking/get_jobs/");
+      console.log("the jobs data", response.data);
       setjobslist(response.data);
     } catch (error) {
-      console.error('Error fetching Jobgroups:', error);
+      console.error("Error fetching Jobgroups:", error);
     }
   };
   useEffect(() => {
-    fetchJobs()
-  },[]);
+    fetchJobs();
+  }, []);
 
   const handleUpload = async () => {
     if (Array.isArray(selectedFiles) && selectedFiles.length > 0) {
@@ -65,8 +63,7 @@ const GridComponent = ({ joblist }) => {
       console.warn("No files selected for upload.");
     }
   };
-  console.log('Yhe resume data is:',showParseResumesData);
-
+  console.log("Yhe resume data is:", showParseResumesData);
 
   const handleUpdateData = async (updatedResumes) => {
     console.log(updatedResumes);
@@ -117,11 +114,10 @@ const GridComponent = ({ joblist }) => {
         );
 
         console.log("Resumes updated successfully:", response.data);
-        
+
         fetchResumes();
 
         setEditedData([]);
-        
       } else {
         console.error("Updated Resumes is not an array:", updatedResumes);
       }
@@ -135,9 +131,7 @@ const GridComponent = ({ joblist }) => {
 
   const handleDelete = (resumeId) => {
     axios
-      .delete(
-        `resume-parser/delete_resume/${resumeId}/`
-      )
+      .delete(`resume-parser/delete_resume/${resumeId}/`)
       .then(() => {
         console.log(`Resume with ID ${resumeId} deleted successfully`);
         fetchResumes();
@@ -176,55 +170,59 @@ const GridComponent = ({ joblist }) => {
   const handleJobChange = (e) => {
     const selectedJobName = e.target.value;
 
-    const selectedJobObject = jobslist.find((job) => job.name === selectedJobName);
+    const selectedJobObject = jobslist.find(
+      (job) => job.name === selectedJobName
+    );
 
     const selectedId = selectedJobObject?.id;
 
     setSelectedJobId(selectedId);
     setSelectedJobName(selectedJobName);
 
-    console.log('Selected Job ID:', selectedId);
-
-    
+    console.log("Selected Job ID:", selectedId);
   };
 
+  const createCandidate = async () => {
+    const resumeId = showParseResumesData[0].id;
+    const jobId = selectedJobId;
+    console.log(selectedJobId, resumeId);
+    try {
+      const response = await axios.post(
+        `/resume-parser/create_candidate/${resumeId}/${jobId}/`
+      );
 
-
-const createCandidate = async () => {
-  
-  const resumeId =showParseResumesData[0].id
-  const jobId = selectedJobId
-  console.log(selectedJobId , resumeId)
-  try {
-    const response = await axios.post(`/resume-parser/create_candidate/${resumeId}/${jobId}/`);
-    
-    console.log('Candidate created successfully:', response.data);
-  } catch (error) {
-    console.error('Error creating candidate:', error);
-  }
-};
+      console.log("Candidate created successfully:", response.data);
+    } catch (error) {
+      console.error("Error creating candidate:", error);
+    }
+  };
 
   const handleDownloadResume = async (resumeId) => {
     try {
-      const response = await axios.get(`resume-parser/download_resume/${resumeId}/`, {
-        responseType: 'blob', 
-      });
-  
+      const response = await axios.get(
+        `resume-parser/download_resume/${resumeId}/`,
+        {
+          responseType: "blob",
+        }
+      );
+
       if (response.status === 200) {
-        const blob = new Blob([response.data], { type: 'application/octet-stream' });
+        const blob = new Blob([response.data], {
+          type: "application/octet-stream",
+        });
         const url = window.URL.createObjectURL(blob);
-  
-        const a = document.createElement('a');
+
+        const a = document.createElement("a");
         a.href = url;
-        a.download = `resume_${resumeId}.pdf`; 
+        a.download = `resume_${resumeId}.pdf`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
       } else {
-        console.error('Error downloading resume:', response);
+        console.error("Error downloading resume:", response);
       }
     } catch (error) {
-      console.error('Error downloading resume:', error);
+      console.error("Error downloading resume:", error);
     }
   };
 
@@ -239,11 +237,17 @@ const createCandidate = async () => {
     { headerName: "Experience", field: "experience" },
     { headerName: "Total Experience", field: "total_experience" },
     {
-      headerName: 'Download Resume',
-      field: 'resume',
+      headerName: "Download Resume",
+      field: "resume",
       cellRenderer: (params) => (
-        <div style={{ marginLeft: '55px' }}>
-          <a href={params.value} target="_blank" rel="noopener noreferrer" className="btn btn-success btn-sm" onClick={() => handleDownloadResume(params.data.id)}>
+        <div style={{ marginLeft: "55px" }}>
+          <a
+            href={params.value}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-success btn-sm"
+            onClick={() => handleDownloadResume(params.data.id)}
+          >
             <FontAwesomeIcon icon={faDownload} />
           </a>
         </div>
@@ -251,6 +255,7 @@ const createCandidate = async () => {
     },
     {
       headerName: "Actions",
+      field: "id",
       cellRenderer: DeleteButtonRenderer,
     },
   ];
@@ -288,7 +293,8 @@ const createCandidate = async () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="parseResumeModalLabel">
-                Applied Job : {selectedJobName}<br></br>
+                Applied Job : {selectedJobName}
+                <br></br>
                 Resume Data:
               </h5>
               <button
@@ -321,7 +327,6 @@ const createCandidate = async () => {
                   handleSaveChanges();
                   createCandidate();
                 }}
-                
                 data-bs-dismiss="modal"
               >
                 Save changes
@@ -368,30 +373,36 @@ const createCandidate = async () => {
                 </button>
               </div>
               <div className="modal-body ">
-              <div className="mb-3">
-                <input className="form-control" type="file" id="formFileMultiple" onChange={handleFileChange} ref={fileInputRef} multiple />
-              </div>
-              <div className="mb-3">
-                <label htmlFor="jobDropdown" className="form-label">
-                  Select Job:
-                </label>
-                <select
-                  className="form-select"
-                  id="jobDropdown"
-                  value={selectedJobName}
-                  onChange={handleJobChange}
-                >
-                  <option value="">Select Job</option>
-                  {jobslist && Array.isArray(jobslist)
-                    ? jobslist.map((job) => (
-                        <option key={job.id} value={job.name}>
-                          {job.name}
-                        </option>
-                      ))
-                    : null}
-                </select>
-              </div>
-
+                <div className="mb-3">
+                  <input
+                    className="form-control"
+                    type="file"
+                    id="formFileMultiple"
+                    onChange={handleFileChange}
+                    ref={fileInputRef}
+                    multiple
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="jobDropdown" className="form-label">
+                    Select Job:
+                  </label>
+                  <select
+                    className="form-select"
+                    id="jobDropdown"
+                    value={selectedJobName}
+                    onChange={handleJobChange}
+                  >
+                    <option value="">Select Job</option>
+                    {jobslist && Array.isArray(jobslist)
+                      ? jobslist.map((job) => (
+                          <option key={job.id} value={job.name}>
+                            {job.name}
+                          </option>
+                        ))
+                      : null}
+                  </select>
+                </div>
               </div>
               <div className="modal-footer">
                 <button

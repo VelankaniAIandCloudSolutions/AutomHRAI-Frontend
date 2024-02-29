@@ -3,31 +3,23 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { useHistory } from "react-router-dom";
-import userAgGridActionsCellRenderer from "../AgGridComponents/userAgGridActionsCellRenderer.js";
 function AgGridUserList({ rowData, onDeleteUser }) {
-  const [showDeleteModal, setShowDeleteModal] = useState([false]);
   const [selectedUserId, setSelectedUserId] = useState(null);
 
   const handleDeleteClick = (userId) => {
     setSelectedUserId(userId);
-    setShowDeleteModal(true);
-
-    // $('#deletemodal').modal('show'); // Use jQuery to manually show the modal
   };
   const handleClose = () => {
     setSelectedUserId(null);
-    setShowDeleteModal(false);
-    // $('#deletemodal').modal('hide'); // Use jQuery to manually hide the modal
   };
 
   const handleConfirmDelete = () => {
     onDeleteUser(selectedUserId, handleClose);
-    // handleClose();
   };
 
   function ActionsCellRenderer(props) {
     const history = useHistory();
-
+    console.log(props.data.id);
     const handleEditClick = () => {
       const userId = props.data.id;
       history.push(`/users/edit-user/${userId}`);
@@ -39,15 +31,14 @@ function AgGridUserList({ rowData, onDeleteUser }) {
 
     return (
       <div>
-        {
-          <button className="btn btn-primary btn-sm">
-            <i className="fas fa-pen"></i> Edit
-          </button>
-        }
+        <button className="btn btn-primary btn-sm" onClick={handleEditClick}>
+          <i className="fas fa-pen"></i> Edit
+        </button>
         <button
-          className="btn btn-danger btn-sm mx-2 "
+          className="btn btn-danger btn-sm"
           data-bs-toggle="modal"
           data-bs-target="#deletemodal"
+          onClick={handleDeleteClickInRenderer}
         >
           <i className="fas fa-trash"></i> Delete
         </button>
@@ -62,15 +53,11 @@ function AgGridUserList({ rowData, onDeleteUser }) {
     { headerName: "Mobile No", field: "phone_number", filter: true },
     { headerName: "Is Active", field: "is_active", filter: true },
     {
+      field: "id",
       headerName: "Actions",
-      width: 300,
       cellRenderer: ActionsCellRenderer,
     },
   ];
-
-  // const frameworkComponents = {
-  //   actionsCellRenderer: ActionsCellRenderer,
-  // };
 
   return (
     <div>
