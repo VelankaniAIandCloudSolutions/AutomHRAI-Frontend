@@ -64,6 +64,8 @@ const JobGroup = ({
     console.log("Job Group Value in Parent:", updatedJobGroup);
   };
 
+  
+
   function ActionsCellRenderer(props) {
     const handleEditClick = () => {};
     return (

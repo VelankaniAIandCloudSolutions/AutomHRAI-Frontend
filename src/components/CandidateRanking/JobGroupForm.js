@@ -14,19 +14,24 @@ const JobGroupsForm = ({ selectedRows, mode, onJobGroupChange }) => {
 
     const handleJobGroupInputChange = (e) => {
         const { name, value } = e.target;
+        console.log(`Name: ${name}, Value: ${value}`);
         setFormData((prevFormData) => ({
             ...prevFormData,
             [name]: value,
         }));
 
+        
         if (mode !== 'create') {
             onJobGroupChange(formData);
         }
         console.log(formData)
     };
 
+  
+    
+
     useEffect(() => {
-        if (selectedRows?.length > 0) {
+        if (selectedRows?.length > 0 && mode!=='create' ) {
             const departmentLabel = selectedRows[0].department_name || `${selectedRows[0].name} - ${selectedRows[0].company}`;
             setSelectedDepartment(departmentLabel);
 
@@ -47,6 +52,34 @@ const JobGroupsForm = ({ selectedRows, mode, onJobGroupChange }) => {
             });
         }
     }, [mode, selectedRows]);
+
+
+    useEffect(() => {
+        if (selectedRows?.length > 0  ) {
+            const departmentLabel = selectedRows[0].department_name || `${selectedRows[0].name} - ${selectedRows[0].company}`;
+            setSelectedDepartment(departmentLabel);
+
+            setFormData({
+                id: '',
+                name: '',
+                department: departmentLabel,
+                department_id: selectedRows[0].department_id,
+            });
+        } else {
+            setSelectedDepartment(null);
+            setFormData({
+                id: '',
+                name: '',
+                department: '',
+                department_id: '',
+            });
+        }
+    }, [mode, selectedRows]);
+
+    useEffect(() => {
+        onJobGroupChange(formData);
+    }, [formData, onJobGroupChange]);
+
 
     return (
         <form>
