@@ -5,13 +5,16 @@ import 'ag-grid-community/styles/ag-theme-quartz.css';
 
 function AgEmployeeAttendance({rowData}) {
     const [colDefs, setColDefs] = useState([
-        { headerName: 'Sl No', field: 'slno' },
+        { headerName: 'Sl No', field: 'id' },
         { headerName: 'Date', field: 'date',filter:true },
-        { headerName: 'Check In', field: 'checkIn' },
-        { headerName: 'Check Out', field: 'checkOut' },
-        { headerName: 'Worked Hours', field: 'workedHours' , filter:true },
-        { headerName: 'Break', field: 'break'},
+        { headerName: 'Check In', field: 'check_in' },
+        { headerName: 'Check Out', field: 'check_out' },
+        { headerName: 'Worked Hours', field: 'net_working_time' , filter:true },
+        { headerName: 'Break', field: 'total_break_time'},
       ]);
+
+      console.log("the row data" , rowData)
+
 
     //   const [originalRowData, setOriginalRowData] = useState([
     //     {
