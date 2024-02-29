@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
+
 import { useParams, useHistory } from "react-router-dom";
 function EditUser() {
   // const userId=data.params.id;
@@ -48,13 +51,15 @@ function EditUser() {
       .then((response) => {
         // Handle successful response
         console.log("User edited successfully:", response.data);
+        toast.success('User updated successfully');
         history.push("/users");
-
+        
         // You can redirect to another page or perform other actions here
       })
       .catch((error) => {
         // Handle error
-        console.error("Error creating user:", error);
+        console.error("Error editing user:", error);
+        toast.error('Error occured. Please try again.');
       });
   };
 

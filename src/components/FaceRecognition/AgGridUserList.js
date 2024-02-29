@@ -31,11 +31,16 @@ function AgGridUserList({ rowData, onDeleteUser }) {
 
     return (
       <div>
-        <button className="btn btn-primary btn-sm" onClick={handleEditClick}>
-          <i className="fas fa-pen"></i> Edit
-        </button>
+        {
+          <button
+            className="btn btn-primary btn-sm my-2 "
+            onClick={handleEditClick}
+          >
+            <i className="fas fa-pen"></i> Edit
+          </button>
+        }
         <button
-          className="btn btn-danger btn-sm"
+          className="btn btn-danger btn-sm mx-2 my-2 "
           data-bs-toggle="modal"
           data-bs-target="#deletemodal"
           onClick={handleDeleteClickInRenderer}

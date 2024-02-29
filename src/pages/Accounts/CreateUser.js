@@ -1,6 +1,8 @@
 import React,{useState} from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function CreateUser() {
   const [formData, setFormData] = useState({
@@ -43,6 +45,7 @@ function CreateUser() {
       .then((response) => {
         // Handle successful response
         console.log('User created successfully:', response.data);
+        toast.success('User created successfully');
         history.push('/users');
 
         // You can redirect to another page or perform other actions here
