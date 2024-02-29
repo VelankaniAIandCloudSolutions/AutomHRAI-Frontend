@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,6 +29,8 @@ export const Login = () => {
         const data = response.data;
         localStorage.setItem("userAccount", JSON.stringify(data));
         window.location.href = "/";
+        toast.success('Logged in successfully');
+        
       })
       .catch((error) => {
         console.error("Error fetching user account:", error);

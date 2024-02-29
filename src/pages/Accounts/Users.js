@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import AgGridUserList from "../../components/FaceRecognition/AgGridUserList";
 function Users() {
   const [rowData, setRowData] = useState([]);
@@ -28,6 +29,7 @@ function Users() {
       .delete(`/accounts/users/delete/${userId}/`)
       .then((response) => {
         console.log("User deleted successfully:", response.data);
+        toast.success('User deleted successfully');
         fetchAllUsers();
       })
       .catch((error) => {
