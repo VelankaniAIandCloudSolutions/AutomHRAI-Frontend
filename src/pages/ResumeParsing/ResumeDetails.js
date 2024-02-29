@@ -4,6 +4,9 @@ import ResumeGrid from "../../components/ResumeParsing/ResumeGrid.js";
 import ShowParseResumes from "../../components/ResumeParsing/ShowParsedResumes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const GridComponent = ({ joblist }) => {
   const [rowData, setRowData] = useState([]);
@@ -58,12 +61,13 @@ const GridComponent = ({ joblist }) => {
         setShowParseResumesData(parsedData);
       } catch (error) {
         console.error("Error during upload:", error);
+        toast.error('Error occured. Please try again.');
       }
     } else {
       console.warn("No files selected for upload.");
     }
   };
-  console.log("Yhe resume data is:", showParseResumesData);
+  console.log("The resume data is:", showParseResumesData);
 
   const handleUpdateData = async (updatedResumes) => {
     console.log(updatedResumes);
@@ -114,15 +118,17 @@ const GridComponent = ({ joblist }) => {
         );
 
         console.log("Resumes updated successfully:", response.data);
-
+        toast.success('Resumes updated successfully');
         fetchResumes();
 
         setEditedData([]);
       } else {
         console.error("Updated Resumes is not an array:", updatedResumes);
+        toast.error('Error occured. Please try again.');
       }
     } catch (error) {
       console.error("Error updating resumes:", error);
+      toast.error('Error occured. Please try again.');
     }
   };
   const handleSaveChanges = () => {
@@ -134,10 +140,12 @@ const GridComponent = ({ joblist }) => {
       .delete(`resume-parser/delete_resume/${resumeId}/`)
       .then(() => {
         console.log(`Resume with ID ${resumeId} deleted successfully`);
+        toast.success('Resumes deleted successfully');
         fetchResumes();
       })
       .catch((error) => {
         console.error("Error deleting resume:", error);
+        toast.error('Error occured. Please try again.');
       });
   };
 

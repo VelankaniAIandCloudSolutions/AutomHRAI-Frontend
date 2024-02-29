@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 // import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 
@@ -82,12 +84,15 @@ const Jobgroups = () => {
         )
         .then((response) => {
           console.log("JobGroup created successfully:", response.data);
+          toast.success('JobGroup created successfully');
         })
         .catch((error) => {
           console.error("Error creating JobGroup:", error);
+          toast.error('Error occured. Please try again.');
         });
     } else {
       console.error("No department selected.");
+      toast.error('Error occured. No department selected.');
     }
   };
 
@@ -104,12 +109,15 @@ const Jobgroups = () => {
         })
         .then((response) => {
           console.log("JobGroup updated successfully:", response.data);
+          toast.success('JobGroup updated successfully');
         })
         .catch((error) => {
           console.error("Error updating JobGroup:", error);
+          toast.error('Error occured. Please try again.');
         });
     } else {
       console.error("No JobGroup selected.");
+      toast.error('Error occured. No JobGroup selected.');
     }
   };
 
@@ -121,12 +129,15 @@ const Jobgroups = () => {
         .delete(`candidate-ranking/delete_job_group/${jobGroupId}/`)
         .then((response) => {
           console.log("JobGroup Deleted successfully", response.data);
+          toast.success('JobGroup Deleted successfully');
         })
         .catch((error) => {
           console.error("Error updating JobGroup:", error);
+          toast.error('Error occured. Please try again.');
         });
     } else {
       console.error("No jobGroup Selected");
+      toast.error('Error occured. No JobGroup selected.');
     }
   };
 
