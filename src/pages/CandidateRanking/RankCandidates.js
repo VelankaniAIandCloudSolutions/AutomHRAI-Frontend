@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import AgGridJob from "../../components/CandidateRanking/AgGridJob";
 import "../CandidateRanking/SelectJobs.css";
 import Leaderboard from "../../components/CandidateRanking/Leaderboard";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios'
 
 function RankCandidates() {
@@ -31,6 +33,7 @@ function RankCandidates() {
 
     } catch (error) {
       console.error('Error ranking candidates:', error);
+      toast.error('Error occured. Please try again.');
     }
   };
 

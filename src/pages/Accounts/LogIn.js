@@ -28,6 +28,7 @@ export const Login = () => {
       .then((response) => {
         const data = response.data;
         localStorage.setItem("userAccount", JSON.stringify(data));
+        
         window.location.href = "/";
         toast.success('Logged in successfully');
         

@@ -4,7 +4,8 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import JobsForm from "../../components/CandidateRanking/JobsForm";
 import Job from "../../components/CandidateRanking/Job";
@@ -24,7 +25,7 @@ const Jobs = () => {
   const fetchJobGroups = async () => {
     try {
       const response = await axios.get("candidate-ranking/jobgroup_list/");
-      console.log(response.data);
+        console.log(response.data);
       setjobgroup(response.data);
     } catch (error) {
       console.error("Error fetching Jobgroups:", error);
@@ -55,11 +56,13 @@ const Jobs = () => {
         }
       );
       console.log("Job Updated successfully:", response.data);
+      toast.success('Job Updated successfully');
       // window.location.reload();
 
       console.log("Response from update job API:", response.data);
     } catch (error) {
       console.error("Error updating job:", error);
+      toast.error('Error occured. Please try again.');
     }
   };
 
@@ -81,8 +84,10 @@ const Jobs = () => {
         formData
       );
       console.log("Job created successfully:", response.data);
+      toast.success('Job created successfully');
     } catch (error) {
       console.error("Error creating job:", error);
+      toast.error('Error occured. Please try again.');
     }
   };
 
@@ -100,10 +105,12 @@ const Jobs = () => {
         `candidate-ranking/delete_job/${jobId}/`
       );
       console.log("Job deleted successfully:", response.data);
+      toast.success('Job deleted successfully');
       fetchJobs();
       window.location.reload();
     } catch (error) {
       console.log("Error deleting job:", error);
+      toast.error('Error occured. Please try again.');
     }
   };
 
