@@ -12,6 +12,8 @@ import DepartmentGrid from "../../components/CandidateRanking/DepartmentGrid";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 
+import { toast } from "react-toastify";
+
 const Jobgroups = () => {
   const [rowData, setRowData] = useState([
     { department_name: "AI and Cloud Solutions", company: "Velankani" },
@@ -82,9 +84,16 @@ const Jobgroups = () => {
         )
         .then((response) => {
           console.log("JobGroup created successfully:", response.data);
+          toast.success("Job Group Created Successfully ");
+          setTimeout(() => {
+            
+            window.location.reload();
+          }, 1500);
+          
         })
         .catch((error) => {
           console.error("Error creating JobGroup:", error);
+          toast.error("Error creating JobGroup");
         });
     } else {
       console.error("No department selected.");
@@ -95,7 +104,7 @@ const Jobgroups = () => {
     console.log("Coming jobGroup:", jobGroup);
     const jobGroupId = jobGroup.id;
     console.log("Coming jobGroupId:", jobGroupId, jobGroup.department_id);
-
+  
     if (jobGroupId) {
       axios
         .put(`candidate-ranking/update_job_group/${jobGroupId}/`, {
@@ -104,14 +113,17 @@ const Jobgroups = () => {
         })
         .then((response) => {
           console.log("JobGroup updated successfully:", response.data);
+          toast.success("JobGroup Updated Successfully");
         })
         .catch((error) => {
           console.error("Error updating JobGroup:", error);
+          toast.error("Failed to update JobGroup");
         });
     } else {
       console.error("No JobGroup selected.");
     }
   };
+  
 
   const handleDeleteJobGroup = () => {
     const jobGroupId = deleteRows.length > 0 ? deleteRows[0].id : null;
@@ -121,6 +133,11 @@ const Jobgroups = () => {
         .delete(`candidate-ranking/delete_job_group/${jobGroupId}/`)
         .then((response) => {
           console.log("JobGroup Deleted successfully", response.data);
+          toast.success("Job Group Deleted Successfully ");
+          setTimeout(() => {
+            
+            window.location.reload();
+          }, 1500);
         })
         .catch((error) => {
           console.error("Error updating JobGroup:", error);

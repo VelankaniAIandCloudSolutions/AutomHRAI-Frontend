@@ -10,6 +10,7 @@ import JobsForm from "../../components/CandidateRanking/JobsForm";
 import Job from "../../components/CandidateRanking/Job";
 import JobGroupGrid from "../../components/CandidateRanking/JobGroupGrid";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const Jobs = () => {
   const [selectedRows, setSelectedRows] = useState([]);
@@ -74,17 +75,23 @@ const Jobs = () => {
   };
   const handleCreateJob = async (formData) => {
     const job_group_id = selectedRows[0].id;
-
+  
     try {
       const response = await axios.post(
         `candidate-ranking/create_job/${job_group_id}/`,
         formData
       );
       console.log("Job created successfully:", response.data);
+      toast.success("Job Created Successfully ");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
     } catch (error) {
       console.error("Error creating job:", error);
+      toast.error("Failed to create job");
     }
   };
+  
 
   const handleFormSubmit = (formData) => {
     console.log("Form data submitted in parent:", formData);
@@ -100,8 +107,9 @@ const Jobs = () => {
         `candidate-ranking/delete_job/${jobId}/`
       );
       console.log("Job deleted successfully:", response.data);
+      toast.success("Job Deleted Successfully ");
       fetchJobs();
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.log("Error deleting job:", error);
     }
@@ -187,7 +195,7 @@ const Jobs = () => {
                 onFormSubmit={handleFormSubmit}
               />
             </div>
-            <div className="modal-footer">
+            {/* <div className="modal-footer">
               <button
                 type="button"
                 className="btn btn-secondary"
@@ -198,7 +206,7 @@ const Jobs = () => {
               <button type="button" className="btn btn-primary" onClick={handleFormSubmit}>
                 Save
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

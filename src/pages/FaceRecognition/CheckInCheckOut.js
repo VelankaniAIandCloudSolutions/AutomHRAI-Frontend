@@ -8,12 +8,16 @@ import { useHistory } from "react-router-dom";
 import { Modal } from "bootstrap";
 import { type } from "@testing-library/user-event/dist/type";
 
+import { toast } from "react-toastify";
+
 function CheckInCheckOut() {
   const [videoStream, setVideoStream] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [failureMessage, setFailureMessage] = useState("");
   const [error, setError] = useState(null);
+
+  
 
   const videoRef = useRef(null);
   const imageRef = useRef(null);
@@ -29,12 +33,21 @@ function CheckInCheckOut() {
 
   const history = useHistory();
 
+  
+
+  const loggedUser=JSON.parse(localStorage.getItem('userAccount'));
+  const id=loggedUser.user_account.id;
+
+  // console.log(id)
+
+
+
   useEffect(() => {
     const fetchCheckinData = async () => {
       try {
-        const userId = 1;
+      
         const response = await axios.get(
-          `/facial-recognition/get_checkin_data/${userId}`
+          `/facial-recognition/get_checkin_data/${id}`
         );
 
         const { checkin_data, break_data, timesheet_data } = response.data;
@@ -258,78 +271,158 @@ function CheckInCheckOut() {
   };
 
   const { checkinTime, checkoutTime, totalHours, totalMinutes } =
-    renderCheckinTime(checkinData, timesheetData);
+  renderCheckinTime(checkinData, timesheetData);
 
-  const handleCapture = (type) => {
-    if (!videoStream) return;
 
-    setIsLoading(true);
-
-    const currentTime = new Date().toLocaleString();
-
-    setTimeout(() => {
-      const track = videoStream.getVideoTracks()[0];
-      const imageCapture = new ImageCapture(track);
-
-      imageCapture
-        .takePhoto()
-        .then((blob) => {
-          const img = new Image();
-          img.src = URL.createObjectURL(blob);
-          img.className = "captured-image";
-          imageRef.current.innerHTML = "";
-          imageRef.current.appendChild(img);
-
-          videoRef.current.classList.add("not-visible");
-
-          const reader = new FileReader();
-          reader.readAsDataURL(blob);
-          reader.onloadend = () => {
-            const base64data = reader.result;
-
-            const fd = new FormData();
-            fd.append("photo", base64data);
-            fd.append("checkin_time", currentTime);
-            fd.append("type", type);
-
-            axios
-              .post("facial-recognition/upload_photo/", fd)
-              .then((resp) => {
-                console.log(resp.data);
-                setIsLoading(false);
-                setSuccessMessage("User detected successfully");
-                setLatestEntryType(type === "checkin" ? "checkout" : "checkin");
-                setTimeout(() => {
-                  closeModal();
-                  window.location.reload();
-                }, 3500);
+    const handleCapture = (type) => {
+      if (!videoStream) return;
+  
+      setIsLoading(true);
+  
+      const currentTime = new Date().toLocaleString();
+  
+      setTimeout(() => {
+          const track = videoStream.getVideoTracks()[0];
+          const imageCapture = new ImageCapture(track);
+  
+          imageCapture
+              .takePhoto()
+              .then((blob) => {
+                  const img = new Image();
+                  img.src = URL.createObjectURL(blob);
+                  img.className = "captured-image";
+                  imageRef.current.innerHTML = "";
+                  imageRef.current.appendChild(img);
+  
+                  videoRef.current.classList.add("not-visible");
+  
+                  const reader = new FileReader();
+                  reader.readAsDataURL(blob);
+                  reader.onloadend = () => {
+                      const base64data = reader.result;
+  
+                      const fd = new FormData();
+                      fd.append("photo", base64data);
+                      fd.append("checkin_time", currentTime);
+                      fd.append("type", type);
+                      fd.append("user_id", id);
+  
+                      axios
+                          .post("facial-recognition/upload_photo/", fd)
+                          .then((resp) => {
+                              console.log(resp.data);
+                              setIsLoading(false);
+                              if (resp.data.message) {
+                                  toast.success(resp.data.message);
+                                  setLatestEntryType(type === "checkin" ? "checkout" : "checkin");
+                                  setTimeout(() => {
+                                      closeModal();
+                                      window.location.reload();
+                                  }, 3500);
+                              } else {
+                                  toast.error(resp.data.error || "Failed to detect user");
+                              }
+                          })
+                          .catch((err) => {
+                              console.log(err);
+                              setIsLoading(false);
+                              toast.error("Failed to detect user");
+                          });
+                  };
               })
-              .catch((err) => {
-                console.log(err);
-                setIsLoading(false);
-                setFailureMessage("Failed to detect user");
+              .catch((error) => {
+                  console.log("takePhoto() error: ", error);
+                  setIsLoading(false);
+                  setFailureMessage("Failed to capture photo");
               });
-          };
-        })
-        .catch((error) => {
-          console.log("takePhoto() error: ", error);
-          setIsLoading(false);
-          setFailureMessage("Failed to capture photo");
-        });
-    }, 2000);
+      }, 2000);
   };
+  
+
+  // const handleCapture = (type) => {
+  //   if (!videoStream) return;
+
+  //   setIsLoading(true);
+
+  //   const currentTime = new Date().toLocaleString();
+
+  //   setTimeout(() => {
+  //     const track = videoStream.getVideoTracks()[0];
+  //     const imageCapture = new ImageCapture(track);
+
+  //     imageCapture
+  //       .takePhoto()
+  //       .then((blob) => {
+  //         const img = new Image();
+  //         img.src = URL.createObjectURL(blob);
+  //         img.className = "captured-image";
+  //         imageRef.current.innerHTML = "";
+  //         imageRef.current.appendChild(img);
+
+  //         videoRef.current.classList.add("not-visible");
+
+  //         const reader = new FileReader();
+  //         reader.readAsDataURL(blob);
+  //         reader.onloadend = () => {
+  //           const base64data = reader.result;
+
+  //           const fd = new FormData();
+  //           fd.append("photo", base64data);
+  //           fd.append("checkin_time", currentTime);
+  //           fd.append("type", type);
+  //           fd.append("user_id" , id)
+            
+
+  //           axios
+  //             .post("facial-recognition/upload_photo/", fd)
+  //             .then((resp) => {
+  //               console.log(resp.data);
+  //               setIsLoading(false);
+  //               // toast.success("User detected successfully");
+  //               // setLatestEntryType(type === "checkin" ? "checkout" : "checkin");
+  //               // setTimeout(() => {
+  //               //   closeModal();
+  //               //   window.location.reload();
+  //               // }, 3500);
+  //               if (resp.status === 200) {
+  //                 toast.success("User detected successfully");
+  //                 setLatestEntryType(type === "checkin" ? "checkout" : "checkin");
+  //                 setTimeout(() => {
+  //                   closeModal();
+  //                   window.location.reload();
+  //                 }, 3500);
+  //               } else {
+  //                 toast.error("Photo is Not Clear");
+  //               }
+              
+  //             })
+  //             .catch((err) => {
+  //               console.log(err);
+  //               setIsLoading(false);
+  //               toast.error("Failed to detect user");
+  //             });
+  //         };
+  //       })
+  //       .catch((error) => {
+  //         console.log("takePhoto() error: ", error);
+  //         setIsLoading(false);
+  //         setFailureMessage("Failed to capture photo");
+  //       });
+  //   }, 2000);
+  // };
+
 
   const handleBreaks = (type) => {
     if (!videoStream) return;
-
+  
     setIsLoading(true);
-
+  
     const currentTime = new Date().toLocaleDateString();
-
+  
     setTimeout(() => {
       const track = videoStream.getVideoTracks()[0];
       const imageCapture = new ImageCapture(track);
-
+  
       imageCapture
         .takePhoto()
         .then((blob) => {
@@ -338,42 +431,45 @@ function CheckInCheckOut() {
           img.className = "captured-image";
           imageRef.current.innerHTML = "";
           imageRef.current.appendChild(img);
-
+  
           videoRef.current.classList.add("not-visible");
-
+  
           const reader = new FileReader();
           reader.readAsDataURL(blob);
           reader.onloadend = () => {
             const base64data = reader.result;
-
+  
             const fd = new FormData();
             fd.append("photo", base64data);
             fd.append("checkin_time", currentTime);
             fd.append("type", type);
+            fd.append("user_id", id);
 
+            console.log("break in user id", id)
+  
             axios
               .post("facial-recognition/break_in_out/", fd)
               .then((resp) => {
                 console.log(resp.data);
                 setIsLoading(false);
-                setSuccessMessage("User detected successfully");
-
-                if (type === "breakin") {
-                  // Store break in time in localStorage
-                  localStorage.setItem("BreakInTime", Date.now());
-                } else if (type === "breakout") {
-                  // Calculate break duration and update working time
-                  const breakInTime = localStorage.getItem("BreakInTime");
-                  if (breakInTime) {
-                    const elapsedBreakTime = Math.floor(
-                      (Date.now() - parseInt(breakInTime)) / 1000
-                    );
-                    setWorkingTime((prevTime) => prevTime + elapsedBreakTime);
+                if (resp.data.message) {
+                  toast.success(resp.data.message);
+                  // Handle successful break
+                  if (type === "breakin") {
+                    localStorage.setItem("BreakInTime", Date.now());
+                  } else if (type === "breakout") {
+                    const breakInTime = localStorage.getItem("BreakInTime");
+                    if (breakInTime) {
+                      const elapsedBreakTime = Math.floor(
+                        (Date.now() - parseInt(breakInTime)) / 1000
+                      );
+                      setWorkingTime((prevTime) => prevTime + elapsedBreakTime);
+                    }
+                    localStorage.removeItem("BreakInTime");
                   }
-                  // Clear break in time from localStorage
-                  localStorage.removeItem("BreakInTime");
+                } else {
+                  toast.error(resp.data.error || "Failed to detect user");
                 }
-
                 setLatestEntryType(type === "breakin" ? "breakout" : "breakin");
                 setTimeout(() => {
                   closeModal();
@@ -383,7 +479,7 @@ function CheckInCheckOut() {
               .catch((err) => {
                 console.log(err);
                 setIsLoading(false);
-                setFailureMessage("Failed to detect user");
+                toast.error("Failed to detect user");
               });
           };
         })
@@ -394,6 +490,84 @@ function CheckInCheckOut() {
         });
     }, 2000);
   };
+  
+
+  // const handleBreaks = (type) => {
+  //   if (!videoStream) return;
+
+  //   setIsLoading(true);
+
+  //   const currentTime = new Date().toLocaleDateString();
+
+  //   setTimeout(() => {
+  //     const track = videoStream.getVideoTracks()[0];
+  //     const imageCapture = new ImageCapture(track);
+
+  //     imageCapture
+  //       .takePhoto()
+  //       .then((blob) => {
+  //         const img = new Image();
+  //         img.src = URL.createObjectURL(blob);
+  //         img.className = "captured-image";
+  //         imageRef.current.innerHTML = "";
+  //         imageRef.current.appendChild(img);
+
+  //         videoRef.current.classList.add("not-visible");
+
+  //         const reader = new FileReader();
+  //         reader.readAsDataURL(blob);
+  //         reader.onloadend = () => {
+  //           const base64data = reader.result;
+
+  //           const fd = new FormData();
+  //           fd.append("photo", base64data);
+  //           fd.append("checkin_time", currentTime);
+  //           fd.append("type", type);
+  //           fd.append("user_id", id);
+
+  //           axios
+  //             .post("facial-recognition/break_in_out/", fd)
+  //             .then((resp) => {
+  //               console.log(resp.data);
+  //               setIsLoading(false);
+  //               toast.success("User detected successfully");
+
+  //               if (type === "breakin") {
+  //                 // Store break in time in localStorage
+  //                 localStorage.setItem("BreakInTime", Date.now());
+  //               } else if (type === "breakout") {
+  //                 // Calculate break duration and update working time
+  //                 const breakInTime = localStorage.getItem("BreakInTime");
+  //                 if (breakInTime) {
+  //                   const elapsedBreakTime = Math.floor(
+  //                     (Date.now() - parseInt(breakInTime)) / 1000
+  //                   );
+  //                   setWorkingTime((prevTime) => prevTime + elapsedBreakTime);
+  //                 }
+  //                 // Clear break in time from localStorage
+  //                 localStorage.removeItem("BreakInTime");
+  //               }
+
+  //               setLatestEntryType(type === "breakin" ? "breakout" : "breakin");
+  //               setTimeout(() => {
+  //                 closeModal();
+  //                 window.location.reload();
+  //               }, 3500);
+  //             })
+  //             .catch((err) => {
+  //               console.log(err);
+  //               setIsLoading(false);
+  //               toast.error("Failed to detect user");
+  //             });
+  //         };
+  //       })
+  //       .catch((error) => {
+  //         console.log("takePhoto() error :", error);
+  //         setIsLoading(false);
+  //         setFailureMessage("Failed to capture photo");
+  //       });
+  //   }, 2000);
+  // };
 
   const closeModal = () => {
     const modal = modalRef.current;

@@ -139,7 +139,7 @@ const JobsForm = ({ selectedRows, rowData, mode, onFormSubmit, onChangeData }) =
                     <input className="form-control" type="file" id="formFileMultiple" name="attachment"  onChange={handleChange} multiple />
                 </div>
             </div>
-            <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">Submit</button>
+            <button type="submit" className="btn btn-success" data-bs-dismiss="modal">Submit</button>
         </form>
     );
 };
