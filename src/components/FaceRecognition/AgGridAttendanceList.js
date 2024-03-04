@@ -8,13 +8,14 @@ function AgGridAttendanceList({ rowData }) {
 
 
   const [colDefs, setColDefs] = useState([
-    { headerName: 'Employee ID', field: 'id', filter: true },
-    { headerName: 'Employee Name', field: 'user.name', filter: true },
-    { headerName: 'Email', field: 'user.email', width: 250, filter: true },
-    { headerName: 'Date', field: 'created_at', filter: true, valueFormatter: formatDate },
-    { headerName: 'Check-In Time', field: 'checkin_time', width: 150, valueFormatter: formatTime },
-    { headerName: 'Check-Out Time', field: 'checkout_time', width: 150, valueFormatter: formatCheckOutTime },
+    { headerName: 'Employee ID', field: 'emp_id', filter: true },
+    { headerName: 'Employee Name', field: 'name', filter: true },
+    { headerName: 'Email', field: 'email', width: 250, filter: true },
+    { headerName: 'Date', field: 'date', filter: true },
+    { headerName: 'Check-In Time', field: 'checkin_time', width: 150 },
+    { headerName: 'Check-Out Time', field: 'checkout_time', width: 150 },
   ]);
+  
   
   function formatDate(params) {
     if (params.value) {

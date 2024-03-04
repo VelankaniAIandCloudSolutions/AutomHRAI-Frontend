@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 // import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 
@@ -13,6 +13,8 @@ import DepartmentGrid from "../../components/CandidateRanking/DepartmentGrid";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
+
+import { toast } from "react-toastify";
 
 const Jobgroups = () => {
   const [rowData, setRowData] = useState([
@@ -61,12 +63,10 @@ const Jobgroups = () => {
   useEffect(() => {
     fetchDepartments();
     fetchJobGroups();
-
   }, []);
 
   const handleJobGroupSave = () => {
     const department_id = selectedRows.length > 0 ? selectedRows[0].id : null;
-
 
     if (department_id) {
       axios
@@ -74,7 +74,6 @@ const Jobgroups = () => {
           `candidate-ranking/create_job_group/${department_id}/`,
           {
             name: jobGroup,
-            
           },
           {
             headers: {
@@ -84,15 +83,15 @@ const Jobgroups = () => {
         )
         .then((response) => {
           console.log("JobGroup created successfully:", response.data);
-          toast.success('JobGroup created successfully');
+          toast.success("JobGroup created successfully");
         })
         .catch((error) => {
           console.error("Error creating JobGroup:", error);
-          toast.error('Error occured. Please try again.');
+          toast.error("Error creating JobGroup");
         });
     } else {
       console.error("No department selected.");
-      toast.error('Error occured. No department selected.');
+      toast.error("Error occured. No department selected.");
     }
   };
 
@@ -109,15 +108,15 @@ const Jobgroups = () => {
         })
         .then((response) => {
           console.log("JobGroup updated successfully:", response.data);
-          toast.success('JobGroup updated successfully');
+          toast.success("JobGroup Updated Successfully");
         })
         .catch((error) => {
           console.error("Error updating JobGroup:", error);
-          toast.error('Error occured. Please try again.');
+          toast.error("Failed to update JobGroup");
         });
     } else {
       console.error("No JobGroup selected.");
-      toast.error('Error occured. No JobGroup selected.');
+      toast.error("Error occured. No JobGroup selected.");
     }
   };
 
@@ -129,15 +128,18 @@ const Jobgroups = () => {
         .delete(`candidate-ranking/delete_job_group/${jobGroupId}/`)
         .then((response) => {
           console.log("JobGroup Deleted successfully", response.data);
-          toast.success('JobGroup Deleted successfully');
+          toast.success("Job Group Deleted Successfully ");
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
         })
         .catch((error) => {
           console.error("Error updating JobGroup:", error);
-          toast.error('Error occured. Please try again.');
+          toast.error("Error occured. Please try again.");
         });
     } else {
       console.error("No jobGroup Selected");
-      toast.error('Error occured. No JobGroup selected.');
+      toast.error("Error occured. No JobGroup selected.");
     }
   };
 
@@ -207,8 +209,11 @@ const Jobgroups = () => {
               ></button>
             </div>
             <div className="modal-body">
-              <JobGroupsForm selectedRows={selectedRows} mode="create" onJobGroupChange={handleJobGroupChange}
- />
+              <JobGroupsForm
+                selectedRows={selectedRows}
+                mode="create"
+                onJobGroupChange={handleJobGroupChange}
+              />
             </div>
             <div className="modal-footer">
               <button

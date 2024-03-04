@@ -162,6 +162,8 @@ const GridComponent = ({ joblist }) => {
       .get("resume-parser/get_resumes/")
       .then((response) => {
         setRowData(response.data);
+
+        console.log("the resumes data", response.data)
       })
       .catch((error) => {
         console.error("Error fetching resumes:", error);
@@ -287,14 +289,24 @@ const GridComponent = ({ joblist }) => {
       cellRenderer: (params) => (
         <div style={{ marginLeft: "55px" }}>
           <a
-            href={params.value}
+            href={params.data.resume_file_path}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-success btn-sm"
-            onClick={() => handleDownloadResume(params.data.id)}
+            download={`resume_${params.data.id}.pdf`}
+            // onClick={() => handleDownloadResume(params.data.id)}
           >
             <FontAwesomeIcon icon={faDownload} />
           </a>
+
+          {/* <a
+                href={params.data.resume.resume_file_path}
+                target="_blank"
+                className="btn btn-success btn-sm"
+                download={`resume_${params.data.id}.pdf`}
+              >
+                <FontAwesomeIcon icon={faDownload} />
+              </a> */}
         </div>
       ),
     },

@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 
 import axios from "axios";
 
+
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import UpdateCandidate from "./UpdateCandidate";
@@ -67,21 +68,36 @@ const CandidateList = ({ candidates }) => {
       headerName: "Download Resume",
       field: "id",
       cellRenderer: (params) => {
-        console.log("the params data", params.data);
-        return (
-          <div style={{ marginLeft: "55px" }}>
-            <a
-              href={params.data.resume.resume_file_path}
-              target="_blank"
-              className="btn btn-success btn-sm"
-              download={`resume_${params.data.id}.pdf`}
-            >
-              <FontAwesomeIcon icon={faDownload} />
-            </a>
-          </div>
-        );
+        if (params.data.resume && params.data.resume.resume_file_path) {
+          return (
+            <div style={{ marginLeft: "55px" }}>
+              <a
+                href={params.data.resume.resume_file_path}
+                target="_blank"
+                className="btn btn-success btn-sm"
+                download={`resume_${params.data.id}.pdf`}
+              >
+                <FontAwesomeIcon icon={faDownload} />
+              </a>
+            </div>
+          );
+        } else {
+          return (
+            <div style={{ marginLeft: "55px" }}>
+              <button
+                className="btn btn-success btn-sm"
+                onClick={() => {
+                  toast.error("No resume available");
+                }}
+              >
+                <FontAwesomeIcon icon={faDownload} />
+              </button>
+            </div>
+          );
+        }
       },
     },
+    
 
     // {
     //   headerName: "Download Resume",

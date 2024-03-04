@@ -27,7 +27,7 @@ const JobGroupGrid = ({ onRowSelected, selectedRows, jobgroup }) => {
         field: "name",
         checkboxSelection: true,
         headerCheckboxSelection: true,
-        width: 250,
+        
       },
       { headerName: "Department", field: "department_name" },
     ],
@@ -46,24 +46,18 @@ const JobGroupGrid = ({ onRowSelected, selectedRows, jobgroup }) => {
   };
 
   const selectRows = (selectedRows) => {
-    if (
-      !gridApiRef.current ||
-      !Array.isArray(selectedRows) ||
-      selectedRows.length === 0
-    )
+    if (!gridApiRef.current || !Array.isArray(selectedRows) || selectedRows.length === 0)
       return;
-
+  
     gridApiRef.current.forEachNode((node) => {
       selectedRows.forEach((selectedRow) => {
-        if (
-          node.data.name === selectedRow.name &&
-          node.data.department_name === selectedRow.department_name
-        ) {
+        if (node.data.id === selectedRow.id) { // Assuming id is the unique identifier
           node.setSelected(true);
         }
       });
     });
   };
+  
 
   const onSearchTermChange = (e) => {
     const term = e.target.value;

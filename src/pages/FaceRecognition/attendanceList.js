@@ -5,6 +5,11 @@ import axios from "axios";
 
 function AttendanceList() {
   const [selectedDate, setSelectedDate] = useState("");
+
+  const loggedUser=JSON.parse(localStorage.getItem('userAccount'));
+  const id=loggedUser.user_account.id;
+
+
   const [originalRowData, setOriginalRowData] = useState([
     // {
     //   employeeID: "VAC001",
@@ -43,16 +48,41 @@ function AttendanceList() {
   useEffect(() => {
     // Make GET request to fetch all check-in data
     axios
-      .get("facial-recognition/get_attendance_list/")
+      .get(`facial-recognition/get_attendance_list/${id}`)
       .then((response) => {
         console.log("the attendance list", response.data);
-        setRowData(response.data); // Set fetched data to rowData state
+  
+        // Transform the response data object into an array of attendance records
+        const rowDataArray = [];
+        for (const date in response.data) {
+          if (response.data.hasOwnProperty(date)) {
+            const attendanceArray = response.data[date];
+            attendanceArray.forEach((attendance) => {
+              // Extract only the time from the datetime strings
+              // const checkinTime = attendance.checkin_time ? new Date(attendance.checkin_time).toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' }) : null;
+              // const checkoutTime = attendance.checkout_time ? new Date(attendance.checkout_time).toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' }) : null;
+  
+              rowDataArray.push({
+                emp_id: attendance.user.emp_id,
+                name: attendance.user.name,
+                email: attendance.user.email,
+                date: date,
+                checkin_time: attendance.checkin_time,
+                checkout_time: attendance.checkout_time,
+                // Add other properties as needed
+              });
+            });
+          }
+        }
+  
+        setRowData(rowDataArray); // Set fetched data to rowData state
       })
       .catch((error) => {
         console.error("Error fetching check-in data:", error);
         setRowData([]); // Set empty array in case of error
       });
   }, []);
+  
 
   return (
     <div className="container">

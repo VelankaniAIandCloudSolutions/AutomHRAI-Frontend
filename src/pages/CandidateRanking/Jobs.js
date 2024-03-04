@@ -4,13 +4,14 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import JobsForm from "../../components/CandidateRanking/JobsForm";
 import Job from "../../components/CandidateRanking/Job";
 import JobGroupGrid from "../../components/CandidateRanking/JobGroupGrid";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const Jobs = () => {
   const [selectedRows, setSelectedRows] = useState([]);
@@ -25,7 +26,7 @@ const Jobs = () => {
   const fetchJobGroups = async () => {
     try {
       const response = await axios.get("candidate-ranking/jobgroup_list/");
-        console.log(response.data);
+      console.log(response.data);
       setjobgroup(response.data);
     } catch (error) {
       console.error("Error fetching Jobgroups:", error);
@@ -56,13 +57,13 @@ const Jobs = () => {
         }
       );
       console.log("Job Updated successfully:", response.data);
-      toast.success('Job Updated successfully');
+      toast.success("Job Updated successfully");
       // window.location.reload();
 
       console.log("Response from update job API:", response.data);
     } catch (error) {
       console.error("Error updating job:", error);
-      toast.error('Error occured. Please try again.');
+      toast.error("Error occured. Please try again.");
     }
   };
 
@@ -84,10 +85,13 @@ const Jobs = () => {
         formData
       );
       console.log("Job created successfully:", response.data);
-      toast.success('Job created successfully');
+      toast.success("Job Created Successfully ");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
     } catch (error) {
       console.error("Error creating job:", error);
-      toast.error('Error occured. Please try again.');
+      toast.error("Failed to create job");
     }
   };
 
@@ -105,12 +109,12 @@ const Jobs = () => {
         `candidate-ranking/delete_job/${jobId}/`
       );
       console.log("Job deleted successfully:", response.data);
-      toast.success('Job deleted successfully');
+      toast.success("Job Deleted Successfully ");
       fetchJobs();
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.log("Error deleting job:", error);
-      toast.error('Error occured. Please try again.');
+      toast.error("Error occured. Please try again.");
     }
   };
 
@@ -194,7 +198,7 @@ const Jobs = () => {
                 onFormSubmit={handleFormSubmit}
               />
             </div>
-            <div className="modal-footer">
+            {/* <div className="modal-footer">
               <button
                 type="button"
                 className="btn btn-secondary"
@@ -205,7 +209,7 @@ const Jobs = () => {
               <button type="button" className="btn btn-primary" onClick={handleFormSubmit}>
                 Save
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

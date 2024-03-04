@@ -49,19 +49,25 @@ function EditUser() {
         },
       })
       .then((response) => {
-        // Handle successful response
-        console.log("User edited successfully:", response.data);
-        toast.success('User updated successfully');
-        history.push("/users");
-        
-        // You can redirect to another page or perform other actions here
+        if (response.status === 200) {
+          
+          console.log("User edited successfully:", response.data);
+          toast.success('User updated successfully');
+          history.push("/users");          
+
+        } else {
+
+          console.error("Error editing user:", response.data.error);
+          toast.error('Error occurred. Please try again.');
+        }
       })
       .catch((error) => {
         // Handle error
         console.error("Error editing user:", error);
-        toast.error('Error occured. Please try again.');
+        toast.error('Error occurred. Please try again.');
       });
-  };
+
+      };
 
   useEffect(() => {
     // Fetch user details based on the id when the component mounts
@@ -71,6 +77,11 @@ function EditUser() {
         // Update state with fetched user data
         setUserData(response.data.user);
         console.log(response.data);
+
+        setUserData((prevData) => ({
+          ...prevData,
+          emp_id: response.data.user.emp_id,
+        }));
         // setInitialImage(`${response.data.user.user_image}`);
         setCurrentImage(`${response.data.user.user_image}`); // Set initial image URL
         console.log(`${response.data.user.user_image.split("/").pop()}`);
@@ -99,7 +110,7 @@ function EditUser() {
         preview: null,
       }));
     }
-    // setCurrentImage('');
+    setCurrentImage("");
     // setInitialImage('');
   };
 
@@ -220,6 +231,9 @@ function EditUser() {
                     className="form-control"
                     id="emp_id"
                     value={userData.emp_id}
+                    onChange={(e) =>
+                      setUserData({ ...userData, emp_id: e.target.value })
+                    }
                   />
                 </div>
                 <div className="col-md-3">
@@ -281,28 +295,22 @@ function EditUser() {
                 </div>
 
                 <div className="row g-3">
+                {userData.user_image && (
                   <div className="col-md-3">
-                    {/* <input type="file" className="form-control" id="user_image" accept="image/*"
-                           onChange={handleImageChange}  /> */}
-                    {/* {(userData.preview || initialImage) && ( */}
-                    {clearImage ? null : (
-                      <>
-                        <label htmlFor="user_image" className="form-label">
-                          {ImageLabel}
-                        </label>
-                        <br />
-                        <img
-                          src={currentImage}
-                          alt="User Preview"
-                          style={{
-                            marginTop: "10px",
-                            maxWidth: "100%",
-                            height: "50%",
-                          }}
-                        />
-                        <br />
-                      </>
-                    )}
+                    <label htmlFor="user_image" className="form-label">
+                      {ImageLabel}
+                    </label>
+                    <br />
+                    <img
+                      src={currentImage}
+                      alt="User Preview"
+                      style={{
+                        marginTop: "10px",
+                        maxWidth: "100%",
+                        height: "50%",
+                      }}
+                    />
+                    <br />
 
                     <input
                       className="form-check-input ml-0"
@@ -313,18 +321,16 @@ function EditUser() {
                     />
                     <label
                       className="form-check-label ml-4"
-                      for="flexCheckDefault"
+                      htmlFor="flexCheckDefault"
                     >
                       Clear Image
                     </label>
-
-                    <br />
-
-                    {/* )} */}
                   </div>
+                )}
+
                   <div className="col-md-3">
-                    {clearImage ? null : (
-                      <>
+                    {/* {clearImage ? null : (
+                      <> */}
                         <label htmlFor="user_image" className="form-label">
                           Image Upload
                         </label>
@@ -335,8 +341,8 @@ function EditUser() {
                           accept="image/*"
                           onChange={handleImageChange}
                         />
-                      </>
-                    )}
+                      {/* </>
+                    )} */}
                   </div>
                   <div className="col-md-6">
                     {clearImage ? null : (
