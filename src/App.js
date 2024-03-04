@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import AppHeader from "./components/Layout/AppHeader";
 import AppSidebar from "./components/Layout/AppSidebar";
+import LoadingScreen from "./components/Layout/LoadingScreen";
 import Candidates from "./pages/CandidateRanking/Candidates";
 import Jobgroups from "./pages/CandidateRanking/JobGroups";
 import Jobs from "./pages/CandidateRanking/Jobs";
@@ -45,17 +46,14 @@ export default function App() {
               <Route path="/job-groups" exact component={Jobgroups} />
               <Route path="/jobs" exact component={Jobs} />
               <Route path="/attendance" component={attendanceList} />
-              <Route
-                path="/employee-attendance"
-                exact
-                component={EmployeeAttendance}
-              />
+              <Route path="/employee-attendance" exact component={EmployeeAttendance}/>
               <Route path="/users/create-user" component={CreateUser} />
               <Route path="/users/edit-user/:id" component={EditUser} />
               <Route path="/users" component={Users} />
               <Route path="/checkin" component={CheckInCheckOut} />
               <Route path="/rank-candidates" component={RankCandidates} />
               <Route path="/test-component" component={MyComponent} />
+              <Route path="/load" component={LoadingScreen}/>
             </Switch>
           </div>
         </div>

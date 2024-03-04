@@ -2,12 +2,17 @@ import React, { useEffect, useState } from "react";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
-
+import LoadingScreen from "../../components/Layout/LoadingScreen";
 import { useParams, useHistory } from "react-router-dom";
+import { useDispatch,useSelector } from "react-redux";
+import { hideLoading, showLoading } from "../../actions/loadingActions";
+
 function EditUser() {
   // const userId=data.params.id;
   const { id } = useParams();
   console.log(id);
+  const dispatch=useDispatch();
+  const loading=useSelector(state=>state.loading.loading)
   const [userData, setUserData] = useState({
     first_name: "",
     last_name: "",
@@ -27,7 +32,8 @@ function EditUser() {
   const [ImageLabel, setImageLabel] = useState("");
   const [clearImage, setClearImage] = useState(false);
   const history = useHistory();
-  const handleEditUser = () => {
+  const handleEditUser = async () => {
+    dispatch(showLoading());
     if (clearImage) {
       // Set user_image to null only if clearImage is true
       setUserData((prevData) => ({
@@ -64,6 +70,7 @@ function EditUser() {
   };
 
   useEffect(() => {
+    dispatch(showLoading());
     // Fetch user details based on the id when the component mounts
     axios
       .get(`/accounts/users/${id}`)
@@ -76,11 +83,13 @@ function EditUser() {
         console.log(`${response.data.user.user_image.split("/").pop()}`);
         const LabelImg = response.data.user.user_image.split("/").pop();
         setImageLabel(LabelImg);
+        dispatch(hideLoading());
       })
       .catch((error) => {
         console.error("Error fetching user details:", error);
+        dispatch(hideLoading());
       });
-  }, [id]); // Include id in the dependency array to re-run the effect when id changes
+  }, [dispatch,id]); // Include id in the dependency array to re-run the effect when id changes
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -105,6 +114,11 @@ function EditUser() {
 
   return (
     <div className="container">
+            {loading ? (
+        <LoadingScreen />
+      ) : (
+
+<>
       <div className="row align-items-center">
         <div className="col-md-9 mt-4">
           <div className="d-flex align-items-center">
@@ -113,7 +127,7 @@ function EditUser() {
             <span className="ms-3 fs-4 text-muted">|</span>
 
             <nav aria-label="breadcrumb" className="mt-3">
-              <ol className="breadcrumb">
+              <ol className="breadcrumb bg-transparent">
                 <li className="breadcrumb-item">
                   <a href="/">
                     {" "}
@@ -222,7 +236,8 @@ function EditUser() {
                     value={userData.emp_id}
                   />
                 </div>
-                <div className="col-md-3">
+                
+                <div className="col-md-2 ml-3">
                   <div className="form-check form-switch mt-4">
                     <input
                       className="form-check-input"
@@ -241,7 +256,7 @@ function EditUser() {
                       Is Active
                     </label>
                   </div>
-                  <div className="form-check form-switch ">
+                  <div className="form-check form-switch">
                     <input
                       className="form-check-input"
                       type="checkbox"
@@ -361,6 +376,8 @@ function EditUser() {
           </div>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 }

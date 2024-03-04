@@ -144,7 +144,7 @@ const Jobgroups = () => {
   return (
     <div className="container">
       <div className="row align-items-center">
-        <div className="col-md-6 mt-4">
+        <div className="col-md-9 mt-4">
           <div className="d-flex align-items-center">
             <h2 className="mb-0">Job Groups</h2>
             <span className="ms-3 fs-4 text-muted">|</span>
@@ -164,16 +164,16 @@ const Jobgroups = () => {
           </div>
         </div>
 
-        <div className="col-md-6 d-flex justify-content-end mt-4">
+        <div className="col-md-3 d-flex justify-content-end mt-4">
           <button
-            className="btn btn-primary btn-sm ms-2"
+            className="btn btn-primary"
             data-bs-toggle="modal"
             data-bs-target="#jobgroupmodal"
           >
             Create Job Group
           </button>
         </div>
-      </div>
+      
 
       <div className="container" style={{ marginTop: "25px" }}>
         <JobGroup
@@ -185,7 +185,7 @@ const Jobgroups = () => {
           handleDeleteJobGroup={handleDeleteJobGroup}
         />
       </div>
-
+      </div>
       <div
         className="modal fade"
         id="jobgroupmodal"

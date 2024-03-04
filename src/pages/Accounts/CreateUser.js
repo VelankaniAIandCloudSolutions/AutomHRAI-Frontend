@@ -71,7 +71,7 @@ function CreateUser() {
            
             
               <nav aria-label="breadcrumb" className="mt-3">
-                <ol className="breadcrumb">
+                <ol className="breadcrumb bg-transparent">
                   <li className="breadcrumb-item"><a href="/"> <i className="fas fa-home"></i> Home</a></li>
                   <li className="breadcrumb-item"><a href="/users"> <i className="fas fa-users"></i> Users</a></li>
                   <li className="breadcrumb-item active" aria-current="page"><i className="fas fa-user-plus"> </i> Create User</li>
@@ -132,7 +132,7 @@ function CreateUser() {
                     />  
                   )}
                     </div>  
-                    <div className="col-md-3">
+                    <div className="col-md-2 ml-3">
                     <div className="form-check form-switch mt-4">
   <input className="form-check-input" type="checkbox" role="switch" id="is_active" checked={formData.is_active}
         onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
