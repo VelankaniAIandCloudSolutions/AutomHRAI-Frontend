@@ -9,7 +9,9 @@ function AgEmployeeAttendance({rowData}) {
         { headerName: 'Date', field: 'date',filter:true },
         { headerName: 'Check In', field: 'check_in' },
         { headerName: 'Check Out', field: 'check_out' },
-        { headerName: 'Worked Hours', field: 'total_working_time' , filter:true },
+        { headerName: 'Break In', field: 'break_in' },
+        { headerName: 'Break Out', field: 'break_out' },
+        { headerName: 'Worked Hours', field: 'net_working_time' , filter:true },
         { headerName: 'Break', field: 'total_break_time'},
       ]);
 
