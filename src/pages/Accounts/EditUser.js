@@ -33,7 +33,7 @@ function EditUser() {
   const [clearImage, setClearImage] = useState(false);
   const history = useHistory();
   const handleEditUser = async () => {
-    dispatch(showLoading());
+
     if (clearImage) {
       // Set user_image to null only if clearImage is true
       setUserData((prevData) => ({
@@ -47,7 +47,7 @@ function EditUser() {
     Object.entries(userData).forEach(([key, value]) => {
       formDataToSend.append(key, value);
     });
-
+    dispatch(showLoading());
     axios
       .put(`/accounts/users/update/${id}/`, formDataToSend, {
         headers: {
@@ -59,22 +59,22 @@ function EditUser() {
         console.log("User edited successfully:", response.data);
         toast.success('User updated successfully');
         history.push("/users");
-        
+        dispatch(hideLoading());
         // You can redirect to another page or perform other actions here
       })
       .catch((error) => {
         // Handle error
         console.error("Error editing user:", error);
         toast.error('Error occured. Please try again.');
+        dispatch(hideLoading());
       });
   };
 
-  useEffect(() => {
+  useEffect(async() => {
     dispatch(showLoading());
     // Fetch user details based on the id when the component mounts
-    axios
-      .get(`/accounts/users/${id}`)
-      .then((response) => {
+    try{
+    const response= await axios.get(`/accounts/users/${id}`);
         // Update state with fetched user data
         setUserData(response.data.user);
         console.log(response.data);
@@ -84,11 +84,11 @@ function EditUser() {
         const LabelImg = response.data.user.user_image.split("/").pop();
         setImageLabel(LabelImg);
         dispatch(hideLoading());
-      })
-      .catch((error) => {
+      }
+      catch(error) {
         console.error("Error fetching user details:", error);
         dispatch(hideLoading());
-      });
+      };
   }, [dispatch,id]); // Include id in the dependency array to re-run the effect when id changes
 
   const handleImageChange = (e) => {

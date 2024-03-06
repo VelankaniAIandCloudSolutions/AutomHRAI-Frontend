@@ -6,9 +6,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import LoadingScreen from "../../components/Layout/LoadingScreen";
+import { useDispatch,useSelector } from "react-redux";
+import { hideLoading, showLoading } from "../../actions/loadingActions";
 
 
 const GridComponent = ({ joblist }) => {
+  const dispatch=useDispatch();
+  const loading=useSelector(state=>state.loading.loading)
   const [rowData, setRowData] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [showParseResumesData, setShowParseResumesData] = useState([]);
@@ -150,13 +155,16 @@ const GridComponent = ({ joblist }) => {
   };
 
   const fetchResumes = () => {
+    dispatch(showLoading());
     axios
       .get("resume-parser/get_resumes/")
       .then((response) => {
         setRowData(response.data);
+        dispatch(hideLoading());
       })
       .catch((error) => {
         console.error("Error fetching resumes:", error);
+        dispatch(hideLoading());
       });
   };
 
@@ -270,6 +278,10 @@ const GridComponent = ({ joblist }) => {
 
   return (
     <div className="container">
+      {loading ? (
+        <LoadingScreen />
+      ) : (
+        <>
       <div className="row align-items-center">
       <div className="col-md-9 mt-4">
         <div className="d-flex align-items-center">
@@ -434,6 +446,8 @@ const GridComponent = ({ joblist }) => {
           </div>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 };

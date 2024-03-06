@@ -41,7 +41,7 @@ export const Login = () => {
   return (
     
     <div className="container-fluid">
-            <div className="row min-vh-100 justify-content-center align-items-center">
+    <div className="row min-vh-100 justify-content-center align-items-center">
         <div className="col-md-4">
 
     <div className="Auth-form-container">

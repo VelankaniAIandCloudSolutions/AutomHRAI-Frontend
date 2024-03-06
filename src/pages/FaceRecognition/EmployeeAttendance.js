@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import AgEmployeeAttendance from "../../components/FaceRecognition/AgEmployeeAttendance";
+import LoadingScreen from "../../components/Layout/LoadingScreen";
+import { useDispatch,useSelector } from "react-redux";
+import { hideLoading, showLoading } from "../../actions/loadingActions";
 
 function EmployeeAttendance() {
+  const dispatch=useDispatch();
+  const loading=useSelector(state=>state.loading.loading)
     const [originalRowData, setOriginalRowData] = useState([
         {
           slno:1,
@@ -47,6 +52,10 @@ function EmployeeAttendance() {
     
   return (
     <div className="container">
+      {loading ? (
+        <LoadingScreen />
+      ) : (
+        <>
     <div className="row align-items-center">
       <div className="col-md-9 mt-4">
         <div className="d-flex align-items-center">
@@ -109,6 +118,8 @@ function EmployeeAttendance() {
       {/* <AgGridReact rowData={rowData} columnDefs={colDefs} /> */}
       <AgEmployeeAttendance rowData={rowData} />
     </div>
+    </>
+      )}
   </div>
   )
 }

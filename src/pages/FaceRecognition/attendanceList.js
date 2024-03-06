@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import AgGridAttendanceList from "../../components/FaceRecognition/AgGridAttendanceList";
-
 import axios from "axios";
+import LoadingScreen from "../../components/Layout/LoadingScreen";
+import { useDispatch,useSelector } from "react-redux";
+import { hideLoading, showLoading } from "../../actions/loadingActions";
 
 function AttendanceList() {
+  const dispatch=useDispatch();
+  const loading=useSelector(state=>state.loading.loading)
   const [selectedDate, setSelectedDate] = useState("");
   const [originalRowData, setOriginalRowData] = useState([
     // {
@@ -41,21 +45,28 @@ function AttendanceList() {
   }, [selectedDate, originalRowData]);
 
   useEffect(() => {
+    dispatch(showLoading());
     // Make GET request to fetch all check-in data
     axios
       .get("facial-recognition/get_attendance_list/")
       .then((response) => {
         console.log("the attendance list", response.data);
         setRowData(response.data); // Set fetched data to rowData state
+        dispatch(hideLoading());
       })
       .catch((error) => {
         console.error("Error fetching check-in data:", error);
         setRowData([]); // Set empty array in case of error
+        dispatch(hideLoading());
       });
   }, []);
 
   return (
     <div className="container">
+      {loading ? (
+        <LoadingScreen />
+      ) : (
+        <>
       <div className="row align-items-center">
         <div className="col-md-9 mt-4">
           <div className="d-flex align-items-center">
@@ -91,6 +102,8 @@ function AttendanceList() {
         {/* <AgGridReact rowData={rowData} columnDefs={colDefs} /> */}
         <AgGridAttendanceList rowData={rowData} />
       </div>
+      </>
+      )}
     </div>
   );
 }

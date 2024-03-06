@@ -12,7 +12,14 @@ import Job from "../../components/CandidateRanking/Job";
 import JobGroupGrid from "../../components/CandidateRanking/JobGroupGrid";
 import axios from "axios";
 
+import LoadingScreen from "../../components/Layout/LoadingScreen";
+import { useDispatch,useSelector } from "react-redux";
+import { hideLoading, showLoading } from "../../actions/loadingActions";
+
 const Jobs = () => {
+
+  const dispatch=useDispatch();
+  const loading=useSelector(state=>state.loading.loading)
   const [selectedRows, setSelectedRows] = useState([]);
   const [joblist, setjobslist] = useState([]);
   const [jobgroup, setjobgroup] = useState([]);
@@ -23,6 +30,7 @@ const Jobs = () => {
   };
 
   const fetchJobGroups = async () => {
+    
     try {
       const response = await axios.get("candidate-ranking/jobgroup_list/");
         console.log(response.data);
@@ -67,12 +75,15 @@ const Jobs = () => {
   };
 
   const fetchJobs = async () => {
+    dispatch(showLoading());
     try {
       const response = await axios.get("candidate-ranking/get_jobs/");
       console.log("the jobs data", response.data);
       setjobslist(response.data);
+      dispatch(hideLoading());
     } catch (error) {
       console.error("Error fetching Jobgroups:", error);
+      dispatch(hideLoading());
     }
   };
   const handleCreateJob = async (formData) => {
@@ -125,6 +136,10 @@ const Jobs = () => {
 
   return (
     <div className="container">
+      {loading ? (
+        <LoadingScreen />
+      ) : (
+        <>
       <div className="row align-items-center">
         <div className="col-md-9 mt-4">
           <div className="d-flex align-items-center">
@@ -250,6 +265,8 @@ const Jobs = () => {
           </div>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 };

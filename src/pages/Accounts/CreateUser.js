@@ -3,8 +3,13 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import LoadingScreen from "../../components/Layout/LoadingScreen";
+import { useDispatch,useSelector } from "react-redux";
+import { hideLoading, showLoading } from "../../actions/loadingActions";
 
 function CreateUser() {
+  const dispatch=useDispatch();
+  const loading=useSelector(state=>state.loading.loading)
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -36,7 +41,7 @@ function CreateUser() {
     Object.entries(formData).forEach(([key,value])=>{
       formDataToSend.append(key,value);
     });
-
+    dispatch(showLoading());
     axios.post('/accounts/users/create/', formDataToSend,{
       headers:{
         'Content-Type':'multipart/form-data',
@@ -47,12 +52,13 @@ function CreateUser() {
         console.log('User created successfully:', response.data);
         toast.success('User created successfully');
         history.push('/users');
-
+        dispatch(hideLoading());
         // You can redirect to another page or perform other actions here
       })
       .catch((error) => {
         // Handle error
         console.error('Error creating user:', error);
+        dispatch(hideLoading());
       });
   };
   
@@ -60,6 +66,10 @@ function CreateUser() {
 
   return (
     <div className="container">
+       {loading ? (
+        <LoadingScreen />
+      ) : (
+        <>
       <div className="row align-items-center">
         <div className="col-md-9 mt-4">
           <div className="d-flex align-items-center">
@@ -171,6 +181,8 @@ function CreateUser() {
             </div>
           </div>
         </div>
+        </>
+      )}
       </div>
     
   );

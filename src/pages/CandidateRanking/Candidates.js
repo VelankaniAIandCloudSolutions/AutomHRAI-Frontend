@@ -4,21 +4,27 @@ import { async } from "q";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import CandidateList from "../../components/CandidateRanking/CandidateList";
-
+import LoadingScreen from "../../components/Layout/LoadingScreen";
+import { useDispatch,useSelector } from "react-redux";
+import { hideLoading, showLoading } from "../../actions/loadingActions";
 // import axios from 'axios'
 
 const Candidates = () => {
 
-
+  const dispatch=useDispatch();
+  const loading=useSelector(state=>state.loading.loading)
   const [candidates, setCandidates] = useState([]);
 
   const fetchCandidates = async () => {
+    dispatch(showLoading());
     try {
       const response = await axios.get('resume-parser/get_candidate_list/');
       console.log("The candidates data:", response.data);
       setCandidates(response.data); 
+      dispatch(hideLoading());
     } catch (error) {
       console.error('Error fetching candidates:', error);
+      dispatch(hideLoading());
     }
   };
 
@@ -45,6 +51,10 @@ const Candidates = () => {
 
   return (
     <div className="container">
+      {loading ? (
+        <LoadingScreen />
+      ) : (
+        <>
       <div className="row align-items-center">
       <div className="col-md-9 mt-4">
         <div className="d-flex align-items-center">
@@ -70,6 +80,8 @@ const Candidates = () => {
         <CandidateList  candidates={candidates}/>
       </div>
     </div>
+    </>
+      )}
     </div>
   );
 };

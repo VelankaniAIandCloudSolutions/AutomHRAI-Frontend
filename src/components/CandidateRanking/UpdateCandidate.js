@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import LoadingScreen from "../../components/Layout/LoadingScreen";
+import { useDispatch,useSelector } from "react-redux";
+import { hideLoading, showLoading } from "../../actions/loadingActions";
 
 import axios from 'axios';
 
 const UpdateCandidateModal = ({ candidate }) => {
+  const dispatch=useDispatch();
+  const loading=useSelector(state=>state.loading.loading)
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -45,11 +49,12 @@ const UpdateCandidateModal = ({ candidate }) => {
   };
 
   const handleSaveChanges = () => {
+    dispatch(showLoading());
     axios.put(`resume-parser/update_candidate/${candidate.id}/`, formData)
       .then(response => {
         console.log('Candidate updated successfully:', response.data);
         toast.success('Candidate updated successfully');
-        
+        dispatch(hideLoading());
         setTimeout(() => {
           window.location.reload();
         }, 3000); // 3000 milliseconds = 3 seconds
@@ -58,6 +63,7 @@ const UpdateCandidateModal = ({ candidate }) => {
       })
       .catch(error => {
         console.error('Error updating candidate:', error);
+        dispatch(hideLoading());
         // Handle error scenarios
       });
   };
