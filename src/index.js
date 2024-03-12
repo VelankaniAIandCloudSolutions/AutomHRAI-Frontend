@@ -9,10 +9,12 @@ import "admin-lte/dist/js/adminlte.min.js";
 import "./interceptors/axios";
 import {createStore, combineReducers} from 'redux';
 import loadingReducer from "./reducers/loadingReducer";
+import authReducer from "./reducers/authReducer";
 import {Provider} from 'react-redux';
 
 const rootReducer=combineReducers({
   loading: loadingReducer,
+  auth: authReducer,
 });
 
 const store=createStore(rootReducer);

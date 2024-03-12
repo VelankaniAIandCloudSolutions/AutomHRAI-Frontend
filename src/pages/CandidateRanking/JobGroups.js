@@ -120,7 +120,7 @@ const Jobgroups = () => {
         })
         .then((response) => {
           console.log("JobGroup updated successfully:", response.data);
-          toast.success('JobGroup updated successfully');
+          toast.warn('JobGroup updated successfully');
         })
         .catch((error) => {
           console.error("Error updating JobGroup:", error);
@@ -140,7 +140,7 @@ const Jobgroups = () => {
         .delete(`candidate-ranking/delete_job_group/${jobGroupId}/`)
         .then((response) => {
           console.log("JobGroup Deleted successfully", response.data);
-          toast.success('JobGroup Deleted successfully');
+          toast.error('JobGroup Deleted successfully',{icon: <i className="fas fa-check" color="#fff"></i>});
         })
         .catch((error) => {
           console.error("Error updating JobGroup:", error);

@@ -37,7 +37,8 @@ function Users() {
       .delete(`/accounts/users/delete/${userId}/`)
       .then((response) => {
         console.log("User deleted successfully:", response.data);
-        toast.success('User deleted successfully');
+        toast.error('User deleted successfully',{icon: <i className="fas fa-check" color="#fff"></i>});
+        
         fetchAllUsers();
       })
       .catch((error) => {

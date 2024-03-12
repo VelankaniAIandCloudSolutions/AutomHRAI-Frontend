@@ -57,7 +57,7 @@ function EditUser() {
       .then((response) => {
         // Handle successful response
         console.log("User edited successfully:", response.data);
-        toast.success('User updated successfully');
+        toast.warn('User updated successfully');
         history.push("/users");
         dispatch(hideLoading());
         // You can redirect to another page or perform other actions here
@@ -65,7 +65,7 @@ function EditUser() {
       .catch((error) => {
         // Handle error
         console.error("Error editing user:", error);
-        toast.error('Error occured. Please try again.');
+        // toast.error('Error occured. Please try again.');
         dispatch(hideLoading());
       });
   };

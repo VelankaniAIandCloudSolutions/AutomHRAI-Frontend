@@ -2,7 +2,12 @@ import axios from "axios";
 import { useState } from "react";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch } from 'react-redux';
+import {login} from '../../actions/authActions';
+
+
 export const Login = () => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const submit = async (e) => {
@@ -19,19 +24,25 @@ export const Login = () => {
     localStorage.setItem("access_token", data.access);
     localStorage.setItem("refresh_token", data.refresh);
     axios.defaults.headers.common["Authorization"] = `Bearer ${data["access"]}`;
-    getUserAccount();
+    
+    getUserAccount  ();
   };
 
   const getUserAccount = async () => {
+  
     await axios
       .get("/accounts/get-user-account/")
       .then((response) => {
         const data = response.data;
+        console.log(data);
+        // const userData=JSON.stringify(data);
         localStorage.setItem("userAccount", JSON.stringify(data));
-        
+        console.log("Dispatching login action with payload",data)
+        const userData = JSON.parse(localStorage.getItem("userAccount"));
+        dispatch(login(JSON.stringify(userData)));
         window.location.href = "/";
-        toast.success('Logged in successfully');
         
+        toast.success('Logged in successfully');
       })
       .catch((error) => {
         console.error("Error fetching user account:", error);

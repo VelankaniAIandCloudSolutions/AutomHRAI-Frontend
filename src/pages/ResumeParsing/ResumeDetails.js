@@ -123,7 +123,7 @@ const GridComponent = ({ joblist }) => {
         );
 
         console.log("Resumes updated successfully:", response.data);
-        toast.success('Resumes updated successfully');
+        toast.warn('Resumes updated successfully');
         fetchResumes();
 
         setEditedData([]);
@@ -145,7 +145,7 @@ const GridComponent = ({ joblist }) => {
       .delete(`resume-parser/delete_resume/${resumeId}/`)
       .then(() => {
         console.log(`Resume with ID ${resumeId} deleted successfully`);
-        toast.success('Resumes deleted successfully');
+        toast.error('Resumes deleted successfully',{icon: <i className="fas fa-check" color="#fff"></i>});
         fetchResumes();
       })
       .catch((error) => {

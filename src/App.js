@@ -1,8 +1,6 @@
 import React from "react";
-
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import AppHeader from "./components/Layout/AppHeader";
@@ -22,8 +20,14 @@ import RankCandidates from "./pages/CandidateRanking/RankCandidates";
 import MyComponent from "./pages/FaceRecognition/checkintest";
 import { Login } from "./pages/Accounts/LogIn";
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 export default function App() {
+  const authState = useSelector((state) => state.auth);
+  const isStaff = authState.userData?.user_account?.is_staff;
+  const isSuperuser = authState.userData?.user_account?.is_superuser;
+
+
   const [isAuth, setIsAuth] = useState(false);
   useEffect(() => {
     if (localStorage.getItem("access_token") !== null) {
@@ -39,25 +43,39 @@ export default function App() {
           <AppSidebar />
           <div className="content-wrapper">
             <Switch>
-              <Route path="/" exact component={Dashboard} />
-              <Route path="/login" exact component={Login} />
-              <Route path="/resume-details" component={ResumeDetails} />
-              <Route path="/candidate-list" exact component={Candidates} />
-              <Route path="/job-groups" exact component={Jobgroups} />
-              <Route path="/jobs" exact component={Jobs} />
-              <Route path="/attendance" component={attendanceList} />
-              <Route path="/employee-attendance" exact component={EmployeeAttendance}/>
+            <Route path="/" exact component={Dashboard} />
+              <Route path="/login" exact component={Login} />      
+              <Route path="/load" component={LoadingScreen}/>
+              
+            {/* {isSuperuser && (
+              <> */}
               <Route path="/users/create-user" component={CreateUser} />
               <Route path="/users/edit-user/:id" component={EditUser} />
               <Route path="/users" component={Users} />
-              <Route path="/checkin" component={CheckInCheckOut} />
+              {/* </>
+            )} */}
+                      {/* {isStaff && isSuperuser && (
+<> */}
+<Route path="/resume-details" component={ResumeDetails} />
+              <Route path="/candidate-list" exact component={Candidates} />
+              <Route path="/job-groups" exact component={Jobgroups} />
+              <Route path="/jobs" exact component={Jobs} />
               <Route path="/rank-candidates" component={RankCandidates} />
               <Route path="/test-component" component={MyComponent} />
-              <Route path="/load" component={LoadingScreen}/>
+              <Route path="/employee-attendance" exact component={EmployeeAttendance}/>
+              {/* </>
+               )} */}
+               
+              <Route path="/checkin" component={CheckInCheckOut} />
+              <Route path="/attendance" component={attendanceList} />
+              
+
+                     
+              
             </Switch>
           </div>
         </div>
-        <ToastContainer position="bottom-right" autoClose={3000} />
+        <ToastContainer position="bottom-right" autoClose={3000} theme="colored" />
       </Router>
     );
   } else {

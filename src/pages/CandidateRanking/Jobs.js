@@ -64,7 +64,7 @@ const Jobs = () => {
         }
       );
       console.log("Job Updated successfully:", response.data);
-      toast.success('Job Updated successfully');
+      toast.warn('Job Updated successfully');
       // window.location.reload();
 
       console.log("Response from update job API:", response.data);
@@ -116,7 +116,7 @@ const Jobs = () => {
         `candidate-ranking/delete_job/${jobId}/`
       );
       console.log("Job deleted successfully:", response.data);
-      toast.success('Job deleted successfully');
+      toast.error('Job deleted successfully',{icon: <i className="fas fa-check" color="#fff"></i>});
       fetchJobs();
       window.location.reload();
     } catch (error) {

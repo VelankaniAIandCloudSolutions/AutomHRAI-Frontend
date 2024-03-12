@@ -1,13 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-
+import { useSelector, useDispatch } from "react-redux";
+import { login, logout } from '../../actions/authActions'; // Import your actions
 export default function AppSidebar() {
+  const dispatch = useDispatch(); // Get the dispatch function
 
-  const userrole=JSON.parse(localStorage.getItem('userAccount'));
-  console.log(userrole)
-  const isStaff = userrole.user_account.is_staff;
-  const isSuperuser = userrole.user_account.is_superuser;
+  // const userrole=JSON.parse(localStorage.getItem('userAccount'));
+  // console.log(userrole)
+  // const isStaff = userrole.user_account.is_staff;
+  // const isSuperuser = userrole.user_account.is_superuser;
+
+  // const userrole=useSelector((state)=>state.loggedIn.loggedIn);
+  // console.log(userrole)
+  const authState = useSelector((state) => state.auth);
+  console.log("Redux State:", authState);
+
+  const isStaff = authState.userData?.user_account?.is_staff;
+  const isSuperuser = authState.userData?.user_account?.is_superuser;
+  console.log("isStaff", isStaff);
+  console.log("isSuper user",isSuperuser);
   
+
+
   return (
     <aside className="main-sidebar sidebar-dark-primary elevation-4">
       <Link to="/" className="brand-link">
