@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import AgGridAttendanceList from "../../components/FaceRecognition/AgGridAttendanceList";
-
 import axios from "axios";
+import LoadingScreen from "../../components/Layout/LoadingScreen";
+import { useDispatch, useSelector } from "react-redux";
+import { hideLoading, showLoading } from "../../actions/loadingActions";
 
 function AttendanceList() {
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.loading.loading);
   const [selectedDate, setSelectedDate] = useState("");
 
-  const loggedUser=JSON.parse(localStorage.getItem('userAccount'));
-  const id=loggedUser.user_account.id;
-
+  const loggedUser = JSON.parse(localStorage.getItem("userAccount"));
+  const id = loggedUser.user_account.id;
 
   const [originalRowData, setOriginalRowData] = useState([
     // {
@@ -46,12 +49,13 @@ function AttendanceList() {
   }, [selectedDate, originalRowData]);
 
   useEffect(() => {
+    dispatch(showLoading());
     // Make GET request to fetch all check-in data
     axios
       .get(`facial-recognition/get_attendance_list/${id}`)
       .then((response) => {
         console.log("the attendance list", response.data);
-  
+
         // Transform the response data object into an array of attendance records
         const rowDataArray = [];
         for (const date in response.data) {
@@ -61,7 +65,7 @@ function AttendanceList() {
               // Extract only the time from the datetime strings
               // const checkinTime = attendance.checkin_time ? new Date(attendance.checkin_time).toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' }) : null;
               // const checkoutTime = attendance.checkout_time ? new Date(attendance.checkout_time).toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' }) : null;
-  
+
               rowDataArray.push({
                 emp_id: attendance.user.emp_id,
                 name: attendance.user.name,
@@ -74,53 +78,60 @@ function AttendanceList() {
             });
           }
         }
-  
+
         setRowData(rowDataArray); // Set fetched data to rowData state
+        dispatch(hideLoading());
       })
       .catch((error) => {
         console.error("Error fetching check-in data:", error);
         setRowData([]); // Set empty array in case of error
+        dispatch(hideLoading());
       });
   }, []);
-  
 
   return (
     <div className="container">
-      <div className="row align-items-center">
-        <div className="col-md-9 mt-4">
-          <div className="d-flex align-items-center">
-            <h2 className="mb-0">Attendance List</h2>
-            <span className="ms-3 fs-4 text-muted">|</span>
-            <nav aria-label="breadcrumb" className="d-inline-block ms-3">
-              <ol className="breadcrumb bg-transparent m-0 p-0">
-                <li className="breadcrumb-item">
-                  <a href="/">
-                    <i className="fas fa-home me-1"></i>Home
-                  </a>
-                </li>
-                <li className="breadcrumb-item active" aria-current="page">
-                  <i className="fas fa-list"> </i> Attendance List
-                </li>
-              </ol>
-            </nav>
+      {loading ? (
+        <LoadingScreen />
+      ) : (
+        <>
+          <div className="row align-items-center">
+            <div className="col-md-9 mt-4">
+              <div className="d-flex align-items-center">
+                <h2 className="mb-0">Attendance List</h2>
+                <span className="ms-3 fs-4 text-muted">|</span>
+                <nav aria-label="breadcrumb" className="d-inline-block ms-3">
+                  <ol className="breadcrumb bg-transparent m-0 p-0">
+                    <li className="breadcrumb-item">
+                      <a href="/">
+                        <i className="fas fa-home me-1"></i>Home
+                      </a>
+                    </li>
+                    <li className="breadcrumb-item active" aria-current="page">
+                      <i className="fas fa-list"> </i> Attendance List
+                    </li>
+                  </ol>
+                </nav>
+              </div>
+            </div>
+
+            <div className="col-md-3 d-flex justify-content-end mt-4">
+              <input
+                type="date"
+                className="form-control"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="col-md-3 d-flex justify-content-end mt-4">
-          <input
-            type="date"
-            className="form-control"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-          />
-        </div>
-      </div>
-
-      <div className="container" style={{ marginTop: "25px" }}>
-        {/* The AG Grid component */}
-        {/* <AgGridReact rowData={rowData} columnDefs={colDefs} /> */}
-        <AgGridAttendanceList rowData={rowData} />
-      </div>
+          <div className="container" style={{ marginTop: "25px" }}>
+            {/* The AG Grid component */}
+            {/* <AgGridReact rowData={rowData} columnDefs={colDefs} /> */}
+            <AgGridAttendanceList rowData={rowData} />
+          </div>
+        </>
+      )}
     </div>
   );
 }

@@ -6,7 +6,7 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 const ResumeGrid = ({ columns, rowData }) => {
   return (
-    <div className='ag-theme-alpine mt-2' style={{ height: 400, width: '100%' }}>
+    <div className='ag-theme-quartz' style={{ height: 500, width: '100%' }}>
       <AgGridReact
         rowData={rowData}
         columnDefs={columns}

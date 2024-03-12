@@ -6,10 +6,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import LoadingScreen from "../../components/Layout/LoadingScreen";
+import { useDispatch,useSelector } from "react-redux";
+import { hideLoading, showLoading } from "../../actions/loadingActions";
 
 import ResumeEditForm from "../../components/ResumeParsing/ResumeEditForm";
 
 const GridComponent = ({ joblist }) => {
+  const dispatch=useDispatch();
+  const loading=useSelector(state=>state.loading.loading)
   const [rowData, setRowData] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [showParseResumesData, setShowParseResumesData] = useState([]);
@@ -126,7 +131,7 @@ const GridComponent = ({ joblist }) => {
         );
 
         console.log("Resumes updated successfully:", response.data);
-        toast.success("Resumes updated successfully");
+        toast.warn('Resumes updated successfully');
         fetchResumes();
 
         setEditedData([]);
@@ -148,7 +153,7 @@ const GridComponent = ({ joblist }) => {
       .delete(`resume-parser/delete_resume/${resumeId}/`)
       .then(() => {
         console.log(`Resume with ID ${resumeId} deleted successfully`);
-        toast.success("Resumes deleted successfully");
+        toast.error('Resumes deleted successfully',{icon: <i className="fas fa-check" color="#fff"></i>});
         fetchResumes();
       })
       .catch((error) => {
@@ -158,15 +163,16 @@ const GridComponent = ({ joblist }) => {
   };
 
   const fetchResumes = () => {
+    dispatch(showLoading());
     axios
       .get("resume-parser/get_resumes/")
       .then((response) => {
         setRowData(response.data);
-
-        console.log("the resumes data", response.data)
+        dispatch(hideLoading());
       })
       .catch((error) => {
         console.error("Error fetching resumes:", error);
+        dispatch(hideLoading());
       });
   };
 
@@ -336,7 +342,12 @@ const GridComponent = ({ joblist }) => {
 
   return (
     <div className="container">
-      <div className="col-md-6 mt-4">
+      {loading ? (
+        <LoadingScreen />
+      ) : (
+        <>
+      <div className="row align-items-center">
+      <div className="col-md-9 mt-4">
         <div className="d-flex align-items-center">
           <h2 className="mb-0">Resume List</h2>
           <span className="ms-3 fs-4 text-muted">|</span>
@@ -355,63 +366,10 @@ const GridComponent = ({ joblist }) => {
           </nav>
         </div>
       </div>
-
-      <div
-        className="modal fade"
-        id="parseResumeModal"
-        tabIndex="-1"
-        aria-labelledby="parseResumeModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-lg">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="parseResumeModalLabel">
-                Applied Job : {selectedJobName}
-                <br></br>
-                Resume Data:
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <div>
-                <ShowParseResumes
-                  rowData={showParseResumesData}
-                  onEdit={handleUpdateData}
-                />
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => {
-                  handleSaveChanges();
-                  createCandidate();
-                }}
-                data-bs-dismiss="modal"
-              >
-                Save changes
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="container-wrapper ml-2 mr-2">
+      
+      <div className="col-md-3 d-flex justify-content-end mt-0">
         <div className="d-flex justify-content-between align-items-center">
-          <div></div>
+          
           <button
             className="btn btn-outline-success mt-3"
             data-bs-toggle="modal"
@@ -420,9 +378,11 @@ const GridComponent = ({ joblist }) => {
             Upload Resume
           </button>
         </div>
-
+        </div>
+        <div className="container" style={{ marginTop: "25px" }}>
         <ResumeGrid rowData={rowData} columns={columns} />
-
+        </div>
+        </div>
         <div
           className="modal fade"
           id="uploadResumeModal"
@@ -494,6 +454,58 @@ const GridComponent = ({ joblist }) => {
                   Upload
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+        <div
+        className="modal fade"
+        id="parseResumeModal"
+        tabIndex="-1"
+        aria-labelledby="parseResumeModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-lg">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="parseResumeModalLabel">
+                Applied Job : {selectedJobName}
+                <br></br>
+                Resume Data:
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <div>
+                <ShowParseResumes
+                  rowData={showParseResumesData}
+                  onEdit={handleUpdateData}
+                />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => {
+                  handleSaveChanges();
+                  createCandidate();
+                }}
+                data-bs-dismiss="modal"
+              >
+                Save changes
+              </button>
             </div>
           </div>
         </div>

@@ -3,10 +3,16 @@ import axios from "axios";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AgGridUserList from "../../components/FaceRecognition/AgGridUserList";
+import LoadingScreen from "../../components/Layout/LoadingScreen";
+import { useDispatch,useSelector } from "react-redux";
+import { hideLoading, showLoading } from "../../actions/loadingActions";
+
 function Users() {
   const [rowData, setRowData] = useState([]);
-
+  const dispatch=useDispatch();
+  const loading=useSelector(state=>state.loading.loading)
   const fetchAllUsers = async () => {
+    dispatch(showLoading());
     await axios
       .get("/accounts/users/")
       .then((response) => {
@@ -16,8 +22,10 @@ function Users() {
         }));
         setRowData(modifiedData);
         console.log("api data", response.data);
+        dispatch(hideLoading());
       })
       .catch((error) => console.error("Error fetching data:", error));
+      dispatch(hideLoading());
   };
 
   useEffect(() => {
@@ -29,7 +37,8 @@ function Users() {
       .delete(`/accounts/users/delete/${userId}/`)
       .then((response) => {
         console.log("User deleted successfully:", response.data);
-        toast.success('User deleted successfully');
+        toast.error('User deleted successfully',{icon: <i className="fas fa-check" color="#fff"></i>});
+        
         fetchAllUsers();
       })
       .catch((error) => {
@@ -39,6 +48,10 @@ function Users() {
 
   return (
     <div className="container">
+      {loading ? (
+        <LoadingScreen />
+      ) : (
+        <>
       <div className="row align-items-center">
         <div className="col-md-9 mt-4">
           <div className="d-flex align-items-center">
@@ -110,6 +123,8 @@ function Users() {
           </div>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 }

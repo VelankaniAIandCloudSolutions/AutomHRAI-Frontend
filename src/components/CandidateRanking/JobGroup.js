@@ -157,7 +157,7 @@ const JobGroup = ({
     <div className="row align-items-center">
       <div className="content">
         <div className="container-fluid">
-          <div className="ag-theme-quartz" style={{ height: 400 }}>
+          <div className="ag-theme-quartz" style={{ height: 500 }}>
             <AgGridReact
               rowData={jobgroups}
               columnDefs={colDefs}

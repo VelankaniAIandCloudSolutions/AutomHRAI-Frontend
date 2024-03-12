@@ -1,17 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useDispatch } from 'react-redux';
+import {logout as logoutAction} from '../../actions/authActions';
 
 export default function AppHeader() {
+  const dispatch = useDispatch();
   const logout = async () => {
     try {
       const { data } = await axios.post("/logout/", {
         refresh_token: localStorage.getItem("refresh_token"),
       });
+      dispatch(logoutAction());
       console.log(data);
+      
       localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
       axios.defaults.headers.common["Authorization"] = null;
+
       window.location.href = "/login";
     } catch (e) {
       console.log("logout not working", e);

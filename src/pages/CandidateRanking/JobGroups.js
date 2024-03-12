@@ -14,9 +14,14 @@ import DepartmentGrid from "../../components/CandidateRanking/DepartmentGrid";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 
-// import { toast } from "react-toastify";
+import LoadingScreen from "../../components/Layout/LoadingScreen";
+import { useDispatch, useSelector } from "react-redux";
+import { hideLoading, showLoading } from "../../actions/loadingActions";
 
 const Jobgroups = () => {
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.loading.loading);
+
   const [rowData, setRowData] = useState([
     { department_name: "AI and Cloud Solutions", company: "Velankani" },
     { department_name: "Electronics", company: "Infosys" },
@@ -41,12 +46,15 @@ const Jobgroups = () => {
   };
 
   const fetchJobGroups = async () => {
+    dispatch(showLoading());
     try {
       const response = await axios.get("candidate-ranking/jobgroup_list/");
       console.log(response.data);
       setjobgroups(response.data);
+      dispatch(hideLoading());
     } catch (error) {
       console.error("Error fetching Jobgroups:", error);
+      dispatch(hideLoading());
     }
   };
 
@@ -108,7 +116,7 @@ const Jobgroups = () => {
         })
         .then((response) => {
           console.log("JobGroup updated successfully:", response.data);
-          toast.success("JobGroup Updated Successfully");
+          toast.warn("JobGroup updated successfully");
         })
         .catch((error) => {
           console.error("Error updating JobGroup:", error);
@@ -128,10 +136,14 @@ const Jobgroups = () => {
         .delete(`candidate-ranking/delete_job_group/${jobGroupId}/`)
         .then((response) => {
           console.log("JobGroup Deleted successfully", response.data);
-          toast.success("Job Group Deleted Successfully ");
-          setTimeout(() => {
-            window.location.reload();
-          }, 1500);
+          toast.error("Job Group Deleted Successfully ");
+          setTimeout(
+            () => {
+              window.location.reload();
+            },
+            1500,
+            { icon: <i className="fas fa-check" color="#fff"></i> }
+          );
         })
         .catch((error) => {
           console.error("Error updating JobGroup:", error);
@@ -145,136 +157,144 @@ const Jobgroups = () => {
 
   return (
     <div className="container">
-      <div className="row align-items-center">
-        <div className="col-md-6 mt-4">
-          <div className="d-flex align-items-center">
-            <h2 className="mb-0">Job Groups</h2>
-            <span className="ms-3 fs-4 text-muted">|</span>
-            <nav aria-label="breadcrumb" className="d-inline-block ms-3">
-              <ol className="breadcrumb bg-transparent m-0 p-0">
-                <li className="breadcrumb-item">
-                  <a href="/">
-                    <i className="fas fa-home me-1"></i>Home
-                  </a>
-                </li>
-                <li className="breadcrumb-item active" aria-current="page">
-                  <i className="fas fa-briefcase me-1"></i>
-                  Job-Groups
-                </li>
-              </ol>
-            </nav>
-          </div>
-        </div>
-
-        <div className="col-md-6 d-flex justify-content-end mt-4">
-          <button
-            className="btn btn-primary btn-sm ms-2"
-            data-bs-toggle="modal"
-            data-bs-target="#jobgroupmodal"
-          >
-            Create Job Group
-          </button>
-        </div>
-      </div>
-
-      <div className="container" style={{ marginTop: "25px" }}>
-        <JobGroup
-          rowData={rowData}
-          handleUpdateJobGroup={handleUpdateJobGroup}
-          departments={departments}
-          jobgroups={jobgroups}
-          handleSelectedRows={handleSelectedRows}
-          handleDeleteJobGroup={handleDeleteJobGroup}
-        />
-      </div>
-
-      <div
-        className="modal fade"
-        id="jobgroupmodal"
-        aria-hidden="true"
-        aria-labelledby="exampleModalToggleLabel"
-        tabindex="-1"
-      >
-        <div className="modal-dialog  modal-dialog-centered modal-dialog-scrollable modal-lg">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalToggleLabel">
-                Create Job Group
-              </h1>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
+      {loading ? (
+        <LoadingScreen />
+      ) : (
+        <>
+          <div className="row align-items-center">
+            <div className="col-md-9 mt-4">
+              <div className="d-flex align-items-center">
+                <h2 className="mb-0">Job Groups</h2>
+                <span className="ms-3 fs-4 text-muted">|</span>
+                <nav aria-label="breadcrumb" className="d-inline-block ms-3">
+                  <ol className="breadcrumb bg-transparent m-0 p-0">
+                    <li className="breadcrumb-item">
+                      <a href="/">
+                        <i className="fas fa-home me-1"></i>Home
+                      </a>
+                    </li>
+                    <li className="breadcrumb-item active" aria-current="page">
+                      <i className="fas fa-briefcase me-1"></i>
+                      Job-Groups
+                    </li>
+                  </ol>
+                </nav>
+              </div>
             </div>
-            <div className="modal-body">
-              <JobGroupsForm
-                selectedRows={selectedRows}
-                mode="create"
-                onJobGroupChange={handleJobGroupChange}
-              />
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={handleJobGroupSave}
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Department Modal */}
-
-      <div
-        className="modal fade"
-        id="departmentmodal"
-        aria-hidden="true"
-        aria-labelledby="exampleModalToggleLabel2"
-        tabindex="-1"
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalToggleLabel2">
-                Select Department
-              </h1>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <DepartmentGrid
-                onRowSelected={handleRowSelected}
-                departments={departments}
-              />
-            </div>
-            <div className="modal-footer">
+            <div className="col-md-3 d-flex justify-content-end mt-4">
               <button
                 className="btn btn-primary"
-                data-bs-target="#jobgroupmodal"
                 data-bs-toggle="modal"
+                data-bs-target="#jobgroupmodal"
               >
-                Back
+                Create Job Group
               </button>
             </div>
+
+            <div className="container" style={{ marginTop: "25px" }}>
+              <JobGroup
+                rowData={rowData}
+                handleUpdateJobGroup={handleUpdateJobGroup}
+                departments={departments}
+                jobgroups={jobgroups}
+                handleSelectedRows={handleSelectedRows}
+                handleDeleteJobGroup={handleDeleteJobGroup}
+              />
+            </div>
           </div>
-        </div>
-      </div>
+          <div
+            className="modal fade"
+            id="jobgroupmodal"
+            aria-hidden="true"
+            aria-labelledby="exampleModalToggleLabel"
+            tabindex="-1"
+          >
+            <div className="modal-dialog  modal-dialog-centered modal-dialog-scrollable modal-lg">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h1 className="modal-title fs-5" id="exampleModalToggleLabel">
+                    Create Job Group
+                  </h1>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  <JobGroupsForm
+                    selectedRows={selectedRows}
+                    mode="create"
+                    onJobGroupChange={handleJobGroupChange}
+                  />
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={handleJobGroupSave}
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Department Modal */}
+
+          <div
+            className="modal fade"
+            id="departmentmodal"
+            aria-hidden="true"
+            aria-labelledby="exampleModalToggleLabel2"
+            tabindex="-1"
+          >
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h1
+                    className="modal-title fs-5"
+                    id="exampleModalToggleLabel2"
+                  >
+                    Select Department
+                  </h1>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  <DepartmentGrid
+                    onRowSelected={handleRowSelected}
+                    departments={departments}
+                  />
+                </div>
+                <div className="modal-footer">
+                  <button
+                    className="btn btn-primary"
+                    data-bs-target="#jobgroupmodal"
+                    data-bs-toggle="modal"
+                  >
+                    Back
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
