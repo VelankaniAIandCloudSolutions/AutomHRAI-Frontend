@@ -9,7 +9,6 @@ import "react-toastify/dist/ReactToastify.css";
 import LoadingScreen from "../../components/Layout/LoadingScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { hideLoading, showLoading } from "../../actions/loadingActions";
-
 import ResumeEditForm from "../../components/ResumeParsing/ResumeEditForm";
 
 const GridComponent = ({ joblist }) => {
@@ -42,6 +41,10 @@ const GridComponent = ({ joblist }) => {
   };
   useEffect(() => {
     fetchJobs();
+  }, []);
+
+  useEffect(() => {
+    fetchResumes();
   }, []);
 
   const handleUpload = async () => {
@@ -80,13 +83,14 @@ const GridComponent = ({ joblist }) => {
 
   const handleUpdateData = async (updatedResumes) => {
     console.log(updatedResumes);
-
     setEditedData(updatedResumes);
   };
+
   const handleEdit = async (editData) => {
     console.log("this is ParamsData:", editData);
     setEditedRow(editData);
   };
+
   console.log("this is editedData:", editedRow);
 
   const saveUpdatedResumes = async (updatedResumes) => {
@@ -164,9 +168,9 @@ const GridComponent = ({ joblist }) => {
       });
   };
 
-  const fetchResumes = () => {
+  const fetchResumes = async () => {
     dispatch(showLoading());
-    axios
+    await axios
       .get("resume-parser/get_resumes/")
       .then((response) => {
         setRowData(response.data);
@@ -188,10 +192,6 @@ const GridComponent = ({ joblist }) => {
       setResumeIdToDelete(null);
     }
   };
-
-  useEffect(() => {
-    fetchResumes();
-  });
 
   const DeleteButtonRenderer = (props) => {
     return (
