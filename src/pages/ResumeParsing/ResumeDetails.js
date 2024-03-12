@@ -3,18 +3,18 @@ import axios from "axios";
 import ResumeGrid from "../../components/ResumeParsing/ResumeGrid.js";
 import ShowParseResumes from "../../components/ResumeParsing/ShowParsedResumes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDownload, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faDownload, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LoadingScreen from "../../components/Layout/LoadingScreen";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { hideLoading, showLoading } from "../../actions/loadingActions";
 
 import ResumeEditForm from "../../components/ResumeParsing/ResumeEditForm";
 
 const GridComponent = ({ joblist }) => {
-  const dispatch=useDispatch();
-  const loading=useSelector(state=>state.loading.loading)
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.loading.loading);
   const [rowData, setRowData] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [showParseResumesData, setShowParseResumesData] = useState([]);
@@ -131,7 +131,7 @@ const GridComponent = ({ joblist }) => {
         );
 
         console.log("Resumes updated successfully:", response.data);
-        toast.warn('Resumes updated successfully');
+        toast.warn("Resumes updated successfully");
         fetchResumes();
 
         setEditedData([]);
@@ -153,7 +153,9 @@ const GridComponent = ({ joblist }) => {
       .delete(`resume-parser/delete_resume/${resumeId}/`)
       .then(() => {
         console.log(`Resume with ID ${resumeId} deleted successfully`);
-        toast.error('Resumes deleted successfully',{icon: <i className="fas fa-check" color="#fff"></i>});
+        toast.error("Resumes deleted successfully", {
+          icon: <i className="fas fa-check" color="#fff"></i>,
+        });
         fetchResumes();
       })
       .catch((error) => {
@@ -189,7 +191,7 @@ const GridComponent = ({ joblist }) => {
 
   useEffect(() => {
     fetchResumes();
-  }, []);
+  });
 
   const DeleteButtonRenderer = (props) => {
     return (
@@ -234,34 +236,34 @@ const GridComponent = ({ joblist }) => {
     }
   };
 
-  const handleDownloadResume = async (resumeId) => {
-    try {
-      const response = await axios.get(
-        `resume-parser/download_resume/${resumeId}/`,
-        {
-          responseType: "blob",
-        }
-      );
+  // const handleDownloadResume = async (resumeId) => {
+  //   try {
+  //     const response = await axios.get(
+  //       `resume-parser/download_resume/${resumeId}/`,
+  //       {
+  //         responseType: "blob",
+  //       }
+  //     );
 
-      if (response.status === 200) {
-        const blob = new Blob([response.data], {
-          type: "application/octet-stream",
-        });
-        const url = window.URL.createObjectURL(blob);
+  //     if (response.status === 200) {
+  //       const blob = new Blob([response.data], {
+  //         type: "application/octet-stream",
+  //       });
+  //       const url = window.URL.createObjectURL(blob);
 
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `resume_${resumeId}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      } else {
-        console.error("Error downloading resume:", response);
-      }
-    } catch (error) {
-      console.error("Error downloading resume:", error);
-    }
-  };
+  //       const a = document.createElement("a");
+  //       a.href = url;
+  //       a.download = `resume_${resumeId}.pdf`;
+  //       document.body.appendChild(a);
+  //       a.click();
+  //       document.body.removeChild(a);
+  //     } else {
+  //       console.error("Error downloading resume:", response);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error downloading resume:", error);
+  //   }
+  // };
 
   const handleFormSubmit = async (formData) => {
     console.log("Received Form Data in Parent:", formData);
@@ -345,119 +347,120 @@ const GridComponent = ({ joblist }) => {
       {loading ? (
         <LoadingScreen />
       ) : (
-        <>
-      <div className="row align-items-center">
-      <div className="col-md-9 mt-4">
-        <div className="d-flex align-items-center">
-          <h2 className="mb-0">Resume List</h2>
-          <span className="ms-3 fs-4 text-muted">|</span>
-          <nav aria-label="breadcrumb" className="d-inline-block ms-3">
-            <ol className="breadcrumb bg-transparent m-0 p-0">
-              <li className="breadcrumb-item">
-                <a href="/">
-                  <i className="fas fa-home me-1"></i>Home
-                </a>
-              </li>
-              <li className="breadcrumb-item active" aria-current="page">
-                <i className="fas fa-list-alt me-1"></i>
-                Resume List
-              </li>
-            </ol>
-          </nav>
-        </div>
-      </div>
-      
-      <div className="col-md-3 d-flex justify-content-end mt-0">
-        <div className="d-flex justify-content-between align-items-center">
-          
-          <button
-            className="btn btn-outline-success mt-3"
-            data-bs-toggle="modal"
-            data-bs-target="#uploadResumeModal"
-          >
-            Upload Resume
-          </button>
-        </div>
-        </div>
-        <div className="container" style={{ marginTop: "25px" }}>
-        <ResumeGrid rowData={rowData} columns={columns} />
-        </div>
-        </div>
-        <div
-          className="modal fade"
-          id="uploadResumeModal"
-          tabIndex="-1"
-          role="dialog"
-          aria-labelledby="uploadResumeModalLabel"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="uploadResumeModalLabel">
-                  Upload Files
-                </h5>
-                <button
-                  type="button"
-                  className="close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="modal-body ">
-                <div className="mb-3">
-                  <input
-                    className="form-control"
-                    type="file"
-                    id="formFileMultiple"
-                    onChange={handleFileChange}
-                    ref={fileInputRef}
-                    multiple
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="jobDropdown" className="form-label">
-                    Select Job:
-                  </label>
-                  <select
-                    className="form-select"
-                    id="jobDropdown"
-                    value={selectedJobName}
-                    onChange={handleJobChange}
-                  >
-                    <option value="">Select Job</option>
-                    {jobslist && Array.isArray(jobslist)
-                      ? jobslist.map((job) => (
-                          <option key={job.id} value={job.name}>
-                            {job.name}
-                          </option>
-                        ))
-                      : null}
-                  </select>
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  className="btn btn-outline-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button
-                  className="btn btn-outline-success"
-                  onClick={handleUpload}
-                  data-bs-toggle="modal"
-                  data-bs-target="#parseResumeModal"
-                >
-                  Upload
-                </button>
-              </div>
+        <div className="row align-items-center">
+          <div className="col-md-9 mt-4">
+            <div className="d-flex align-items-center">
+              <h2 className="mb-0">Resume List</h2>
+              <span className="ms-3 fs-4 text-muted">|</span>
+              <nav aria-label="breadcrumb" className="d-inline-block ms-3">
+                <ol className="breadcrumb bg-transparent m-0 p-0">
+                  <li className="breadcrumb-item">
+                    <a href="/">
+                      <i className="fas fa-home me-1"></i>Home
+                    </a>
+                  </li>
+                  <li className="breadcrumb-item active" aria-current="page">
+                    <i className="fas fa-list-alt me-1"></i>
+                    Resume List
+                  </li>
+                </ol>
+              </nav>
+            </div>
+          </div>
+
+          <div className="col-md-3 d-flex justify-content-end mt-0">
+            <div className="d-flex justify-content-between align-items-center">
+              <button
+                className="btn btn-outline-success mt-3"
+                data-bs-toggle="modal"
+                data-bs-target="#uploadResumeModal"
+              >
+                Upload Resume
+              </button>
             </div>
           </div>
         </div>
-        <div
+      )}
+      <div className="container" style={{ marginTop: "25px" }}>
+        <ResumeGrid rowData={rowData} columns={columns} />
+      </div>
+
+      <div
+        className="modal fade"
+        id="uploadResumeModal"
+        tabIndex="-1"
+        role="dialog"
+        aria-labelledby="uploadResumeModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="uploadResumeModalLabel">
+                Upload Files
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body ">
+              <div className="mb-3">
+                <input
+                  className="form-control"
+                  type="file"
+                  id="formFileMultiple"
+                  onChange={handleFileChange}
+                  ref={fileInputRef}
+                  multiple
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="jobDropdown" className="form-label">
+                  Select Job:
+                </label>
+                <select
+                  className="form-select"
+                  id="jobDropdown"
+                  value={selectedJobName}
+                  onChange={handleJobChange}
+                >
+                  <option value="">Select Job</option>
+                  {jobslist && Array.isArray(jobslist)
+                    ? jobslist.map((job) => (
+                        <option key={job.id} value={job.name}>
+                          {job.name}
+                        </option>
+                      ))
+                    : null}
+                </select>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                className="btn btn-outline-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                className="btn btn-outline-success"
+                onClick={handleUpload}
+                data-bs-toggle="modal"
+                data-bs-target="#parseResumeModal"
+              >
+                Upload
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
         className="modal fade"
         id="parseResumeModal"
         tabIndex="-1"
@@ -469,7 +472,7 @@ const GridComponent = ({ joblist }) => {
             <div className="modal-header">
               <h5 className="modal-title" id="parseResumeModalLabel">
                 Applied Job : {selectedJobName}
-                <br></br>
+                <br />
                 Resume Data:
               </h5>
               <button
