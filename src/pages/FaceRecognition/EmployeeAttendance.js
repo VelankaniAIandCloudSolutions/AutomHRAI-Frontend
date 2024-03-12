@@ -78,12 +78,13 @@
             const response = await axios.get(`facial-recognition/get_timesheet_data/${id}`);
             console.log("The timesheet data:", response.data);
         
-            // Convert timestamps to local time
+            // Convert timestamps to local time and format check-in/check-out times
             const formattedData = response.data.map(entry => ({
               ...entry,
-              // date: new Date(entry.date).toLocaleString(),
-              check_in: entry.check_in ? formatTimeWithAMPM(new Date(entry.check_in)) : null,
-              check_out: entry.check_out ? formatTimeWithAMPM(new Date(entry.check_out)) : null,
+              check_in: entry.check_ins ? formatTime12Hours(entry.check_ins) : null,
+              check_out: entry.check_outs ? formatTime12Hours(entry.check_outs) : null,
+              break_in : entry.break_ins ? formatTime12Hours(entry.break_ins) : null,
+              break_out : entry.break_outs ? formatTime12Hours(entry.break_outs) : null ,
               net_working_time: formatTime(entry.net_working_time),
               total_working_time: formatTime(entry.total_working_time),
               total_break_time: formatTime(entry.total_break_time),
@@ -95,6 +96,19 @@
             console.error("Error fetching timesheet data:", error);
           }
         };
+        
+        // Function to format time in 12-hour format with AM or PM
+        const formatTime12Hours = (timesArray) => {
+          return timesArray.map(time => {
+            const timeParts = time.split(' ')[1].split(':');
+            let hours = parseInt(timeParts[0]);
+            const minutes = timeParts[1];
+            const period = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            return `${hours}:${minutes} ${period}`;
+          }).join(', ');
+        };
+        
 
       
       const currentYear = new Date().getFullYear();
