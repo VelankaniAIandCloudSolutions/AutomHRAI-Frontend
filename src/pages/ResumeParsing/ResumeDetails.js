@@ -152,8 +152,8 @@ const GridComponent = ({ joblist }) => {
     saveUpdatedResumes(editedData);
   };
 
-  const handleDelete = (resumeId) => {
-    axios
+  const handleDelete = async (resumeId) => {
+    await axios
       .delete(`resume-parser/delete_resume/${resumeId}/`)
       .then(() => {
         console.log(`Resume with ID ${resumeId} deleted successfully`);
