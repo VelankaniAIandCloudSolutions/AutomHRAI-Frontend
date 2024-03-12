@@ -20,7 +20,24 @@ function RankCandidates() {
   };
   const [ShowLeaderboard, setShowLeaderboard] = useState(false);
 
+  const notifyError = (message) => {
+    toast.error(message, {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+    });
+  }
+
   const handleRankCandidates = async () => {
+    
+    if (!selectedRow) {
+      notifyError('Error: Please select a job.');
+      return;
+    }
+
+    
     const jobId = selectedRow.id ;
     try {
       const response = await axios.post(`candidate-ranking/rank_candidates/${jobId}/`);
@@ -37,7 +54,6 @@ function RankCandidates() {
     }
   };
 
-  
   
   const fetchJobs = async () => {
     try{
