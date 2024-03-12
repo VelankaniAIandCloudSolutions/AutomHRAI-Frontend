@@ -14,8 +14,6 @@ import DepartmentGrid from "../../components/CandidateRanking/DepartmentGrid";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 
-import { toast } from "react-toastify";
-
 const Jobgroups = () => {
   const [rowData, setRowData] = useState([
     { department_name: "AI and Cloud Solutions", company: "Velankani" },

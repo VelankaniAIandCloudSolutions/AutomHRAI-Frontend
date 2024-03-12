@@ -11,7 +11,6 @@ import JobsForm from "../../components/CandidateRanking/JobsForm";
 import Job from "../../components/CandidateRanking/Job";
 import JobGroupGrid from "../../components/CandidateRanking/JobGroupGrid";
 import axios from "axios";
-import { toast } from "react-toastify";
 
 const Jobs = () => {
   const [selectedRows, setSelectedRows] = useState([]);
