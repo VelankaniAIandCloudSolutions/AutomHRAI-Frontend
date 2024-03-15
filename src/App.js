@@ -21,12 +21,12 @@ import MyComponent from "./pages/FaceRecognition/checkintest";
 import { Login } from "./pages/Accounts/LogIn";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import TestPage from "./pages/TestPage";
 
 export default function App() {
   const authState = useSelector((state) => state.auth);
   const isStaff = authState.userData?.user_account?.is_staff;
   const isSuperuser = authState.userData?.user_account?.is_superuser;
-
 
   const [isAuth, setIsAuth] = useState(false);
   useEffect(() => {
@@ -43,39 +43,44 @@ export default function App() {
           <AppSidebar />
           <div className="content-wrapper">
             <Switch>
-            <Route path="/" exact component={Dashboard} />
-              <Route path="/login" exact component={Login} />      
-              <Route path="/load" component={LoadingScreen}/>
-              
-            {/* {isSuperuser && (
+              <Route path="/" exact component={Dashboard} />
+              <Route path="/test" exact component={TestPage} />
+              <Route path="/login" exact component={Login} />
+              <Route path="/load" component={LoadingScreen} />
+
+              {/* {isSuperuser && (
               <> */}
               <Route path="/users/create-user" component={CreateUser} />
               <Route path="/users/edit-user/:id" component={EditUser} />
               <Route path="/users" component={Users} />
               {/* </>
             )} */}
-                      {/* {isStaff && isSuperuser && (
+              {/* {isStaff && isSuperuser && (
 <> */}
-<Route path="/resume-details" component={ResumeDetails} />
+              <Route path="/resume-details" component={ResumeDetails} />
               <Route path="/candidate-list" exact component={Candidates} />
               <Route path="/job-groups" exact component={Jobgroups} />
               <Route path="/jobs" exact component={Jobs} />
               <Route path="/rank-candidates" component={RankCandidates} />
               <Route path="/test-component" component={MyComponent} />
-              <Route path="/employee-attendance" exact component={EmployeeAttendance}/>
+              <Route
+                path="/employee-attendance"
+                exact
+                component={EmployeeAttendance}
+              />
               {/* </>
                )} */}
-               
+
               <Route path="/checkin" component={CheckInCheckOut} />
               <Route path="/attendance" component={attendanceList} />
-              
-
-                     
-              
             </Switch>
           </div>
         </div>
-        <ToastContainer position="bottom-right" autoClose={3000} theme="colored" />
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          theme="colored"
+        />
       </Router>
     );
   } else {

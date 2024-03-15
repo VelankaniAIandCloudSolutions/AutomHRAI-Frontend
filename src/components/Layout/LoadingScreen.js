@@ -1,28 +1,42 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import ReactLoading from 'react-loading';
+import React from "react";
+
 function LoadingScreen() {
-    const loadingScreenStyle = {
-        position: 'fixed',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(255, 255, 255, 0.8)', // Optional: Add a semi-transparent background
-        width: '100%',
-        height: '100%',
-        // zIndex: 9999, // Make sure it's on top of other elements
-      };   
-      const isLoading=useSelector((state)=>state.loading.loading); 
-  return isLoading ?
-   
-          <div style={loadingScreenStyle}>
-      <ReactLoading type={'spinningBubbles'} color={'#A1A6AB'} height={80} width={80} />
-    </div>:null;
-   
-  
+  const loadingScreenStyle = {
+    position: "fixed",
+    display: "flex",
+    top: "50%",
+    left: "50%",
+    width: "5rem",
+    height: "5rem",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 999999999999,
+  };
+
+  const backdropStyle = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: 999999999998,
+  };
+
+  return (
+    <div>
+      <div style={backdropStyle}></div>
+      <div className="container">
+        <div
+          className="spinner-border text-primary"
+          style={loadingScreenStyle}
+          role="status"
+        >
+          <spans className="visually-hidden">Loading...</spans>
+        </div>
+      </div>
+    </div>
+  );
 }
 
-export default LoadingScreen
+export default LoadingScreen;

@@ -1,8 +1,7 @@
 export const showLoading = () => ({
-    type: 'showLoading',
-  });
-  
-  export const hideLoading = () => ({
-    type: 'hideLoading',
-  });
-  
+  type: "showLoading",
+});
+
+export const hideLoading = () => ({
+  type: "hideLoading",
+});

@@ -1,10 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useDispatch } from 'react-redux';
-import {login} from '../../actions/authActions';
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import { login } from "../../actions/authActions";
 
 export const Login = () => {
   const dispatch = useDispatch();
@@ -16,33 +15,38 @@ export const Login = () => {
       email: email,
       password: password,
     };
-    const { data } = await axios.post("/token/", user, {
-      headers: { "Content-Type": "application/json" },
-    });
+    const { data } = await axios.post(
+      "http://localhost:8000/api/v1/token/",
+      user,
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
 
     localStorage.clear();
     localStorage.setItem("access_token", data.access);
     localStorage.setItem("refresh_token", data.refresh);
     axios.defaults.headers.common["Authorization"] = `Bearer ${data["access"]}`;
-    
-    getUserAccount  ();
+    axios.defaults.baseURL = "http://localhost:8000/api/v1/";
+
+    console.log(axios.defaults.headers.common["Authorization"]);
+    getUserAccount();
   };
 
   const getUserAccount = async () => {
-  
     await axios
-      .get("/accounts/get-user-account/")
+      .get("accounts/get-user-account/")
       .then((response) => {
         const data = response.data;
         console.log(data);
         // const userData=JSON.stringify(data);
         localStorage.setItem("userAccount", JSON.stringify(data));
-        console.log("Dispatching login action with payload",data)
+        console.log("Dispatching login action with payload", data);
         const userData = JSON.parse(localStorage.getItem("userAccount"));
         dispatch(login(JSON.stringify(userData)));
         window.location.href = "/";
-        
-        toast.success('Logged in successfully');
+
+        toast.success("Logged in successfully");
       })
       .catch((error) => {
         console.error("Error fetching user account:", error);
@@ -50,53 +54,51 @@ export const Login = () => {
   };
 
   return (
-    
     <div className="container-fluid">
-    <div className="row min-vh-100 justify-content-center align-items-center">
+      <div className="row min-vh-100 justify-content-center align-items-center">
         <div className="col-md-4">
-
-    <div className="Auth-form-container">
-    <div className="card-container">
-            <div className="card">
-      <form className="Auth-form mx-5 my-5" onSubmit={submit} >
-        <div className="Auth-form-content ">
-          <h3 className="Auth-form-title text-center">Sign In</h3>
-          <div className="form-group mt-3">
-            <label>Email</label>
-            <input
-              className="form-control mt-1"
-              placeholder="Enter Email"
-              name="email"
-              type="text"
-              value={email}
-              required
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="form-group mt-3">
-            <label>Password</label>
-            <input
-              name="password"
-              type="password"
-              className="form-control mt-1"
-              placeholder="Enter password"
-              value={password}
-              required
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div className="d-grid gap-2 mt-3">
-            <button type="submit" className="btn btn-primary">
-              Submit
-            </button>
+          <div className="Auth-form-container">
+            <div className="card-container">
+              <div className="card">
+                <form className="Auth-form mx-5 my-5" onSubmit={submit}>
+                  <div className="Auth-form-content ">
+                    <h3 className="Auth-form-title text-center">Sign In</h3>
+                    <div className="form-group mt-3">
+                      <label>Email</label>
+                      <input
+                        className="form-control mt-1"
+                        placeholder="Enter Email"
+                        name="email"
+                        type="text"
+                        value={email}
+                        required
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </div>
+                    <div className="form-group mt-3">
+                      <label>Password</label>
+                      <input
+                        name="password"
+                        type="password"
+                        className="form-control mt-1"
+                        placeholder="Enter password"
+                        value={password}
+                        required
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    </div>
+                    <div className="d-grid gap-2 mt-3">
+                      <button type="submit" className="btn btn-primary">
+                        Submit
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
           </div>
         </div>
-      </form>
       </div>
-      </div>
-    </div>
-    </div>
-    </div>
     </div>
   );
 };

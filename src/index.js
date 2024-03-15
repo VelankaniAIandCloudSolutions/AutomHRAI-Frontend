@@ -7,17 +7,19 @@ import "admin-lte/dist/css/adminlte.min.css";
 import "admin-lte/plugins/fontawesome-free/css/all.min.css";
 import "admin-lte/dist/js/adminlte.min.js";
 import "./interceptors/axios";
-import {createStore, combineReducers} from 'redux';
+// import axios from "axios";
+import { createStore, combineReducers } from "redux";
 import loadingReducer from "./reducers/loadingReducer";
 import authReducer from "./reducers/authReducer";
-import {Provider} from 'react-redux';
+import { Provider } from "react-redux";
 
-const rootReducer=combineReducers({
+// axios.defaults.baseURL = "http://localhost:8000/api/v1/";
+const rootReducer = combineReducers({
   loading: loadingReducer,
   auth: authReducer,
 });
 
-const store=createStore(rootReducer);
+const store = createStore(rootReducer);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
