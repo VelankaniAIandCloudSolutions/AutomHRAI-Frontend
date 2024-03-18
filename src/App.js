@@ -1,7 +1,7 @@
 import React from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import AppHeader from "./components/Layout/AppHeader";
 import AppSidebar from "./components/Layout/AppSidebar";
@@ -25,8 +25,10 @@ import { useSelector } from "react-redux";
 export default function App() {
   const authState = useSelector((state) => state.auth);
   const isStaff = authState.userData?.user_account?.is_staff;
+  console.log("isStaff App.js====",isStaff);
   const isSuperuser = authState.userData?.user_account?.is_superuser;
-
+  console.log("isSuperuser App.js", isSuperuser);
+  const isActive = authState.userData?.user_account?.is_active;
 
   const [isAuth, setIsAuth] = useState(false);
   useEffect(() => {
@@ -43,35 +45,43 @@ export default function App() {
           <AppSidebar />
           <div className="content-wrapper">
             <Switch>
-            <Route path="/" exact component={Dashboard} />
+              <Route path="/" exact component={Dashboard} />
               <Route path="/login" exact component={Login} />      
-              <Route path="/load" component={LoadingScreen}/>
+              <Route path="/load" exact component={LoadingScreen}/>
+              <Route path="/checkin" exact component={CheckInCheckOut} />
+              <Route path="/attendance" exact component={attendanceList} />
               
-            {/* {isSuperuser && (
-              <> */}
-              <Route path="/users/create-user" component={CreateUser} />
-              <Route path="/users/edit-user/:id" component={EditUser} />
-              <Route path="/users" component={Users} />
-              {/* </>
-            )} */}
-                      {/* {isStaff && isSuperuser && (
-<> */}
-<Route path="/resume-details" component={ResumeDetails} />
-              <Route path="/candidate-list" exact component={Candidates} />
-              <Route path="/job-groups" exact component={Jobgroups} />
-              <Route path="/jobs" exact component={Jobs} />
-              <Route path="/rank-candidates" component={RankCandidates} />
-              <Route path="/test-component" component={MyComponent} />
-              <Route path="/employee-attendance" exact component={EmployeeAttendance}/>
-              {/* </>
-               )} */}
-               
-              <Route path="/checkin" component={CheckInCheckOut} />
-              <Route path="/attendance" component={attendanceList} />
-              
+              <Route path="/users">
+  {isSuperuser ? (
+    <>
+      <Route path="/users/create-user" exact component={CreateUser} />
+      <Route path="/users/edit-user/:id" exact component={EditUser} />
+      <Route path="/users" exact component={Users} />
+    </>
+  ) : (
+    <Redirect to="/" />
+  )}
+</Route>
 
-                     
               
+<Route path="/">
+  {(isStaff || isSuperuser) ? (
+    <>
+      <Route path="/resume-details" exact component={ResumeDetails} />
+      <Route path="/candidate-list" exact component={Candidates} />
+      <Route path="/job-groups" exact component={Jobgroups} />
+      <Route path="/jobs" exact component={Jobs} />
+      <Route path="/rank-candidates" exact component={RankCandidates} />
+      <Route path="/test-component" exact component={MyComponent} />
+      <Route path="/employee-attendance" exact component={EmployeeAttendance}/>
+    </>
+  ) : (
+    <Redirect to="/" />
+  )}
+</Route>
+
+
+              {/* <Redirect to="/" />  */}
             </Switch>
           </div>
         </div>
