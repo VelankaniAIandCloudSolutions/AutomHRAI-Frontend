@@ -72,6 +72,7 @@ const Resumes = () => {
           (resume) => resume.parsed_data
         );
         setShowParseResumesData(parsedData);
+        setEditedData(parsedData);
       } catch (error) {
         dispatch(hideLoading());
 

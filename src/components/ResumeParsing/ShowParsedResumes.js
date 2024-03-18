@@ -70,7 +70,7 @@ const ResumeGrid = ({ rowData, onEdit }) => {
   const updateResumeData = async (resumeId, updatedData) => {
     try {
       const response = await axios.put(
-        `http://localhost:8000/api/v1/resume-parser/update_resume/${resumeId}/`,
+        `resume-parser/update_resume/${resumeId}/`,
         {
           updated_data: updatedData,
         }
@@ -136,12 +136,14 @@ const ResumeGrid = ({ rowData, onEdit }) => {
   return (
     <div
       className="ag-theme-alpine container"
-      style={{ height: 400, width: "100%" }}
+      // style={{ height: 400, width: "100%" }}
     >
       <AgGridReact
         rowData={rowData}
         columnDefs={gridOptions.columnDefs}
         gridOptions={gridOptions}
+        pagination={true}
+        paginationPageSize={10}
         domLayout="autoHeight"
         defaultColDef={{ editable: true, sortable: true, resizable: true }}
         onGridReady={onGridReady}

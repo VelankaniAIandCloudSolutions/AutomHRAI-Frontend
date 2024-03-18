@@ -2,84 +2,73 @@ import React, { useEffect, useState } from "react";
 import AgGridJob from "../../components/CandidateRanking/AgGridJob";
 import "../CandidateRanking/SelectJobs.css";
 import Leaderboard from "../../components/CandidateRanking/Leaderboard";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios'
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 function RankCandidates() {
   const [rowData, setRowData] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
 
-
   const [rankData, setRankData] = useState([]);
-
 
   const handleRowSelected = (rowData) => {
     setSelectedRow(rowData);
-    console.log(rowData)
+    console.log(rowData);
   };
   const [ShowLeaderboard, setShowLeaderboard] = useState(false);
 
   const notifyError = (message) => {
     toast.error(message, {
-      position: 'top-right',
       autoClose: 3000,
-      hideProgressBar: true,
       closeOnClick: true,
       pauseOnHover: true,
     });
-  }
+  };
 
   const handleRankCandidates = async () => {
-    
     if (!selectedRow) {
-      notifyError('Error: Please select a job.');
+      notifyError("Error: Please select a job.");
       return;
     }
 
-    
-    const jobId = selectedRow.id ;
+    const jobId = selectedRow.id;
     try {
-      const response = await axios.post(`candidate-ranking/rank_candidates/${jobId}/`);
-      console.log('Rank Candidates Response', response.data);
+      const response = await axios.post(
+        `candidate-ranking/rank_candidates/${jobId}/`
+      );
+      console.log("Rank Candidates Response", response.data);
       const rankedResumesData = response.data.ranked_resumes;
-
 
       setRankData(rankedResumesData);
       setShowLeaderboard(true);
-
     } catch (error) {
-      console.error('Error ranking candidates:', error);
-      toast.error('Error occured. Please try again.');
+      console.error("Error ranking candidates:", error);
+      toast.error("Error occured. Please try again.");
     }
   };
 
-  
   const fetchJobs = async () => {
-    try{
-      const response = await axios.get('candidate-ranking/get_jobs/');
-      console.log("the jobs data",response.data);
+    try {
+      const response = await axios.get("candidate-ranking/get_jobs/");
+      console.log("the jobs data", response.data);
       setRowData(response.data);
     } catch (error) {
-      console.error('Error fetching Jobgroups:', error);
+      console.error("Error fetching Jobgroups:", error);
     }
   };
 
   const fetchCandidateList = async () => {
-    try{
-      const response = await axios.get('resume-parser/candidate_list/');
-      console.log('the Candidate List', response.data);
-      
-
-    }catch(error){
-      console.error('Error fetching Candidates:',error)
+    try {
+      const response = await axios.get("resume-parser/candidate_list/");
+      console.log("the Candidate List", response.data);
+    } catch (error) {
+      console.error("Error fetching Candidates:", error);
     }
-
-  }
+  };
   useEffect(() => {
     fetchJobs();
   }, []);
-
 
   return (
     <div className="container">
@@ -156,7 +145,10 @@ function RankCandidates() {
             <div className="modal-body">
               <div className="ag-theme-quartz" style={{ height: 500 }}>
                 {/* The AG Grid component */}
-                <AgGridJob rowData={rowData} onRowSelected={handleRowSelected} />
+                <AgGridJob
+                  rowData={rowData}
+                  onRowSelected={handleRowSelected}
+                />
               </div>
             </div>
             <div className="modal-footer">
