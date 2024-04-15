@@ -21,6 +21,7 @@ import Users from "./pages/Accounts/Users";
 import CreateUser from "./pages/Accounts/CreateUser";
 import EditUser from "./pages/Accounts/EditUser";
 import CheckInCheckOut from "./pages/FaceRecognition/CheckInCheckOut";
+import CheckInCheckOutNew from "./pages/FaceRecognition/CheckInCheckOutNew";
 import RankCandidates from "./pages/CandidateRanking/RankCandidates";
 import MyComponent from "./pages/FaceRecognition/checkintest";
 import { Login } from "./pages/Accounts/LogIn";
@@ -55,6 +56,11 @@ export default function App() {
               <Route path="/login" exact component={Login} />
               <Route path="/load" exact component={LoadingScreen} />
               <Route path="/checkin" exact component={CheckInCheckOut} />
+              <Route
+                path="/checkin-checkout"
+                exact
+                component={CheckInCheckOutNew}
+              />
               <Route path="/attendance" exact component={attendanceList} />
 
               <Route path="/users">

@@ -17,8 +17,6 @@ function CheckInCheckOut() {
   const [failureMessage, setFailureMessage] = useState("");
   const [error, setError] = useState(null);
 
-  
-
   const videoRef = useRef(null);
   const imageRef = useRef(null);
   const modalRef = useRef(null);
@@ -33,70 +31,62 @@ function CheckInCheckOut() {
 
   const history = useHistory();
 
-  
+  const loggedUser = JSON.parse(localStorage.getItem("userAccount"));
+  const id = loggedUser.user_account.id;
 
-  const loggedUser=JSON.parse(localStorage.getItem('userAccount'));
-  const id=loggedUser.user_account.id;
+  const fetchCheckinData = async () => {
+    try {
+      const response = await axios.get(
+        `/facial-recognition/get_checkin_data/${id}`
+      );
 
-  // console.log(id)
+      const { checkin_data, break_data, timesheet_data } = response.data;
 
+      console.log("the time sheet data", timesheet_data);
 
+      // Combine checkin_data and break_data to get all types of entries
+      const allEntries = [...checkin_data, ...break_data];
 
-  useEffect(() => {
-    const fetchCheckinData = async () => {
-      try {
-      
-        const response = await axios.get(
-          `/facial-recognition/get_checkin_data/${id}`
-        );
+      // Sort the combined entries based on the created_at timestamp
+      allEntries.sort(
+        (a, b) => new Date(a.created_at) - new Date(b.created_at)
+      );
 
-        const { checkin_data, break_data, timesheet_data } = response.data;
+      console.log("the all data", allEntries);
 
-        console.log("the time sheet data", timesheet_data);
+      // Define the latest entry type as null initially
+      let latestEntryType = null;
 
-        // Combine checkin_data and break_data to get all types of entries
-        const allEntries = [...checkin_data, ...break_data];
-
-        // Sort the combined entries based on the created_at timestamp
-        allEntries.sort(
-          (a, b) => new Date(a.created_at) - new Date(b.created_at)
-        );
-
-        console.log("the all data", allEntries);
-
-        // Define the latest entry type as null initially
-        let latestEntryType = null;
-
-        // Iterate through allEntries to find the latest entry type
-        for (let i = allEntries.length - 1; i >= 0; i--) {
-          const entry = allEntries[i];
-          if (entry.type === "checkin") {
-            latestEntryType = "checkin";
-            break;
-          } else if (entry.type === "checkout") {
-            latestEntryType = "checkout";
-            break;
-          } else if (entry.type === "breakin") {
-            latestEntryType = "breakin";
-            break;
-          } else if (entry.type === "breakout") {
-            latestEntryType = "breakout";
-            break;
-          }
+      // Iterate through allEntries to find the latest entry type
+      for (let i = allEntries.length - 1; i >= 0; i--) {
+        const entry = allEntries[i];
+        if (entry.type === "checkin") {
+          latestEntryType = "checkin";
+          break;
+        } else if (entry.type === "checkout") {
+          latestEntryType = "checkout";
+          break;
+        } else if (entry.type === "breakin") {
+          latestEntryType = "breakin";
+          break;
+        } else if (entry.type === "breakout") {
+          latestEntryType = "breakout";
+          break;
         }
-
-        console.log("Latest entry type:", latestEntryType);
-
-        setCheckinData(checkin_data);
-        setTimeSheetData(response.data.timesheet_data);
-        setLatestEntryType(latestEntryType);
-        setIsLoading(false);
-      } catch (error) {
-        setError("Error fetching check-in data");
-        setIsLoading(false);
       }
-    };
 
+      console.log("Latest entry type:", latestEntryType);
+
+      setCheckinData(checkin_data);
+      setTimeSheetData(response.data.timesheet_data);
+      setLatestEntryType(latestEntryType);
+      setIsLoading(false);
+    } catch (error) {
+      setError("Error fetching check-in data");
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchCheckinData();
   }, []);
 
@@ -185,58 +175,6 @@ function CheckInCheckOut() {
     }
   }, [latestEntryType]);
 
-  // useEffect(() => {
-  //   console.log("Latest entry type:", latestEntryType);
-  //   const storedStartTime = localStorage.getItem("startTime");
-  //   const storedBreakInTime = localStorage.getItem("BreakInTime");
-
-  //   if (latestEntryType === "checkin" && !storedStartTime) {
-  //     // Start the stopwatch and store the start time when the latest entry type is 'checkin' and there is no stored start time
-  //     console.log("Starting stopwatch...");
-  //     const startTime = Date.now();
-  //     localStorage.setItem("startTime", startTime.toString());
-
-  //     // Start the stopwatch
-  //     const id = setInterval(() => {
-  //       setWorkingTime((prevTime) => prevTime + 1);
-  //     }, 1000);
-  //     setTimerId(id);
-  //   } else if (latestEntryType === "checkout") {
-  //     // Stop the stopwatch
-  //     clearInterval(timerId);
-  //     // Clear the stored start time from localStorage when the user checks out
-  //     localStorage.removeItem("startTime");
-  //   } else if (latestEntryType === "breakin" && !storedBreakInTime) {
-  //     // Store break in time in localStorage when the user breaks in and there is no stored break in time
-  //     localStorage.setItem("BreakInTime", Date.now());
-  //   } else if (latestEntryType === "breakout" && storedBreakInTime) {
-  //     // Calculate the elapsed break time since the break in time stored in localStorage
-  //     console.log("Resuming stopwatch...");
-  //     const breakInTime = parseInt(storedBreakInTime, 10);
-  //     const currentTime = Date.now();
-  //     const elapsedBreakTime = Math.floor((currentTime - breakInTime) / 1000);
-
-  //     // Update the working time with the elapsed break time
-  //     setWorkingTime(prevTime => prevTime + elapsedBreakTime);
-
-  //     // Clear the break in time from localStorage
-  //     localStorage.removeItem("BreakInTime");
-  //   } else if (latestEntryType === "checkin" && storedStartTime) {
-  //     // Calculate the elapsed time since the start time stored in localStorage
-  //     console.log("Resuming stopwatch...");
-  //     const startTime = parseInt(storedStartTime, 10);
-  //     const currentTime = Date.now();
-  //     const elapsedTime = Math.floor((currentTime - startTime) / 1000);
-
-  //     // Start the stopwatch with the elapsed time
-  //     setWorkingTime(elapsedTime);
-  //     const id = setInterval(() => {
-  //       setWorkingTime((prevTime) => prevTime + 1);
-  //     }, 1000);
-  //     setTimerId(id);
-  //   }
-  // }, [latestEntryType]);
-
   const renderCheckinTime = (checkinData, timesheetData) => {
     let checkinTime = null;
     let checkoutTime = null;
@@ -271,158 +209,19 @@ function CheckInCheckOut() {
   };
 
   const { checkinTime, checkoutTime, totalHours, totalMinutes } =
-  renderCheckinTime(checkinData, timesheetData);
+    renderCheckinTime(checkinData, timesheetData);
 
-
-    const handleCapture = (type) => {
-      if (!videoStream) return;
-  
-      setIsLoading(true);
-  
-      const currentTime = new Date().toLocaleString();
-  
-      setTimeout(() => {
-          const track = videoStream.getVideoTracks()[0];
-          const imageCapture = new ImageCapture(track);
-  
-          imageCapture
-              .takePhoto()
-              .then((blob) => {
-                  const img = new Image();
-                  img.src = URL.createObjectURL(blob);
-                  img.className = "captured-image";
-                  imageRef.current.innerHTML = "";
-                  imageRef.current.appendChild(img);
-  
-                  videoRef.current.classList.add("not-visible");
-  
-                  const reader = new FileReader();
-                  reader.readAsDataURL(blob);
-                  reader.onloadend = () => {
-                      const base64data = reader.result;
-  
-                      const fd = new FormData();
-                      fd.append("photo", base64data);
-                      fd.append("checkin_time", currentTime);
-                      fd.append("type", type);
-                      fd.append("user_id", id);
-  
-                      axios
-                          .post("facial-recognition/upload_photo/", fd)
-                          .then((resp) => {
-                              console.log(resp.data);
-                              setIsLoading(false);
-                              if (resp.data.message) {
-                                  toast.success(resp.data.message);
-                                  setLatestEntryType(type === "checkin" ? "checkout" : "checkin");
-                                  setTimeout(() => {
-                                      closeModal();
-                                      window.location.reload();
-                                  }, 3500);
-                              } else {
-                                  toast.error(resp.data.error || "Failed to detect user");
-                              }
-                          })
-                          .catch((err) => {
-                              console.log(err);
-                              setIsLoading(false);
-                              toast.error("Failed to detect user");
-                          });
-                  };
-              })
-              .catch((error) => {
-                  console.log("takePhoto() error: ", error);
-                  setIsLoading(false);
-                  setFailureMessage("Failed to capture photo");
-              });
-      }, 2000);
-  };
-  
-
-  // const handleCapture = (type) => {
-  //   if (!videoStream) return;
-
-  //   setIsLoading(true);
-
-  //   const currentTime = new Date().toLocaleString();
-
-  //   setTimeout(() => {
-  //     const track = videoStream.getVideoTracks()[0];
-  //     const imageCapture = new ImageCapture(track);
-
-  //     imageCapture
-  //       .takePhoto()
-  //       .then((blob) => {
-  //         const img = new Image();
-  //         img.src = URL.createObjectURL(blob);
-  //         img.className = "captured-image";
-  //         imageRef.current.innerHTML = "";
-  //         imageRef.current.appendChild(img);
-
-  //         videoRef.current.classList.add("not-visible");
-
-  //         const reader = new FileReader();
-  //         reader.readAsDataURL(blob);
-  //         reader.onloadend = () => {
-  //           const base64data = reader.result;
-
-  //           const fd = new FormData();
-  //           fd.append("photo", base64data);
-  //           fd.append("checkin_time", currentTime);
-  //           fd.append("type", type);
-  //           fd.append("user_id" , id)
-            
-
-  //           axios
-  //             .post("facial-recognition/upload_photo/", fd)
-  //             .then((resp) => {
-  //               console.log(resp.data);
-  //               setIsLoading(false);
-  //               // toast.success("User detected successfully");
-  //               // setLatestEntryType(type === "checkin" ? "checkout" : "checkin");
-  //               // setTimeout(() => {
-  //               //   closeModal();
-  //               //   window.location.reload();
-  //               // }, 3500);
-  //               if (resp.status === 200) {
-  //                 toast.success("User detected successfully");
-  //                 setLatestEntryType(type === "checkin" ? "checkout" : "checkin");
-  //                 setTimeout(() => {
-  //                   closeModal();
-  //                   window.location.reload();
-  //                 }, 3500);
-  //               } else {
-  //                 toast.error("Photo is Not Clear");
-  //               }
-              
-  //             })
-  //             .catch((err) => {
-  //               console.log(err);
-  //               setIsLoading(false);
-  //               toast.error("Failed to detect user");
-  //             });
-  //         };
-  //       })
-  //       .catch((error) => {
-  //         console.log("takePhoto() error: ", error);
-  //         setIsLoading(false);
-  //         setFailureMessage("Failed to capture photo");
-  //       });
-  //   }, 2000);
-  // };
-
-
-  const handleBreaks = (type) => {
+  const handleCapture = (type) => {
     if (!videoStream) return;
-  
+
     setIsLoading(true);
-  
-    const currentTime = new Date().toLocaleDateString();
-  
+
+    const currentTime = new Date().toLocaleString();
+
     setTimeout(() => {
       const track = videoStream.getVideoTracks()[0];
       const imageCapture = new ImageCapture(track);
-  
+
       imageCapture
         .takePhoto()
         .then((blob) => {
@@ -431,22 +230,88 @@ function CheckInCheckOut() {
           img.className = "captured-image";
           imageRef.current.innerHTML = "";
           imageRef.current.appendChild(img);
-  
+
           videoRef.current.classList.add("not-visible");
-  
+
           const reader = new FileReader();
           reader.readAsDataURL(blob);
           reader.onloadend = () => {
             const base64data = reader.result;
-  
+
             const fd = new FormData();
             fd.append("photo", base64data);
             fd.append("checkin_time", currentTime);
             fd.append("type", type);
             fd.append("user_id", id);
 
-            console.log("break in user id", id)
-  
+            axios
+              .post("facial-recognition/mark_attendance_without_login/", fd)
+              .then((resp) => {
+                console.log(resp.data);
+                setIsLoading(false);
+                if (resp.data.message) {
+                  toast.success(resp.data.message);
+                  setLatestEntryType(
+                    type === "checkin" ? "checkout" : "checkin"
+                  );
+                  setTimeout(() => {
+                    closeModal();
+                    window.location.reload();
+                  }, 3500);
+                } else {
+                  toast.error(resp.data.error || "Failed to detect user");
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+                setIsLoading(false);
+                toast.error("Failed to detect user");
+              });
+          };
+        })
+        .catch((error) => {
+          console.log("takePhoto() error: ", error);
+          setIsLoading(false);
+          setFailureMessage("Failed to capture photo");
+        });
+    }, 2000);
+  };
+
+  const handleBreaks = (type) => {
+    if (!videoStream) return;
+
+    setIsLoading(true);
+
+    const currentTime = new Date().toLocaleDateString();
+
+    setTimeout(() => {
+      const track = videoStream.getVideoTracks()[0];
+      const imageCapture = new ImageCapture(track);
+
+      imageCapture
+        .takePhoto()
+        .then((blob) => {
+          const img = new Image();
+          img.src = URL.createObjectURL(blob);
+          img.className = "captured-image";
+          imageRef.current.innerHTML = "";
+          imageRef.current.appendChild(img);
+
+          videoRef.current.classList.add("not-visible");
+
+          const reader = new FileReader();
+          reader.readAsDataURL(blob);
+          reader.onloadend = () => {
+            const base64data = reader.result;
+
+            const fd = new FormData();
+            fd.append("photo", base64data);
+            fd.append("checkin_time", currentTime);
+            fd.append("type", type);
+            fd.append("user_id", id);
+
+            console.log("break in user id", id);
+
             axios
               .post("facial-recognition/break_in_out/", fd)
               .then((resp) => {
@@ -490,84 +355,6 @@ function CheckInCheckOut() {
         });
     }, 2000);
   };
-  
-
-  // const handleBreaks = (type) => {
-  //   if (!videoStream) return;
-
-  //   setIsLoading(true);
-
-  //   const currentTime = new Date().toLocaleDateString();
-
-  //   setTimeout(() => {
-  //     const track = videoStream.getVideoTracks()[0];
-  //     const imageCapture = new ImageCapture(track);
-
-  //     imageCapture
-  //       .takePhoto()
-  //       .then((blob) => {
-  //         const img = new Image();
-  //         img.src = URL.createObjectURL(blob);
-  //         img.className = "captured-image";
-  //         imageRef.current.innerHTML = "";
-  //         imageRef.current.appendChild(img);
-
-  //         videoRef.current.classList.add("not-visible");
-
-  //         const reader = new FileReader();
-  //         reader.readAsDataURL(blob);
-  //         reader.onloadend = () => {
-  //           const base64data = reader.result;
-
-  //           const fd = new FormData();
-  //           fd.append("photo", base64data);
-  //           fd.append("checkin_time", currentTime);
-  //           fd.append("type", type);
-  //           fd.append("user_id", id);
-
-  //           axios
-  //             .post("facial-recognition/break_in_out/", fd)
-  //             .then((resp) => {
-  //               console.log(resp.data);
-  //               setIsLoading(false);
-  //               toast.success("User detected successfully");
-
-  //               if (type === "breakin") {
-  //                 // Store break in time in localStorage
-  //                 localStorage.setItem("BreakInTime", Date.now());
-  //               } else if (type === "breakout") {
-  //                 // Calculate break duration and update working time
-  //                 const breakInTime = localStorage.getItem("BreakInTime");
-  //                 if (breakInTime) {
-  //                   const elapsedBreakTime = Math.floor(
-  //                     (Date.now() - parseInt(breakInTime)) / 1000
-  //                   );
-  //                   setWorkingTime((prevTime) => prevTime + elapsedBreakTime);
-  //                 }
-  //                 // Clear break in time from localStorage
-  //                 localStorage.removeItem("BreakInTime");
-  //               }
-
-  //               setLatestEntryType(type === "breakin" ? "breakout" : "breakin");
-  //               setTimeout(() => {
-  //                 closeModal();
-  //                 window.location.reload();
-  //               }, 3500);
-  //             })
-  //             .catch((err) => {
-  //               console.log(err);
-  //               setIsLoading(false);
-  //               toast.error("Failed to detect user");
-  //             });
-  //         };
-  //       })
-  //       .catch((error) => {
-  //         console.log("takePhoto() error :", error);
-  //         setIsLoading(false);
-  //         setFailureMessage("Failed to capture photo");
-  //       });
-  //   }, 2000);
-  // };
 
   const closeModal = () => {
     const modal = modalRef.current;
@@ -617,11 +404,6 @@ function CheckInCheckOut() {
     setupCamera();
   }, []);
 
-  // useEffect(() => {
-  //   const latestEntryType = checkinData.length > 0 ? checkinData[0].type : null;
-  //   setLatestEntryType(latestEntryType);
-  // }, [checkinData]);
-
   useEffect(() => {
     const modal = modalRef.current;
     if (modal) {
@@ -638,10 +420,6 @@ function CheckInCheckOut() {
           {latestEntryType === "breakout" && <h3>Check In Time</h3>}
 
           <div className="d-flex align-items-center justify-content-center">
-            {/* <div className="bg-light p-2 mt-4" style={{ borderRadius: "50%", width: "150px", height: "150px", border: "5px solid #e3e3e3", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-              <h4>{checkinTime ? checkinTime.toLocaleTimeString() : 'N/A'}</h4>
-              <p>Check In</p>
-            </div> */}
             <div
               className="bg-light p-2 mt-4"
               style={{
@@ -670,32 +448,9 @@ function CheckInCheckOut() {
                 )}
               </h5>
             </div>
-
-            {/* <div className="bg-light p-2 mt-4" style={{ borderRadius: "50%", width: "150px", height: "150px", border: "5px solid #e3e3e3", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-              <h4>{latestEntryType === 'checkin' ? `${Math.floor(workingTime / 3600)} : ${Math.floor((workingTime % 3600) / 60)} ` : `${totalHours} : ${totalMinutes} Hrs`}</h4>
-            </div> */}
-
-            {/* <div className="bg-light p-2 mt-4" style={{ borderRadius: "50%", width: "150px", height: "150px", border: "5px solid #e3e3e3", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-              <h4>{checkoutTime ? checkoutTime.toLocaleTimeString() : 'N/A'}</h4>
-              <p>Check Out</p>
-            </div> */}
           </div>
           <br></br>
 
-          {/* <div className="mt-3 text-center">
-              <p> Check-In At : { checkinTime ? checkinTime.toLocaleTimeString() : 'N/A'}</p>
-              <p> Check-Out At : {checkoutTime ? checkoutTime.toLocaleTimeString() : 'N/A'}</p>
-              <p> Total Break Time : {formatBreakTime(timesheetData[0]?.break_time)}</p>
-
-             
-            </div> */}
-
-          {/* <div className="break-time"> */}
-          {/* <h5>Total Break Time:</h5><p>{formatBreakTime(timesheetData[0]?.break_time)}</p> */}
-
-          {/* </div> */}
-
-          {/* Render total working time */}
           <div className="mt-3 text-center">
             <p>
               {" "}
@@ -708,7 +463,6 @@ function CheckInCheckOut() {
               {checkoutTime ? checkoutTime.toLocaleTimeString() : "N/A"}
             </p>
 
-            {/* Display Total Break Time when latestEntryType is 'checkin' or 'checkout' */}
             {(latestEntryType === "checkin" ||
               latestEntryType === "checkout") && (
               <p>
@@ -717,9 +471,6 @@ function CheckInCheckOut() {
                 {formatBreakTime(timesheetData[0]?.break_time)}
               </p>
             )}
-
-            {/* Uncomment to display Total Working Time */}
-            {/* <h4>Total Working Time: {totalHours} Hrs {totalMinutes} Mins</h4> */}
           </div>
 
           <div className="mt-5 mb-5">
@@ -849,172 +600,3 @@ function CheckInCheckOut() {
 }
 
 export default CheckInCheckOut;
-
-// const webcamRef = useRef(null);
-//   const [imageSrc, setImageSrc] = useState(null);
-//   const [showWebcamModal, setshowWebcamModal] = useState(false);
-//   const handleClose = () => {
-//     setshowWebcamModal(false);
-//   };
-
-//   const capture = () => {
-//     // const imageSrc = webcamRef.current.getScreenshot();
-//     // setImageSrc(imageSrc);
-//   };
-
-//   const handleCheckIn = () => {
-//     // Implement your check-in logic here
-//     console.log("Checked In");
-//     setshowWebcamModal(true);
-//   };
-
-//   const handleCheckOut = () => {
-//     // Implement your check-out logic here
-//     console.log("Checked Out");
-//     setshowWebcamModal(true);
-//   };
-
-//   return (
-//     <div className="container">
-//       <div className="row align-items-center">
-//         <div className="col-md-9 mt-4">
-//           <div className="d-flex align-items-center">
-//             <h2 className="mb-0">Attendance</h2>
-
-//             <span className="mx-3">|</span>
-
-//             <nav aria-label="breadcrumb" className="mt-3">
-//               <ol className="breadcrumb">
-//                 <li className="breadcrumb-item">
-//                   <a href="/">
-//                     {" "}
-//                     <i className="fas fa-home"></i> Home
-//                   </a>
-//                 </li>
-//                 <li className="breadcrumb-item active" aria-current="page">
-//                   <i className="fas fa-list"> </i> Attendance
-//                 </li>
-//               </ol>
-//             </nav>
-//           </div>
-//         </div>
-//       </div>
-//       <div
-//         className="card-container mt-4 mx-auto"
-//         style={{ maxWidth: "400px" }}
-//       >
-//         <div className="card mx-auto" style={{ width: "100%" }}>
-//           <h5 className="card-header">Attendance</h5>
-//           <div className="card-body text-center">
-//             {/* <div className="blank-container"></div> */}
-//             {/* <div className="bg-light p-2"></div> */}
-//             <div className="d-flex align-items-center justify-content-center">
-//               <div
-//                 className="bg-light p-2 mt-4"
-//                 style={{
-//                   borderRadius: "50%",
-//                   width: "150px",
-//                   height: "150px",
-//                   border: "5px solid #e3e3e3",
-//                   display: "flex",
-//                   flexDirection: "column",
-//                   alignItems: "center",
-//                   justifyContent: "center",
-//                 }}
-//               >
-//                 <h4>0.0 Hrs</h4>
-//               </div>
-//             </div>
-
-//             {/* <Webcam
-//                 audio={false}
-//                 ref={webcamRef}
-//                 screenshotFormat="image/jpeg"
-//                 className="webcam"
-//                 videoConstraints={{ width: 320, height: 240 }}
-//               /> */}
-//             <div className="mt-5 mb-5">
-//               {/* <button className="btn btn-primary mx-2" onClick={capture}>Capture</button> */}
-//               <button className="btn btn-primary mx-2" onClick={handleCheckIn}>
-//                 <i className="fas fa-user-check"></i> Check In
-//               </button>
-//               <button className="btn btn-primary mx-2" onClick={handleCheckOut}>
-//                 <i className="fas fa-user-clock"></i> Check Out
-//               </button>
-//             </div>
-//             {imageSrc && (
-//               <div className="mt-3">
-//                 <img src={imageSrc} alt="Captured" className="captured-image" />
-//               </div>
-//             )}
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* <Modal show={showWebcamModal} onHide={handleClose} centered>
-//         <Modal.Header closeButton>
-//           <Modal.Title>Attendance</Modal.Title>
-//         </Modal.Header>
-//         <Modal.Body
-//           className="text-center"
-//           style={{ height: "300px", overflow: "hidden" }}
-//         >
-//           <Webcam
-//             audio={false}
-//             ref={webcamRef}
-//             screenshotFormat="image/jpeg"
-//             className="webcam"
-//             videoConstraints={{ width: 320, height: 240 }}
-//           />
-//         </Modal.Body>
-//       </Modal> */}
-
-//       {/* <div className="modal fade" id="WebcamModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-//   <div className="modal-dialog">
-//     <div className="modal-content">
-//       <div className="modal-header">
-//         <h1 className="modal-title fs-5" id="exampleModalLabel">Attendance</h1>
-//         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-//       </div>
-//       <div className="modal-body">
-//       <Webcam
-//                 audio={false}
-//                 ref={webcamRef}
-//                 screenshotFormat="image/jpeg"
-//                 className="webcam"
-//                 videoConstraints={{ width: 320, height: 240 }}
-//               />
-//       </div>
-//       <div className="modal-footer">
-//         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-//       </div>
-//     </div>
-//   </div>
-//       </div> */}
-//     </div>
-//   );
-
-// const fetchCheckinData = async () => {
-//   console.log("Hii");
-//   try {
-//     const userId = 1;
-//     const response = await axios.get(`/facial-recognition/get_checkin_data/${userId}`);
-
-//     const { checkin_data , timesheet_data } = response.data;
-
-//     setCheckinData(checkin_data);
-//     setTimeSheetData(timesheet_data)
-
-//     console.log("the checks details", response.data)
-
-//     const latestEntryType = checkin_data.length >= 0 ? checkin_data[checkin_data.length - 1].type : null;
-//    console.log(checkin_data)
-//     console.log(`Latest Entry Type Log======${latestEntryType}`);
-//     setLatestEntryType(latestEntryType);
-
-//     setIsLoading(false);
-//   } catch (error) {
-//     setError('Error fetching check-in data');
-//     setIsLoading(false);
-//   }
-// }
