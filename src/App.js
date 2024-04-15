@@ -27,6 +27,8 @@ import { Login } from "./pages/Accounts/LogIn";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import TestPage from "./pages/TestPage";
+import ContractWorkers from "./pages/Accounts/ContractWorkers";
+import CreateContractWorker from "./pages/Accounts/CreateContractWorker";
 
 export default function App() {
   const authState = useSelector((state) => state.auth);
@@ -56,6 +58,30 @@ export default function App() {
               <Route path="/load" exact component={LoadingScreen} />
               <Route path="/checkin" exact component={CheckInCheckOut} />
               <Route path="/attendance" exact component={attendanceList} />
+
+              <Route path="/contract-workers">
+                {isSuperuser ? (
+                  <>
+                    <Route
+                      path="/contract-workers/create-contract-worker"
+                      exact
+                      component={CreateContractWorker}
+                    />
+                    <Route
+                      path="/contract-workers/edit-contract-worker/:id"
+                      exact
+                      component={EditUser}
+                    />
+                    <Route
+                      path="/contract-workers"
+                      exact
+                      component={ContractWorkers}
+                    />
+                  </>
+                ) : (
+                  <Redirect to="/" />
+                )}
+              </Route>
 
               <Route path="/users">
                 {isSuperuser ? (

@@ -6,17 +6,18 @@ import AgGridUserList from "../../components/FaceRecognition/AgGridUserList";
 import LoadingScreen from "../../components/Layout/LoadingScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { hideLoading, showLoading } from "../../actions/loadingActions";
+import AgGridContractWorkerList from "../../components/FaceRecognition/AgGridContractWorkerList";
 
-function Users() {
+function ContractWorkers() {
   const [rowData, setRowData] = useState([]);
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading.loading);
-  const fetchAllUsers = async () => {
+  const fetchAllContractWorkers = async () => {
     dispatch(showLoading());
     await axios
-      .get("/accounts/users/")
+      .get("/accounts/contract-workers/")
       .then((response) => {
-        const modifiedData = response.data.users.map((user) => ({
+        const modifiedData = response.data.contract_workers.map((user) => ({
           ...user,
           employeeName: `${user.first_name || ""} ${user.last_name || ""}`,
         }));
@@ -29,23 +30,28 @@ function Users() {
   };
 
   useEffect(() => {
-    fetchAllUsers();
+    fetchAllContractWorkers();
   }, []);
 
-  const handleDeleteUser = async (userId) => {
-    await axios
-      .delete(`/accounts/users/delete/${userId}/`)
-      .then((response) => {
-        console.log("User deleted successfully:", response.data);
-        toast.error("User deleted successfully", {
-          icon: <i className="fas fa-check" color="#fff"></i>,
-        });
-
-        fetchAllUsers();
-      })
-      .catch((error) => {
-        console.error("Error deleting user:", error);
+  const handleDeleteContractWorker = async (contractWorkerId) => {
+    try {
+      const response = await axios.delete(
+        `/accounts/contract-workers/delete/${contractWorkerId}/`
+      );
+      console.log("ContractWorker deleted successfully:", response.data);
+      // toast.success("Contract Worker deleted successfully", {
+      //   icon: <i className="fas fa-check" style={{ color: "white" }}></i>,
+      //   style: { backgroundColor: "green" },
+      // });
+      toast.success("Contract Worker deleted successfully");
+      fetchAllContractWorkers();
+    } catch (error) {
+      console.error("Error deleting Contract Worker:", error);
+      toast.error("Error deleting Contract Worker", {
+        icon: <i className="fas fa-times" style={{ color: "white" }}></i>,
+        style: { backgroundColor: "red" },
       });
+    }
   };
 
   return (
@@ -57,7 +63,7 @@ function Users() {
           <div className="row align-items-center">
             <div className="col-md-9 mt-4">
               <div className="d-flex align-items-center">
-                <h2 className="mb-0">Users</h2>
+                <h2 className="mb-0">Contract Workers</h2>
                 <span className="ms-3 fs-4 text-muted">|</span>
                 <nav aria-label="breadcrumb" className="d-inline-block ms-3">
                   <ol className="breadcrumb bg-transparent m-0 p-0">
@@ -67,7 +73,7 @@ function Users() {
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      <i className="fas fa-users"> </i> Users
+                      <i className="fas fa-users"> </i> Contract-Workers
                     </li>
                   </ol>
                 </nav>
@@ -76,18 +82,18 @@ function Users() {
 
             <div className="col-md-3 d-flex justify-content-end mt-4">
               <a
-                className="btn btn-primary"
-                href="/users/create-user/"
+                className="btn-sm btn-primary"
+                href="/contract-workers/create-contract-worker/"
                 role="button"
               >
-                <i className="fas fa-user-plus"> </i> Create New User
+                <i className="fas fa-user-plus"> </i> Add New Worker
               </a>
             </div>
 
             <div className="container" style={{ marginTop: "25px" }}>
-              <AgGridUserList
+              <AgGridContractWorkerList
                 rowData={rowData}
-                onDeleteUser={handleDeleteUser}
+                onDeleteContractWorker={handleDeleteContractWorker}
               />
             </div>
           </div>
@@ -136,4 +142,4 @@ function Users() {
   );
 }
 
-export default Users;
+export default ContractWorkers;
