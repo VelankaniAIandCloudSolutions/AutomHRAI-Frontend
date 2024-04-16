@@ -59,6 +59,22 @@ export default function AppSidebar() {
                   </Link>
                 </li>
               </ul>
+              <ul className="nav nav-treeview">
+                <li className="nav-item">
+                  <Link to="/locations" className="nav-link">
+                    <i className="far fa-circle nav-icon"></i>
+                    <p>Locations</p>
+                  </Link>
+                </li>
+              </ul>
+              <ul className="nav nav-treeview">
+                <li className="nav-item">
+                  <Link to="/categories" className="nav-link">
+                    <i className="far fa-circle nav-icon"></i>
+                    <p>Categories</p>
+                  </Link>
+                </li>
+              </ul>
             </li>            
             <li className="nav-item has-treeview">
               <Link to="#" className="nav-link">
