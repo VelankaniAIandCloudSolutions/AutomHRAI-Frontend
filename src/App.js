@@ -28,6 +28,9 @@ import { Login } from "./pages/Accounts/LogIn";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import TestPage from "./pages/TestPage";
+import ContractWorkers from "./pages/Accounts/ContractWorkers";
+import CreateContractWorker from "./pages/Accounts/CreateContractWorker";
+import ProjectLanding from "./pages/Accounts/ProjectLanding";
 
 import Locations from "./pages/Accounts/Locations";
 import Category from "./pages/Accounts/Category"
@@ -65,6 +68,49 @@ export default function App() {
                 component={CheckInCheckOutNew}
               />
               <Route path="/attendance" exact component={attendanceList} />
+
+              <Route path="/contract-workers">
+                {isSuperuser ? (
+                  <>
+                    <Route
+                      path="/contract-workers/create-contract-worker"
+                      exact
+                      component={CreateContractWorker}
+                    />
+                    <Route
+                      path="/contract-workers/edit-contract-worker/:id"
+                      exact
+                      component={EditUser}
+                    />
+                    <Route
+                      path="/contract-workers"
+                      exact
+                      component={ContractWorkers}
+                    />
+                  </>
+                ) : (
+                  <Redirect to="/" />
+                )}
+              </Route>
+              <Route path="/projects">
+                {isSuperuser ? (
+                  <>
+                    {/* <Route
+                      path="/projects/create-contract-worker"
+                      exact
+                      component={CreateContractWorker}
+                    /> */}
+                    {/* <Route
+                      path="/projects/edit-project/:id"
+                      exact
+                      component={EditUser}
+                    /> */}
+                    <Route path="/projects" exact component={ProjectLanding} />
+                  </>
+                ) : (
+                  <Redirect to="/" />
+                )}
+              </Route>
 
               <Route path="/users">
                 {isSuperuser ? (

@@ -3,30 +3,30 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { useHistory } from "react-router-dom";
-function AgGridUserList({ rowData, onDeleteUser }) {
-  const [selectedUserId, setSelectedUserId] = useState(null);
+function AgGridUserList({ rowData, onDeleteContractWorker }) {
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
 
-  const handleDeleteClick = (userId) => {
-    setSelectedUserId(userId);
+  const handleDeleteClick = (projectId) => {
+    setSelectedProjectId(projectId);
   };
   const handleClose = () => {
-    setSelectedUserId(null);
+    setSelectedProjectId(null);
   };
 
   const handleConfirmDelete = () => {
-    onDeleteUser(selectedUserId, handleClose);
+    onDeleteContractWorker(selectedProjectId, handleClose);
   };
 
   function ActionsCellRenderer(props) {
     const history = useHistory();
     console.log(props.data.id);
     const handleEditClick = () => {
-      const userId = props.data.id;
-      history.push(`/users/edit-user/${userId}`);
+      const projectId = props.data.id;
+      history.push(`/projects/edit-project/${projectId}`);
     };
     const handleDeleteClickInRenderer = () => {
-      const userId = props.data.id;
-      handleDeleteClick(userId);
+      const projectId = props.data.id;
+      handleDeleteClick(projectId);
     };
 
     return (
@@ -49,11 +49,20 @@ function AgGridUserList({ rowData, onDeleteUser }) {
   }
 
   const colDefs = [
-    { headerName: "Employee ID", field: "emp_id", filter: true },
-    { headerName: "Employee Name", field: "employeeName", filter: true },
-    { headerName: "Email", field: "email", width: 250, filter: true },
-    { headerName: "Mobile No", field: "phone_number", filter: true },
-    { headerName: "Is Active", field: "is_active", filter: true },
+    { headerName: "Project Name", field: "name", width: 300, filter: true },
+    {
+      headerName: "Location",
+      field: "location.name",
+      width: 300,
+      filter: true,
+    },
+    {
+      headerName: "Category",
+      field: "category.name",
+      width: 300,
+      filter: true,
+    },
+
     {
       field: "id",
       headerName: "Actions",

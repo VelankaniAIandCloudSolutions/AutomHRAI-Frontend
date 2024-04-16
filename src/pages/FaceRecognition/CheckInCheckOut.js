@@ -33,6 +33,8 @@ function CheckInCheckOut() {
 
   const loggedUser = JSON.parse(localStorage.getItem("userAccount"));
   const id = loggedUser.user_account.id;
+  const loggedUser = JSON.parse(localStorage.getItem("userAccount"));
+  const id = loggedUser.user_account.id;
 
   const fetchCheckinData = async () => {
     try {
@@ -210,6 +212,7 @@ function CheckInCheckOut() {
 
   const { checkinTime, checkoutTime, totalHours, totalMinutes } =
     renderCheckinTime(checkinData, timesheetData);
+  renderCheckinTime(checkinData, timesheetData);
 
   const handleCapture = (type) => {
     if (!videoStream) return;

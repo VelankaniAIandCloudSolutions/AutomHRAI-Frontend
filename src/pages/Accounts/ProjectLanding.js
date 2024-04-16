@@ -6,22 +6,30 @@ import AgGridUserList from "../../components/FaceRecognition/AgGridUserList";
 import LoadingScreen from "../../components/Layout/LoadingScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { hideLoading, showLoading } from "../../actions/loadingActions";
+import AgGridContractWorkerList from "../../components/FaceRecognition/AgGridContractWorkerList";
+import AgGridProjectList from "../../components/FaceRecognition/AgGridProjectList";
+import CreateProjectModal from "../../components/FaceRecognition/CreateProjectModal";
 
-function Users() {
+function Projects() {
   const [rowData, setRowData] = useState([]);
+  const [location, setLocation] = useState([]);
+  const [category, setCategory] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [projects, setProjects] = useState([]);
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading.loading);
-  const fetchAllUsers = async () => {
+  const handleProjectCreated = (newProjects) => {
+    setRowData(newProjects);
+  };
+  const fetchAllProjects = async () => {
     dispatch(showLoading());
     await axios
-      .get("/accounts/users/")
+      .get("/accounts/projects")
       .then((response) => {
-        const modifiedData = response.data.users.map((user) => ({
-          ...user,
-          employeeName: `${user.first_name || ""} ${user.last_name || ""}`,
-        }));
-        setRowData(modifiedData);
         console.log("api data", response.data);
+        setRowData(response.data.projects);
+        setLocation(response.data.locations);
+        setCategory(response.data.categories);
         dispatch(hideLoading());
       })
       .catch((error) => console.error("Error fetching data:", error));
@@ -29,23 +37,30 @@ function Users() {
   };
 
   useEffect(() => {
-    fetchAllUsers();
+    fetchAllProjects();
   }, []);
 
-  const handleDeleteUser = async (userId) => {
-    await axios
-      .delete(`/accounts/users/delete/${userId}/`)
-      .then((response) => {
-        console.log("User deleted successfully:", response.data);
-        toast.error("User deleted successfully", {
-          icon: <i className="fas fa-check" color="#fff"></i>,
-        });
+  const handleAddNewProject = () => {
+    setShowModal(true);
+  };
 
-        fetchAllUsers();
-      })
-      .catch((error) => {
-        console.error("Error deleting user:", error);
-      });
+  const handleDeleteProject = async (projectId) => {
+    try {
+      const response = await axios.delete(
+        `/accounts/projects/delete/${projectId}/`
+      );
+      if (response.status === 204) {
+        console.log("Project deleted successfully");
+        toast.success("Project deleted successfully");
+        fetchAllProjects();
+      } else {
+        console.error("Unexpected status code:", response.status);
+        toast.error("Error deleting Project");
+      }
+    } catch (error) {
+      console.error("Error deleting Project:", error);
+      toast.error("Error deleting Project");
+    }
   };
 
   return (
@@ -57,7 +72,7 @@ function Users() {
           <div className="row align-items-center">
             <div className="col-md-9 mt-4">
               <div className="d-flex align-items-center">
-                <h2 className="mb-0">Users</h2>
+                <h2 className="mb-0">Projects</h2>
                 <span className="ms-3 fs-4 text-muted">|</span>
                 <nav aria-label="breadcrumb" className="d-inline-block ms-3">
                   <ol className="breadcrumb bg-transparent m-0 p-0">
@@ -67,7 +82,7 @@ function Users() {
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      <i className="fas fa-users"> </i> Users
+                      <i className="fas fa-users"> </i> Projects
                     </li>
                   </ol>
                 </nav>
@@ -75,21 +90,27 @@ function Users() {
             </div>
 
             <div className="col-md-3 d-flex justify-content-end mt-4">
-              <a
-                className="btn btn-primary"
-                href="/users/create-user/"
-                role="button"
+              <button
+                className="btn-sm btn-primary"
+                onClick={handleAddNewProject}
               >
-                <i className="fas fa-user-plus"> </i> Create New User
-              </a>
+                <i className="fas fa-user-plus"> </i> Add New Project
+              </button>
             </div>
 
             <div className="container" style={{ marginTop: "25px" }}>
-              <AgGridUserList
+              <AgGridProjectList
                 rowData={rowData}
-                onDeleteUser={handleDeleteUser}
+                onDeleteContractWorker={handleDeleteProject}
               />
             </div>
+            <CreateProjectModal
+              show={showModal}
+              handleClose={() => setShowModal(false)}
+              locations={location}
+              categories={category}
+              onProjectCreated={handleProjectCreated}
+            />
           </div>
 
           <div
@@ -136,4 +157,4 @@ function Users() {
   );
 }
 
-export default Users;
+export default Projects;

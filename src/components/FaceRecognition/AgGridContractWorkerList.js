@@ -3,18 +3,19 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { useHistory } from "react-router-dom";
-function AgGridUserList({ rowData, onDeleteUser }) {
-  const [selectedUserId, setSelectedUserId] = useState(null);
+function AgGridUserList({ rowData, onDeleteContractWorker }) {
+  const [selectedContractWorkerId, setSelectedContractWorkerId] =
+    useState(null);
 
-  const handleDeleteClick = (userId) => {
-    setSelectedUserId(userId);
+  const handleDeleteClick = (contractWorkerId) => {
+    setSelectedContractWorkerId(contractWorkerId);
   };
   const handleClose = () => {
-    setSelectedUserId(null);
+    setSelectedContractWorkerId(null);
   };
 
   const handleConfirmDelete = () => {
-    onDeleteUser(selectedUserId, handleClose);
+    onDeleteContractWorker(selectedContractWorkerId, handleClose);
   };
 
   function ActionsCellRenderer(props) {
@@ -22,11 +23,11 @@ function AgGridUserList({ rowData, onDeleteUser }) {
     console.log(props.data.id);
     const handleEditClick = () => {
       const userId = props.data.id;
-      history.push(`/users/edit-user/${userId}`);
+      history.push(`/contract-worker/edit-contract-worker/${contractWorkerId}`);
     };
     const handleDeleteClickInRenderer = () => {
-      const userId = props.data.id;
-      handleDeleteClick(userId);
+      const contractWorkerId = props.data.id;
+      handleDeleteClick(contractWorkerId);
     };
 
     return (
@@ -51,9 +52,10 @@ function AgGridUserList({ rowData, onDeleteUser }) {
   const colDefs = [
     { headerName: "Employee ID", field: "emp_id", filter: true },
     { headerName: "Employee Name", field: "employeeName", filter: true },
-    { headerName: "Email", field: "email", width: 250, filter: true },
+    { headerName: "Agency", field: "agency.name", filter: true },
+    { headerName: "Email", field: "email", filter: true },
     { headerName: "Mobile No", field: "phone_number", filter: true },
-    { headerName: "Is Active", field: "is_active", filter: true },
+
     {
       field: "id",
       headerName: "Actions",
