@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Modal } from "bootstrap";
 import "react-toastify/dist/ReactToastify.css";
 import LoadingScreen from "../../components/Layout/LoadingScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { hideLoading, showLoading } from "../../actions/loadingActions";
+import Webcam from "react-webcam";
 
 function CreateContractWorker() {
   const dispatch = useDispatch();
@@ -31,9 +33,33 @@ function CreateContractWorker() {
     "email",
     "password",
   ]);
+  // Define a state variable to hold the selected image option
+  const [imageOption, setImageOption] = useState("upload"); // Defaulting to 'upload'
+
+  // Function to handle radio button change and update the selected image option
+  const handleImageOptionChange = (option) => {
+    setImageOption(option);
+  };
+  const webcamRef = useRef(null);
+  const [capturedImage, setCapturedImage] = useState(null);
+  const fileInputRef = useRef(null);
+  const videoRef = useRef(null);
+  const imageRef = useRef(null);
+  const modalRef = useRef(null);
+  const capture = () => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    setCapturedImage(imageSrc);
+  };
+  const [videoStream, setVideoStream] = useState(null);
 
   useEffect(() => {
     // Fetch agency and location data
+    setupCamera();
+    const modal = modalRef.current;
+    if (modal) {
+      new Modal(modal);
+    }
+
     const fetchAgencies = async () => {
       try {
         const response = await axios.get("/accounts/contract-workers/create/");
@@ -46,6 +72,68 @@ function CreateContractWorker() {
 
     fetchAgencies();
   }, []);
+
+  const handleCapture = () => {
+    const modal = modalRef.current;
+
+    if (modal) {
+      const bsModal = Modal.getInstance(modal);
+      if (bsModal) {
+        bsModal.show();
+      }
+    }
+
+    // Clear previous captured image
+    setCapturedImage(null);
+    imageRef.current.innerHTML = "";
+    videoRef.current.classList.remove("not-visible");
+  };
+  const handleSavePhoto = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = videoRef.current.videoWidth;
+    canvas.height = videoRef.current.videoHeight;
+    const context = canvas.getContext("2d");
+    context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob((blob) => {
+      // Log the captured image Blob
+      console.log("Captured image Blob:", blob);
+
+      const img = new Image();
+      img.src = URL.createObjectURL(blob);
+      img.className = "captured-image";
+      imageRef.current.innerHTML = "";
+      imageRef.current.appendChild(img);
+
+      // Set the captured image in state
+      setCapturedImage(blob);
+      const file = new File([blob], "captured_photo.jpg", {
+        type: blob.type,
+      });
+      console.log("User images array before setting:", [file]);
+      setUserImages([file]);
+      console.log("User images array after setting:", [file]);
+
+      // Hide the live stream
+      videoRef.current.classList.add("not-visible");
+    }, "image/jpeg");
+  };
+
+  const setupCamera = () => {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      console.log("getUserMedia is not supported");
+      return;
+    }
+
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then((stream) => {
+        setVideoStream(stream);
+        videoRef.current.srcObject = stream;
+      })
+      .catch((error) => {
+        console.log("Something went wrong with getUserMedia: ", error);
+      });
+  };
 
   const handleChange = (e) => {
     const { id, type } = e.target;
@@ -267,18 +355,71 @@ function CreateContractWorker() {
                   </div>
                   <div className="row g-3 mb-2">
                     <div className="col-md-6">
-                      <label htmlFor="user_images" className="form-label">
-                        Image Upload
+                      <label className="form-label">
+                        Choose Contract Worker Image
                       </label>
-                      <input
-                        type="file"
-                        className="form-control"
-                        id="user_images"
-                        multiple
-                        accept="image/*"
-                        onChange={handleChange}
-                      />
+                      <div>
+                        <input
+                          type="radio"
+                          id="upload_image"
+                          name="image_option"
+                          value="upload"
+                          checked={imageOption === "upload"}
+                          onChange={() => setImageOption("upload")}
+                        />
+                        <label
+                          htmlFor="upload_image"
+                          style={{ marginLeft: "5px", fontWeight: "normal" }}
+                        >
+                          Upload Image
+                        </label>
+                      </div>
+                      <div>
+                        <input
+                          type="radio"
+                          id="capture_photo"
+                          name="image_option"
+                          value="capture"
+                          checked={imageOption === "capture"}
+                          onChange={() => setImageOption("capture")}
+                        />
+                        <label
+                          htmlFor="capture_photo"
+                          style={{ marginLeft: "5px", fontWeight: "normal" }}
+                        >
+                          Capture Photo from Webcam
+                        </label>
+                      </div>
                     </div>
+
+                    {imageOption === "upload" ? (
+                      <div className="col-md-6">
+                        <label htmlFor="user_images" className="form-label">
+                          Image Upload
+                        </label>
+                        <input
+                          type="file"
+                          className="form-control"
+                          id="user_images"
+                          multiple
+                          accept="image/*"
+                          onChange={handleChange}
+                          ref={fileInputRef}
+                        />
+                      </div>
+                    ) : (
+                      <div className="col-md-6">
+                        <button
+                          className="btn btn-link mt-2"
+                          onClick={handleCapture}
+                        >
+                          {" Capture Image "}
+                          <i className="fas fa-camera ml-1"></i>
+                          {/* Font Awesome camera icon */}
+                        </button>
+                      </div>
+                    )}
+
                     <div className="col-md-6">
                       <label htmlFor="aadhaar_card" className="form-label">
                         Aadhaar Card
@@ -304,6 +445,58 @@ function CreateContractWorker() {
                       />
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            className="modal fade"
+            id="exampleModal"
+            tabIndex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+            ref={modalRef}
+          >
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Capture Image
+                  </h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  <div className="text-center">
+                    <video
+                      autoPlay={true}
+                      id="video-element"
+                      ref={videoRef}
+                      style={{ width: 320, height: 240 }}
+                    ></video>
+                  </div>
+
+                  <div id="img-element" ref={imageRef}></div>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-dark"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+
+                  <button
+                    className="btn btn-primary "
+                    onClick={handleSavePhoto}
+                  >
+                    Save Photo
+                  </button>
                 </div>
               </div>
             </div>

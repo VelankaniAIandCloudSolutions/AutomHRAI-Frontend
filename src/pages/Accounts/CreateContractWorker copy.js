@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -17,13 +17,13 @@ function CreateContractWorker() {
     password: "",
     emp_id: "",
     phone_number: "",
-    user_image: "",
-    aadhaar_card: null,
-    pan: null,
     dob: "",
     company: "",
     agency: "",
   });
+  const [userImages, setUserImages] = useState([]);
+  const [aadhaarCard, setAadhaarCard] = useState(null);
+  const [panCard, setPanCard] = useState(null);
   const [agencies, setAgencies] = useState([]);
   const history = useHistory();
   const [requiredFields, setRequiredFields] = useState([
@@ -31,6 +31,15 @@ function CreateContractWorker() {
     "email",
     "password",
   ]);
+  const webcamRef = useRef(null);
+  const [capturedImage, setCapturedImage] = useState(null);
+  const fileInputRef = useRef(null);
+  const [showModal, setShowModal] = useState(false);
+  const [videoStream, setVideoStream] = useState(null);
+  const capture = () => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    setCapturedImage(imageSrc);
+  };
 
   useEffect(() => {
     // Fetch agency and location data
@@ -47,24 +56,64 @@ function CreateContractWorker() {
     fetchAgencies();
   }, []);
 
-  // const handleChange = (e) => {
-  //   const { id, value, type } = e.target;
+  const handleCapturePhoto = () => {
+    const constraints = {
+      video: true,
+    };
 
-  //   // If the input is a file input and it's for user images, get the file object(s)
-  //   let files = null;
-  //   if (type === "file" && id === "user_images") {
-  //     files = Array.from(e.target.files);
-  //   } else {
-  //     // If the input is a file input for Aadhaar card or PAN card, get only the first file
-  //     files = type === "file" ? e.target.files[0] : null;
-  //   }
+    navigator.mediaDevices
+      .getUserMedia(constraints)
+      .then((stream) => {
+        setVideoStream(stream);
+        setShowModal(true);
+        // Set the video stream as the source for the video element
+        const video = document.getElementById("videoPreview");
+        if (video) {
+          video.srcObject = stream;
+        }
+      })
+      .catch((error) => {
+        console.error("Error accessing webcam:", error);
+      });
+  };
 
-  //   // Update the form data state based on the input type
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     [id]: type === "file" ? files : value,
-  //   }));
-  // };
+  const handleSavePhoto = () => {
+    const video = document.getElementById("videoPreview");
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const context = canvas.getContext("2d");
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const dataUrl = canvas.toDataURL("image/jpeg");
+
+    // Create a new File object from the captured image data
+    const byteString = atob(dataUrl.split(",")[1]);
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const uint8Array = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+      uint8Array[i] = byteString.charCodeAt(i);
+    }
+    const blob = new Blob([uint8Array], { type: "image/jpeg" });
+    const file = new File([blob], "captured_image.jpeg");
+
+    // Optionally display the captured image
+    // You can create an <img> element and set its src to dataUrl
+
+    // Stop video stream
+    videoStream.getTracks().forEach((track) => track.stop());
+
+    // Hide modal
+    setShowModal(false);
+
+    // Trigger a file upload event programmatically
+    const inputEvent = new Event("input", { bubbles: true });
+    Object.defineProperty(fileInputRef.current, "files", {
+      value: [file],
+      writable: true,
+    });
+    fileInputRef.current.dispatchEvent(inputEvent);
+  };
+
   const handleChange = (e) => {
     const { id, type } = e.target;
     let value = e.target.value;
@@ -75,18 +124,18 @@ function CreateContractWorker() {
       files = Array.from(e.target.files);
       // Set value to the array of file names for display purposes, if needed
       value = files.map((file) => file.name).join(",");
+      setUserImages(files);
+    } else if (type === "file" && id === "aadhaar_card") {
+      setAadhaarCard(e.target.files[0]);
+    } else if (type === "file" && id === "pan") {
+      setPanCard(e.target.files[0]);
     } else {
-      // If the input is a file input for Aadhaar card or PAN card, get only the first file
-      files = type === "file" ? e.target.files[0] : null;
-      // Set value to the file name for display purposes, if needed
-      value = files ? files.name : value;
+      // If the input is not a file input, update form data state directly
+      setFormData((prevData) => ({
+        ...prevData,
+        [id]: value,
+      }));
     }
-
-    // Update the form data state based on the input type
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: type === "file" ? files : value,
-    }));
   };
 
   const handleCreateUser = () => {
@@ -102,9 +151,17 @@ function CreateContractWorker() {
     Object.entries(formData).forEach(([key, value]) => {
       formDataToSend.append(key, value);
     });
-    console.log("form data", formDataToSend);
-    for (let pair of formDataToSend.entries()) {
-      console.log(pair[0] + ", " + pair[1]);
+
+    userImages.forEach((image) => {
+      formDataToSend.append("user_images", image);
+    });
+
+    if (aadhaarCard) {
+      formDataToSend.append("aadhaar_card", aadhaarCard);
+    }
+
+    if (panCard) {
+      formDataToSend.append("pan", panCard);
     }
 
     dispatch(showLoading());
@@ -120,7 +177,6 @@ function CreateContractWorker() {
         toast.success("Contract Worker created successfully");
         history.push("/contract-workers");
         dispatch(hideLoading());
-        // You can redirect to another page or perform other actions here
       })
       .catch((error) => {
         // Handle error
@@ -288,8 +344,18 @@ function CreateContractWorker() {
                         multiple
                         accept="image/*"
                         onChange={handleChange}
+                        ref={fileInputRef}
                       />
                     </div>
+                    <div className="col-md-6">
+                      <button
+                        className="btn btn-primary"
+                        onClick={handleCapturePhoto}
+                      >
+                        Capture Photo from Webcam
+                      </button>
+                    </div>
+
                     <div className="col-md-6">
                       <label htmlFor="aadhaar_card" className="form-label">
                         Aadhaar Card
@@ -315,6 +381,51 @@ function CreateContractWorker() {
                       />
                     </div>
                   </div>
+                  {/* Modal for displaying video stream */}
+                  {showModal && (
+                    <div
+                      className="modal"
+                      tabIndex="-1"
+                      role="dialog"
+                      style={{ display: "block" }}
+                    >
+                      <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                          <div className="modal-header">
+                            <h5 className="modal-title">Capture Photo</h5>
+                            <button
+                              type="button"
+                              className="btn-close"
+                              onClick={() => setShowModal(false)}
+                            ></button>
+                          </div>
+                          <div className="modal-body">
+                            <video
+                              id="videoPreview"
+                              width="100%"
+                              autoPlay
+                            ></video>
+                          </div>
+                          <div className="modal-footer">
+                            <button
+                              type="button"
+                              className="btn btn-secondary"
+                              onClick={() => setShowModal(false)}
+                            >
+                              Close
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-primary"
+                              onClick={handleSavePhoto}
+                            >
+                              Save Photo
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
