@@ -5,6 +5,7 @@ import { Modal } from "bootstrap";
 import { toast } from "react-toastify";
 import LoadingScreen from "../../components/Layout/LoadingScreen";
 import ContractWorkerAttendanceGrid from "../../components/FaceRecognition/ContractWorkerAttendanceGrid";
+import DigitalClock from "../../components/Layout/DigitalClock";
 
 export default function CheckInCheckOutNew() {
   const formatDate = (date) => {
@@ -15,6 +16,9 @@ export default function CheckInCheckOutNew() {
   const [videoStream, setVideoStream] = useState(null);
   const [attendamceData, setAttendanceData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedProject, setSelectedProject] = useState("");
+  const [projects, setProjects] = useState([]);
   const videoRef = useRef(null);
   const imageRef = useRef(null);
   const modalRef = useRef(null);
@@ -42,6 +46,7 @@ export default function CheckInCheckOutNew() {
         }
       );
       setAttendanceData(response.data.checks_breaks);
+      setProjects(response.data.projects);
       setIsLoading(false);
       console.log(response.data);
     } catch (error) {
@@ -141,6 +146,42 @@ export default function CheckInCheckOutNew() {
       });
   };
 
+  const handleSelectionChange = (selectedRows) => {
+    setSelectedRows(selectedRows);
+  };
+
+  const handleProjectSelectChange = (event) => {
+    setSelectedProject(event.target.value);
+    console.log("event value", event.target.value);
+  };
+
+  const submitAssignProject = async () => {
+    if (selectedProject === "") {
+      toast.error("Please select a project");
+      return;
+    }
+    console.log("selectde project", selectedProject);
+    const formData = {
+      selected_attendance_entries: JSON.stringify(selectedRows),
+      project_id: selectedProject,
+    };
+    console.log("formData", formData);
+    setIsLoading(true);
+    await axios
+      .post("facial-recognition/assign_project/", formData)
+      .then((response) => {
+        setIsLoading(false);
+        console.log(response.data);
+        toast.success(response.data.message);
+        getContractWorkerAttendance();
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+        toast.error("An error occured, please try again later ");
+      });
+  };
+
   return (
     <>
       <div className="container">
@@ -164,6 +205,9 @@ export default function CheckInCheckOutNew() {
         <div className="card">
           <div className="card-header">Mark Attendnace</div>
           <div className="card-body">
+            <div className="row mb-2">
+              <DigitalClock />
+            </div>
             <div className="row justify-content-around">
               <div className="col-auto">
                 <button
@@ -219,16 +263,30 @@ export default function CheckInCheckOutNew() {
         <div className="card">
           <div className="card-header d-flex justify-content-between align-items-center">
             <h6 className="me-auto">Attendance Details</h6>
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={handleChange}
-              className="form-control"
-              style={{ width: "200px" }}
-            />
+            <div className="d-flex">
+              <button
+                type="button"
+                className="btn btn-primary me-2"
+                data-bs-toggle="modal"
+                data-bs-target="#assignProjectModal"
+                disabled={selectedRows.length === 0}
+              >
+                Assign Project
+              </button>
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={handleChange}
+                className="form-control"
+                style={{ width: "200px" }}
+              />
+            </div>
           </div>
           <div className="card-body">
-            <ContractWorkerAttendanceGrid attendanceData={attendamceData} />
+            <ContractWorkerAttendanceGrid
+              attendanceData={attendamceData}
+              onSelectionChange={handleSelectionChange}
+            />
           </div>
         </div>
       </div>
@@ -270,6 +328,67 @@ export default function CheckInCheckOutNew() {
                 type="button"
                 className="btn btn-dark"
                 data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="modal fade"
+        id="assignProjectModal"
+        tabIndex="-1"
+        aria-labelledby="assignProjectModalLabel"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="assignProjectModalLabel">
+                Assign Project
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <div className="mb-3">
+                <label for="select" className="form-label">
+                  Select a Project
+                </label>
+                <select
+                  id="select"
+                  className="form-select"
+                  onChange={handleProjectSelectChange}
+                  value={selectedProject}
+                >
+                  <option value={""}> Select a Project</option>
+                  {projects.map((project) => (
+                    <option key={project.id} value={project.id}>
+                      {project.name} - {project.category.name} -
+                      {project.location.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                data-bs-dismiss="modal"
+                type="button"
+                className="btn btn-primary"
+                onClick={() => submitAssignProject(selectedProject)}
+              >
+                Assign
+              </button>
+              <button
+                data-bs-dismiss="modal"
+                type="button"
+                className="btn btn-danger"
               >
                 Close
               </button>
