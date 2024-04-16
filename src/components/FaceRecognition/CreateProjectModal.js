@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import { Axios } from "axios";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
 const Backdrop = ({ show, handleClose }) => {
   return (
     <div
@@ -10,7 +13,13 @@ const Backdrop = ({ show, handleClose }) => {
   );
 };
 
-const CreateProjectModal = ({ show, handleClose, locations, categories }) => {
+const CreateProjectModal = ({
+  show,
+  handleClose,
+  locations,
+  categories,
+  onProjectCreated,
+}) => {
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
@@ -34,21 +43,29 @@ const CreateProjectModal = ({ show, handleClose, locations, categories }) => {
     console.log("Category:", category);
 
     try {
-      const response = await axios.post("/projects/create/", {
+      const response = await axios.post("/accounts/projects/create/", {
         name,
         location,
         category,
       });
 
       // Check if response is successful (you may need to adjust this based on your API's response format)
-      if (response.status === 201) {
+      if (response.status >= 200 && response.status < 300) {
         console.log("Project created successfully");
+
+        setName("");
+        setLocation("");
+        setCategory("");
+        const newProjects = response.data.projects;
+        onProjectCreated(newProjects);
+        handleClose();
+
         toast.success("Project created successfully");
-        handleClose(); // Close the modal after submission
+        // Close the modal after submission
         // Redirect the user to the /projects page
-        window.location.href = "/projects";
       } else {
         console.error("Failed to create project");
+        toast.error("Error Creating Project");
       }
     } catch (error) {
       console.error("An error occurred:", error);

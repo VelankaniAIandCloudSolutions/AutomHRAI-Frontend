@@ -15,8 +15,12 @@ function Projects() {
   const [location, setLocation] = useState([]);
   const [category, setCategory] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [projects, setProjects] = useState([]);
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading.loading);
+  const handleProjectCreated = (newProjects) => {
+    setRowData(newProjects);
+  };
   const fetchAllProjects = async () => {
     dispatch(showLoading());
     await axios
@@ -45,7 +49,7 @@ function Projects() {
       const response = await axios.delete(
         `/accounts/projects/delete/${projectId}/`
       );
-      if (response.status === 201) {
+      if (response.status === 204) {
         console.log("Project deleted successfully");
         toast.success("Project deleted successfully");
         fetchAllProjects();
@@ -105,6 +109,7 @@ function Projects() {
               handleClose={() => setShowModal(false)}
               locations={location}
               categories={category}
+              onProjectCreated={handleProjectCreated}
             />
           </div>
 
