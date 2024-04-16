@@ -17,13 +17,13 @@ function CreateContractWorker() {
     password: "",
     emp_id: "",
     phone_number: "",
+    user_image: "",
+    aadhaar_card: null,
+    pan: null,
     dob: "",
     company: "",
     agency: "",
   });
-  const [userImages, setUserImages] = useState([]);
-  const [aadhaarCard, setAadhaarCard] = useState(null);
-  const [panCard, setPanCard] = useState(null);
   const [agencies, setAgencies] = useState([]);
   const history = useHistory();
   const [requiredFields, setRequiredFields] = useState([
@@ -47,6 +47,24 @@ function CreateContractWorker() {
     fetchAgencies();
   }, []);
 
+  // const handleChange = (e) => {
+  //   const { id, value, type } = e.target;
+
+  //   // If the input is a file input and it's for user images, get the file object(s)
+  //   let files = null;
+  //   if (type === "file" && id === "user_images") {
+  //     files = Array.from(e.target.files);
+  //   } else {
+  //     // If the input is a file input for Aadhaar card or PAN card, get only the first file
+  //     files = type === "file" ? e.target.files[0] : null;
+  //   }
+
+  //   // Update the form data state based on the input type
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     [id]: type === "file" ? files : value,
+  //   }));
+  // };
   const handleChange = (e) => {
     const { id, type } = e.target;
     let value = e.target.value;
@@ -57,18 +75,18 @@ function CreateContractWorker() {
       files = Array.from(e.target.files);
       // Set value to the array of file names for display purposes, if needed
       value = files.map((file) => file.name).join(",");
-      setUserImages(files);
-    } else if (type === "file" && id === "aadhaar_card") {
-      setAadhaarCard(e.target.files[0]);
-    } else if (type === "file" && id === "pan") {
-      setPanCard(e.target.files[0]);
     } else {
-      // If the input is not a file input, update form data state directly
-      setFormData((prevData) => ({
-        ...prevData,
-        [id]: value,
-      }));
+      // If the input is a file input for Aadhaar card or PAN card, get only the first file
+      files = type === "file" ? e.target.files[0] : null;
+      // Set value to the file name for display purposes, if needed
+      value = files ? files.name : value;
     }
+
+    // Update the form data state based on the input type
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: type === "file" ? files : value,
+    }));
   };
 
   const handleCreateUser = () => {
@@ -84,17 +102,9 @@ function CreateContractWorker() {
     Object.entries(formData).forEach(([key, value]) => {
       formDataToSend.append(key, value);
     });
-
-    userImages.forEach((image) => {
-      formDataToSend.append("user_images", image);
-    });
-
-    if (aadhaarCard) {
-      formDataToSend.append("aadhaar_card", aadhaarCard);
-    }
-
-    if (panCard) {
-      formDataToSend.append("pan", panCard);
+    console.log("form data", formDataToSend);
+    for (let pair of formDataToSend.entries()) {
+      console.log(pair[0] + ", " + pair[1]);
     }
 
     dispatch(showLoading());
@@ -110,6 +120,7 @@ function CreateContractWorker() {
         toast.success("Contract Worker created successfully");
         history.push("/contract-workers");
         dispatch(hideLoading());
+        // You can redirect to another page or perform other actions here
       })
       .catch((error) => {
         // Handle error

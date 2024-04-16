@@ -3,6 +3,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import { hideLoading, showLoading } from "../../actions/loadingActions";
+
 const Backdrop = ({ show, handleClose }) => {
   return (
     <div
@@ -20,6 +23,7 @@ const CreateProjectModal = ({
   categories,
   onProjectCreated,
 }) => {
+  const dispatch = useDispatch();
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
@@ -41,7 +45,7 @@ const CreateProjectModal = ({
     console.log("Name:", name);
     console.log("Location:", location);
     console.log("Category:", category);
-
+    dispatch(showLoading());
     try {
       const response = await axios.post("/accounts/projects/create/", {
         name,
@@ -58,6 +62,7 @@ const CreateProjectModal = ({
         setCategory("");
         const newProjects = response.data.projects;
         onProjectCreated(newProjects);
+        dispatch(hideLoading());
         handleClose();
 
         toast.success("Project created successfully");
@@ -65,6 +70,7 @@ const CreateProjectModal = ({
         // Redirect the user to the /projects page
       } else {
         console.error("Failed to create project");
+        dispatch(hideLoading());
         toast.error("Error Creating Project");
       }
     } catch (error) {
