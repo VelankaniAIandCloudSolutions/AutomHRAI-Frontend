@@ -29,6 +29,7 @@ import { useSelector } from "react-redux";
 import TestPage from "./pages/TestPage";
 import ContractWorkers from "./pages/Accounts/ContractWorkers";
 import CreateContractWorker from "./pages/Accounts/CreateContractWorker";
+import ProjectLanding from "./pages/Accounts/ProjectLanding";
 
 export default function App() {
   const authState = useSelector((state) => state.auth);
@@ -77,6 +78,25 @@ export default function App() {
                       exact
                       component={ContractWorkers}
                     />
+                  </>
+                ) : (
+                  <Redirect to="/" />
+                )}
+              </Route>
+              <Route path="/projects">
+                {isSuperuser ? (
+                  <>
+                    {/* <Route
+                      path="/projects/create-contract-worker"
+                      exact
+                      component={CreateContractWorker}
+                    /> */}
+                    {/* <Route
+                      path="/projects/edit-project/:id"
+                      exact
+                      component={EditUser}
+                    /> */}
+                    <Route path="/projects" exact component={ProjectLanding} />
                   </>
                 ) : (
                   <Redirect to="/" />

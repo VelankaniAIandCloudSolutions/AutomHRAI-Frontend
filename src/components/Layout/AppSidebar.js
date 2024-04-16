@@ -60,6 +60,12 @@ export default function AppSidebar() {
                         <i className="far fa-circle nav-icon"></i>
                         <p>Contract Workers</p>
                       </Link>
+                    </li>{" "}
+                    <li className="nav-item">
+                      <Link to="/projects" className="nav-link">
+                        <i className="far fa-circle nav-icon"></i>
+                        <p>Projects</p>
+                      </Link>
                     </li>
                   </ul>
                 </li>

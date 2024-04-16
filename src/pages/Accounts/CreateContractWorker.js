@@ -74,7 +74,7 @@ function CreateContractWorker() {
     if (type === "file" && id === "user_images") {
       files = Array.from(e.target.files);
       // Set value to the array of file names for display purposes, if needed
-      value = files.map((file) => file.name).join(", ");
+      value = files.map((file) => file.name).join(",");
     } else {
       // If the input is a file input for Aadhaar card or PAN card, get only the first file
       files = type === "file" ? e.target.files[0] : null;
