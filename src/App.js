@@ -29,6 +29,9 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import TestPage from "./pages/TestPage";
 
+import Locations from "./pages/Accounts/Locations";
+import Category from "./pages/Accounts/Category"
+
 export default function App() {
   const authState = useSelector((state) => state.auth);
   const isStaff = authState.userData?.user_account?.is_staff;
@@ -113,6 +116,11 @@ export default function App() {
                       exact
                       component={EmployeeAttendance}
                     />
+
+                    <Route path="/locations" exact component={Locations} />
+                    <Route path="/categories" exact component={Category} />
+
+
                   </>
                 ) : (
                   <Redirect to="/" />
