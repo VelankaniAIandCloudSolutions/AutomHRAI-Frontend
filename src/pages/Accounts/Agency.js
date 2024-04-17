@@ -19,9 +19,12 @@ const Agency = ({ loading, }) => {
   const [agencyData, setAgencyData] = useState(null);
   const [selectedAgency, setSelectedAgency] = useState(null);
 
+
   const handleSelectedAgency = (agency) => {
     setSelectedAgency(agency);
     console.log("Selected Agency:", agency);
+    
+    
   };
 
   const handleFormDataChange = (newFormData) => {
@@ -36,6 +39,7 @@ const Agency = ({ loading, }) => {
       }
       const response = await axios.post('/accounts/agency_list/', formDataToSend);
       console.log(response.data); 
+      window.location.reload();
       
     } catch (error) {
       console.error('Error creating agency:', error);
@@ -54,18 +58,21 @@ const Agency = ({ loading, }) => {
   useEffect(() => {
     getAgencyList();
   }, []); 
+ 
 
   const confirmDelete = () => {
     axios
       .delete(`accounts/delete_agency/${selectedAgency.id}/`)
       .then((response) => {
         toast.success("Candidate deleted successfully");
-        
+        window.location.reload(); // Reload the page after successful deletion
       })
       .catch((error) => {
         console.error("Error deleting candidate:", error);
       });
   };
+
+ 
 
   return (
     <div className="container">
@@ -91,6 +98,24 @@ const Agency = ({ loading, }) => {
                     </li>
                   </ol>
                 </nav>
+              </div>
+            </div>
+
+            <div className="modal fade" id="deleteAgencyModal" tabindex="-1" aria-labelledby="deleteAgencyModalLabel" aria-hidden="true">
+              <div className="modal-dialog">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h1 className="modal-title fs-5" id="deleteAgencyModalLabel">Delete Agency</h1>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div className="modal-body">
+                    Are you sure you want to delete the Agency?
+                    </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" className="btn btn-outline-danger" onClick={confirmDelete}>Delete</button>
+                  </div>
+                </div>
               </div>
             </div>
 

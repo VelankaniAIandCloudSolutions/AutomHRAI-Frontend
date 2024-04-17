@@ -13,6 +13,7 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
   const handleAgGridDeleteClick = (agency) => {
     setSelectedAgency(agency);
     onSelectAgency(agency);
+   
     
   };
  
@@ -25,7 +26,7 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
       field: 'labour_license',
       cellRenderer: (params) => {
         if (params.value) {
-          const baseUrl = 'http://localhost:3000/';
+          const baseUrl = 'http://localhost:8000';
           const fileUrl = `${baseUrl}/${params.value}`;
           
           return (
@@ -62,13 +63,15 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
       field: 'pan',
       cellRenderer: (params) => {
         if (params.value) {
+          const baseUrl = 'http://localhost:8000';
+          const fileUrl = `${baseUrl}/${params.value}`;
           return (
             <div style={{ marginLeft: "55px" }}>
-              <a
-                href={params.value}
+               <a
+                href={fileUrl}
                 target="_blank"
                 className="btn btn-success btn-sm"
-                download={`pan_${params.data.id}.pdf`}
+                download
               >
                 <FontAwesomeIcon icon={faDownload} />
               </a>
@@ -95,13 +98,15 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
       field: 'wcp',
       cellRenderer: (params) => {
         if (params.value) {
+          const baseUrl = 'http://localhost:8000';
+          const fileUrl = `${baseUrl}/${params.value}`;
           return (
             <div style={{ marginLeft: "55px" }}>
-              <a
-                href={params.value}
+               <a
+                href={fileUrl}
                 target="_blank"
                 className="btn btn-success btn-sm"
-                download={`wcp_${params.data.id}.pdf`}
+                download
               >
                 <FontAwesomeIcon icon={faDownload} />
               </a>
@@ -129,15 +134,14 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
       cellRenderer: (params) => (
       
         <div style={{ marginLeft: "55px" }}>
-          <a
-            href={params.value}
-            target="_blank"
-            rel="noopener noreferrer"
+         <button
             className="btn btn-danger btn-sm"
-            onClick={() =>handleAgGridDeleteClick(params.data)}
+            data-bs-toggle="modal"
+            data-bs-target="#deleteAgencyModal" // Corrected modal ID
+            onClick={() =>  handleAgGridDeleteClick(params.data)}
           >
             <FontAwesomeIcon icon={faTrash} />
-          </a>
+          </button>
         </div>
       ),
     },
