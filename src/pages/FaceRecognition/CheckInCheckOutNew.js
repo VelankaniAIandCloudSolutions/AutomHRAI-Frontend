@@ -203,7 +203,7 @@ export default function CheckInCheckOutNew() {
           </nav>
         </div>
         <div className="card">
-          <div className="card-header">Mark Attendnace</div>
+          <div className="card-header">Mark Attendance</div>
           <div className="card-body">
             <div className="row mb-2">
               <DigitalClock />
@@ -302,7 +302,7 @@ export default function CheckInCheckOutNew() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Mark Attendnace
+                Mark Attendance
               </h5>
               <button
                 type="button"
