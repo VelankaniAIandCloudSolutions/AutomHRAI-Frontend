@@ -27,6 +27,7 @@ function CreateContractWorker() {
   const [aadhaarCard, setAadhaarCard] = useState(null);
   const [panCard, setPanCard] = useState(null);
   const [agencies, setAgencies] = useState([]);
+  const [isConfirmingSave, setIsConfirmingSave] = useState(true);
   const history = useHistory();
   const [requiredFields, setRequiredFields] = useState([
     "first_name",
@@ -105,17 +106,40 @@ function CreateContractWorker() {
       imageRef.current.appendChild(img);
 
       // Set the captured image in state
+      setIsConfirmingSave(false);
       setCapturedImage(blob);
       const file = new File([blob], "captured_photo.jpg", {
         type: blob.type,
       });
       console.log("User images array before setting:", [file]);
-      setUserImages([file]);
+
       console.log("User images array after setting:", [file]);
 
       // Hide the live stream
       videoRef.current.classList.add("not-visible");
     }, "image/jpeg");
+  };
+  const handleConfirmSave = () => {
+    // Logic to save the captured image
+    // For now, I'm just logging the image blob
+    console.log("Captured image Blob:", capturedImage);
+
+    const modal = modalRef.current;
+
+    if (modal) {
+      const bsModal = Modal.getInstance(modal);
+      if (bsModal) {
+        bsModal.hide();
+      }
+    }
+    // Create a file object from the blob
+    const file = new File([capturedImage], "captured_photo.jpg", {
+      type: capturedImage.type,
+    });
+    setUserImages([file]);
+    setIsConfirmingSave(true);
+
+    // Reset the button text
   };
 
   const setupCamera = () => {
@@ -323,23 +347,29 @@ function CreateContractWorker() {
                   <div className="row g-3 mb-2">
                     <div className="col-md-6 ">
                       <label htmlFor="agency" className="form-label">
-                        Agency
+                        Agency <span className="text-danger">*</span>
                       </label>
-                      {agencies && agencies.length > 0 && (
-                        <select
-                          className="form-select"
-                          id="agency"
-                          value={formData.agency}
-                          onChange={handleChange}
-                        >
-                          <option value="">Select Agency</option>
-                          {agencies.map((agency, index) => (
-                            <option key={index} value={agency.id}>
-                              {agency.name}
-                            </option>
-                          ))}
-                        </select>
-                      )}
+                      <select
+                        className="form-select"
+                        id="agency"
+                        value={formData.agency}
+                        onChange={handleChange}
+                      >
+                        {agencies && agencies.length > 0 ? (
+                          <>
+                            <option value="">Select Agency</option>
+                            {agencies.map((agency, index) => (
+                              <option key={index} value={agency.id}>
+                                {agency.name}
+                              </option>
+                            ))}
+                          </>
+                        ) : (
+                          <option value="" disabled>
+                            No agencies available
+                          </option>
+                        )}
+                      </select>
                     </div>
                     <div className="col-md-6">
                       <label htmlFor="dob" className="form-label">
@@ -417,6 +447,19 @@ function CreateContractWorker() {
                           <i className="fas fa-camera ml-1"></i>
                           {/* Font Awesome camera icon */}
                         </button>
+                        {isConfirmingSave && capturedImage && (
+                          <div>
+                            <span>captured_photo.jpg</span>
+                            <a
+                              href={URL.createObjectURL(capturedImage)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn btn-link"
+                            >
+                              View
+                            </a>
+                          </div>
+                        )}
                       </div>
                     )}
 
@@ -491,12 +534,21 @@ function CreateContractWorker() {
                     Close
                   </button>
 
-                  <button
-                    className="btn btn-primary "
-                    onClick={handleSavePhoto}
-                  >
-                    Save Photo
-                  </button>
+                  {isConfirmingSave ? (
+                    <button
+                      className="btn btn-primary"
+                      onClick={handleSavePhoto}
+                    >
+                      Take Photo
+                    </button>
+                  ) : (
+                    <button
+                      className="btn btn-success"
+                      onClick={handleConfirmSave}
+                    >
+                      Confirm Photo
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
