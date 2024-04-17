@@ -29,11 +29,15 @@ function CreateContractWorker() {
   const [agencies, setAgencies] = useState([]);
   const [isConfirmingSave, setIsConfirmingSave] = useState(true);
   const history = useHistory();
+  const [automaticGeneration, setAutomaticGeneration] = useState(false);
+  const [generatedEmail, setGeneratedEmail] = useState("");
+  const [generatedPassword, setGeneratedPassword] = useState("");
   const [requiredFields, setRequiredFields] = useState([
     "first_name",
     "email",
     "password",
   ]);
+  const [showPassword, setShowPassword] = useState(false);
   // Define a state variable to hold the selected image option
   const [imageOption, setImageOption] = useState("upload"); // Defaulting to 'upload'
 
@@ -52,6 +56,9 @@ function CreateContractWorker() {
     setCapturedImage(imageSrc);
   };
   const [videoStream, setVideoStream] = useState(null);
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword(!showPassword); // Toggle the state variable
+  };
 
   useEffect(() => {
     // Fetch agency and location data
@@ -177,13 +184,57 @@ function CreateContractWorker() {
       setPanCard(e.target.files[0]);
     } else {
       // If the input is not a file input, update form data state directly
+      // unless automatic generation is enabled
+
       setFormData((prevData) => ({
         ...prevData,
         [id]: value,
       }));
+
+      // Always update email and password fields directly, regardless of automatic generation
+      if (id === "email") {
+        setFormData((prevData) => ({
+          ...prevData,
+          email: value,
+        }));
+      }
+
+      if (id === "password") {
+        setFormData((prevData) => ({
+          ...prevData,
+          password: value,
+        }));
+      }
     }
   };
+  const handleAutomaticGeneration = (e) => {
+    setAutomaticGeneration(e.target.checked);
+    if (e.target.checked) {
+      // Generate email and password
+      const generatedEmail = `${formData.first_name}@automhr.com`;
+      const generatedPassword = "test"; // You can replace 'test' with your password generation logic
+      setGeneratedEmail(generatedEmail);
+      setGeneratedPassword(generatedPassword);
 
+      // Update formData state with generated values
+      setFormData({
+        ...formData,
+        email: generatedEmail,
+        password: generatedPassword,
+      });
+    } else {
+      // Reset email and password fields
+      setGeneratedEmail("");
+      setGeneratedPassword("");
+      // Reset formData state for email and password
+      setFormData({
+        ...formData,
+        email: "",
+        password: "",
+      });
+    }
+    dob;
+  };
   const handleCreateUser = () => {
     const missingFields = requiredFields.filter((field) => !formData[field]);
     if (missingFields.length > 0) {
@@ -209,6 +260,7 @@ function CreateContractWorker() {
     if (panCard) {
       formDataToSend.append("pan", panCard);
     }
+    console.log("Multipart form data:", formDataToSend);
 
     dispatch(showLoading());
     axios
@@ -299,6 +351,31 @@ function CreateContractWorker() {
                   </div>
                   <div className="row g-3 mb-2">
                     <div className="col-md-6">
+                      <label
+                        htmlFor="automaticGeneration"
+                        className="form-label"
+                      >
+                        Automatic Generation
+                      </label>
+                      <div className="form-check">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          id="automaticGeneration"
+                          onChange={handleAutomaticGeneration}
+                          checked={automaticGeneration}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="automaticGeneration"
+                        >
+                          Auto Generate Email & Password
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row g-3 mb-2">
+                    <div className="col-md-6">
                       <label htmlFor="email" className="form-label">
                         Email <span className="text-danger">*</span>
                       </label>
@@ -306,6 +383,7 @@ function CreateContractWorker() {
                         type="text"
                         className="form-control"
                         id="email"
+                        value={formData.email} // Always use formData.email
                         onChange={handleChange}
                       />
                     </div>
@@ -313,12 +391,26 @@ function CreateContractWorker() {
                       <label htmlFor="password" className="form-label">
                         Password <span className="text-danger">*</span>
                       </label>
-                      <input
-                        type="password"
-                        className="form-control"
-                        id="password"
-                        onChange={handleChange}
-                      />
+                      <div className="input-group">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          className="form-control"
+                          id="password"
+                          value={formData.password}
+                          onChange={handleChange}
+                        />
+                        <button
+                          className="btn btn-outline-secondary"
+                          type="button"
+                          onClick={handleTogglePasswordVisibility}
+                        >
+                          <i
+                            className={`fas ${
+                              showPassword ? "fa-eye-slash" : "fa-eye"
+                            }`}
+                          ></i>
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <div className="row g-3 mb-2">
