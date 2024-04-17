@@ -7,10 +7,15 @@ import { faDownload, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 
 
-const AgGridComponent = ({ agencyData, handleDeleteClick }) => {
+const AgGridComponent = ({ agencyData, onSelectAgency }) => {
   const [selectedAgency, setSelectedAgency] = useState(null);
 
-
+  const handleAgGridDeleteClick = (agency) => {
+    setSelectedAgency(agency);
+    onSelectAgency(agency);
+    
+  };
+ 
   const columnDefs = [
     { headerName: 'Name', field: 'name' },
     { headerName: 'Owner Name', field: 'agency_owner' },
@@ -122,13 +127,14 @@ const AgGridComponent = ({ agencyData, handleDeleteClick }) => {
       headerName: "Delete",
       field: "id",
       cellRenderer: (params) => (
+      
         <div style={{ marginLeft: "55px" }}>
           <a
             href={params.value}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-danger btn-sm"
-            onClick={() => handleDeleteClick(params.data)}
+            onClick={() =>handleAgGridDeleteClick(params.data)}
           >
             <FontAwesomeIcon icon={faTrash} />
           </a>
@@ -136,9 +142,7 @@ const AgGridComponent = ({ agencyData, handleDeleteClick }) => {
       ),
     },
   ];
-  const handleDeleteClick = (agency) => {
-    setSelectedAgency(agency);
-  };
+  
 
   return (
     <div className="ag-theme-quartz" style={{ height: "500px", width: "100%" }}>

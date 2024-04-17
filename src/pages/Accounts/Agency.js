@@ -3,6 +3,8 @@ import LoadingScreen from "../../components/Layout/LoadingScreen";
 import AgencyAgGrid from '../../components/Account/AgencyAgGrid';
 import AgencyForm from '../../components/Account/AgencyForm';
 import axios from 'axios';
+import { toast } from "react-toastify";
+
 
 const Agency = ({ loading, }) => {
 
@@ -16,8 +18,10 @@ const Agency = ({ loading, }) => {
   });
   const [agencyData, setAgencyData] = useState(null);
   const [selectedAgency, setSelectedAgency] = useState(null);
-  const handleDeleteClick = (agency) => {
+
+  const handleSelectedAgency = (agency) => {
     setSelectedAgency(agency);
+    console.log("Selected Agency:", agency);
   };
 
   const handleFormDataChange = (newFormData) => {
@@ -53,7 +57,7 @@ const Agency = ({ loading, }) => {
 
   const confirmDelete = () => {
     axios
-      .delete(`accounts/delete_agency/${selectedAgency}/`)
+      .delete(`accounts/delete_agency/${selectedAgency.id}/`)
       .then((response) => {
         toast.success("Candidate deleted successfully");
         
@@ -121,7 +125,7 @@ const Agency = ({ loading, }) => {
             </div>
           </div>
           <div className="mt-4">
-            <AgencyAgGrid agencyData={agencyData} handleDeleteClick={handleDeleteClick} />
+            <AgencyAgGrid agencyData={agencyData} onSelectAgency={handleSelectedAgency} />
           </div>
         </>
       )}
