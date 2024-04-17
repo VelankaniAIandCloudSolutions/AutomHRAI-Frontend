@@ -58,6 +58,12 @@ export default function AppSidebar() {
                     <p>Users</p>
                   </Link>
                 </li>
+                <li className="nav-item">
+                  <Link to="/add-agencies" className="nav-link">
+                    <i className="far fa-circle nav-icon"></i>
+                    <p>Agencies</p>
+                  </Link>
+                </li>
               </ul>
             </li>            
             <li className="nav-item has-treeview">

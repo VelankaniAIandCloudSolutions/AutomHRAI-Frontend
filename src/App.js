@@ -28,6 +28,7 @@ import { Login } from "./pages/Accounts/LogIn";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import TestPage from "./pages/TestPage";
+import Agency from "./pages/Accounts/Agency"
 
 export default function App() {
   const authState = useSelector((state) => state.auth);
@@ -112,6 +113,11 @@ export default function App() {
                       path="/employee-attendance"
                       exact
                       component={EmployeeAttendance}
+                    />
+                     <Route
+                      path="/add-agencies"
+                      exact
+                      component={Agency}
                     />
                   </>
                 ) : (
