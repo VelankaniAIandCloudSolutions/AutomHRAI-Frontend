@@ -90,11 +90,8 @@ function Projects() {
             </div>
 
             <div className="col-md-3 d-flex justify-content-end mt-4">
-              <button
-                className="btn-sm btn-primary"
-                onClick={handleAddNewProject}
-              >
-                <i className="fas fa-user-plus"> </i> Add New Project
+              <button className="btn btn-primary" onClick={handleAddNewProject}>
+                <i className="fas fa-plus"> </i> Add New Project
               </button>
             </div>
 

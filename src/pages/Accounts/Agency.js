@@ -1,20 +1,18 @@
-import React, { useState , useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import LoadingScreen from "../../components/Layout/LoadingScreen";
-import AgencyAgGrid from '../../components/Account/AgencyAgGrid';
-import AgencyForm from '../../components/Account/AgencyForm';
-import axios from 'axios';
+import AgencyAgGrid from "../../components/Account/AgencyAgGrid";
+import AgencyForm from "../../components/Account/AgencyForm";
+import axios from "axios";
 import { toast } from "react-toastify";
 
-
-const Agency = ({ loading, }) => {
-
+const Agency = ({ loading }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    agency_owner: '',
-    GST: '',
+    name: "",
+    agency_owner: "",
+    GST: "",
     labour_license: null,
-    PAN: '',
-    wcp: null
+    PAN: "",
+    wcp: null,
   });
   const [agencyData, setAgencyData] = useState(null);
   const [selectedAgency, setSelectedAgency] = useState(null);
@@ -34,33 +32,34 @@ const Agency = ({ loading, }) => {
       for (const key in formData) {
         formDataToSend.append(key, formData[key]);
       }
-      const response = await axios.post('/accounts/agency_list/', formDataToSend);
-      console.log(response.data); 
-      
+      const response = await axios.post(
+        "/accounts/agency_list/",
+        formDataToSend
+      );
+      console.log(response.data);
     } catch (error) {
-      console.error('Error creating agency:', error);
+      console.error("Error creating agency:", error);
     }
   };
 
   const getAgencyList = async () => {
-    try{
-      const getResponse = await axios.get('/accounts/agency_list/');
+    try {
+      const getResponse = await axios.get("/accounts/agency_list/");
       setAgencyData(getResponse.data);
       console.log(getResponse.data);
-    }catch (error){
-      console.error('Error getting agency: ', error);
+    } catch (error) {
+      console.error("Error getting agency: ", error);
     }
   };
   useEffect(() => {
     getAgencyList();
-  }, []); 
+  }, []);
 
   const confirmDelete = () => {
     axios
       .delete(`accounts/delete_agency/${selectedAgency.id}/`)
       .then((response) => {
         toast.success("Candidate deleted successfully");
-        
       })
       .catch((error) => {
         console.error("Error deleting candidate:", error);
@@ -76,7 +75,7 @@ const Agency = ({ loading, }) => {
           <div className="row align-items-center">
             <div className="col-md-9 mt-4">
               <div className="d-flex align-items-center">
-                <h2 className="mb-0">Agency</h2>
+                <h2 className="mb-0">Agencies</h2>
                 <span className="ms-3 fs-4 text-muted">|</span>
                 <nav aria-label="breadcrumb" className="d-inline-block ms-3">
                   <ol className="breadcrumb bg-transparent m-0 p-0">
@@ -94,19 +93,44 @@ const Agency = ({ loading, }) => {
               </div>
             </div>
 
-            <div className="modal fade" id="agencyFormModal" tabIndex="-1" aria-labelledby="agencyFormModalLabel" aria-hidden="true">
+            <div
+              className="modal fade"
+              id="agencyFormModal"
+              tabIndex="-1"
+              aria-labelledby="agencyFormModalLabel"
+              aria-hidden="true"
+            >
               <div className="modal-dialog">
                 <div className="modal-content">
                   <div className="modal-header">
-                    <h1 className="modal-title fs-5" id="agencyFormModalLabel">Add Agency</h1>
-                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h1 className="modal-title fs-5" id="agencyFormModalLabel">
+                      Add Agency
+                    </h1>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
                   </div>
                   <div className="modal-body">
-                    <AgencyForm onFormDataChange={handleFormDataChange}  />
+                    <AgencyForm onFormDataChange={handleFormDataChange} />
                   </div>
                   <div className="modal-footer">
-                    <button type="button" className="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" className="btn btn-outline-success" onClick={handleSubmit}>Save</button>
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-outline-success"
+                      onClick={handleSubmit}
+                    >
+                      Save
+                    </button>
                   </div>
                 </div>
               </div>
@@ -115,17 +139,21 @@ const Agency = ({ loading, }) => {
             <div className="col-md-3 d-flex justify-content-end mt-0">
               <div className="d-flex justify-content-between align-items-center">
                 <button
-                  className="btn btn-outline-success mt-3"
+                  className="btn btn-primary mt-3"
                   data-bs-toggle="modal"
                   data-bs-target="#agencyFormModal"
                 >
+                  <i className="fas fa-plus me-1"></i>
                   Add Agency
                 </button>
               </div>
             </div>
           </div>
           <div className="mt-4">
-            <AgencyAgGrid agencyData={agencyData} onSelectAgency={handleSelectedAgency} />
+            <AgencyAgGrid
+              agencyData={agencyData}
+              onSelectAgency={handleSelectedAgency}
+            />
           </div>
         </>
       )}

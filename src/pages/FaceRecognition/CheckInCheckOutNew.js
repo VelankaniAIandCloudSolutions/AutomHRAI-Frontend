@@ -186,8 +186,8 @@ export default function CheckInCheckOutNew() {
     <>
       <div className="container">
         {isLoading && <LoadingScreen />}
-        <div className="d-flex align-items-center">
-          <h1>Attendance</h1>
+        <div className="d-flex align-items-center py-3">
+          <h2 className="mb-0">Attendance</h2>
           <span className="ms-3 fs-4 text-muted">|</span>
           <nav aria-label="breadcrumb" className="d-inline-block ms-3">
             <ol className="breadcrumb bg-transparent m-0 p-0">

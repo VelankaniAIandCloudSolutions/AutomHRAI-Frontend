@@ -9,17 +9,25 @@ import { faDownload, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 function AgGridCategory({ rowData, onRowSelected, onDeleteClick }) {
   const colDefs = [
     { headerName: "Name", field: "name", filter: true },
-   
+
     {
-      headerName: "Delete",
+      headerName: "Actions",
       field: "id",
       cellRenderer: (params) => (
-        <div style={{ marginLeft: "55px" }}>
+        <div>
+          <button
+            className="btn btn-primary btn-sm me-1"
+            onClick={() => onDeleteClick(params.data.id)}
+          >
+            <FontAwesomeIcon icon={faEdit} />
+            Edit
+          </button>
           <button
             className="btn btn-danger btn-sm"
             onClick={() => onDeleteClick(params.data.id)}
           >
             <FontAwesomeIcon icon={faTrash} />
+            Delete
           </button>
         </div>
       ),
@@ -32,13 +40,13 @@ function AgGridCategory({ rowData, onRowSelected, onDeleteClick }) {
 
   return (
     <div className="container">
-        <div className="ag-theme-quartz" style={{ height: 300  }}>
+      <div className="ag-theme-quartz" style={{ height: 300 }}>
         <AgGridReact
-            rowData={rowData}
-            columnDefs={colDefs}
-            gridOptions={gridOptions}
+          rowData={rowData}
+          columnDefs={colDefs}
+          gridOptions={gridOptions}
         />
-        </div>
+      </div>
     </div>
   );
 }

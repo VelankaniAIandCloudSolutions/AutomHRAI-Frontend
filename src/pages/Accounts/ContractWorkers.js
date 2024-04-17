@@ -81,13 +81,13 @@ function ContractWorkers() {
             </div>
 
             <div className="col-md-3 d-flex justify-content-end mt-4">
-              <a
-                className="btn-sm btn-primary"
+              <buttton
+                className="btn btn-primary"
                 href="/contract-workers/create-contract-worker/"
                 role="button"
               >
-                <i className="fas fa-user-plus"> </i> Add New Worker
-              </a>
+                <i className="fas fa-plus"> </i> Add New Worker
+              </buttton>
             </div>
 
             <div className="container" style={{ marginTop: "25px" }}>

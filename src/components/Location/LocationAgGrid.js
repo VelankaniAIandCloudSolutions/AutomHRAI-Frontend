@@ -9,17 +9,22 @@ import { faDownload, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 function AgGridLocation({ rowData, onRowSelected, onDeleteClick }) {
   const colDefs = [
     { headerName: "Name", field: "name", filter: true },
-    { headerName: "Company", field: "company.name", filter: true},
     {
-      headerName: "Delete",
+      headerName: "Actions",
       field: "id",
       cellRenderer: (params) => (
-        <div style={{ marginLeft: "55px" }}>
+        <div>
+          <button
+            className="btn btn-primary btn-sm me-1"
+            onClick={() => onDeleteClick(params.data.id)}
+          >
+            <FontAwesomeIcon icon={faEdit} /> Edit
+          </button>
           <button
             className="btn btn-danger btn-sm"
             onClick={() => onDeleteClick(params.data.id)}
           >
-            <FontAwesomeIcon icon={faTrash} />
+            <FontAwesomeIcon icon={faTrash} /> Delete
           </button>
         </div>
       ),
@@ -31,7 +36,7 @@ function AgGridLocation({ rowData, onRowSelected, onDeleteClick }) {
   };
 
   return (
-    <div className="ag-theme-quartz" style={{ height: 300 , width : 600 , marginLeft : 250 }}>
+    <div className="ag-theme-quartz" style={{ height: 500 }}>
       <AgGridReact
         rowData={rowData}
         columnDefs={colDefs}

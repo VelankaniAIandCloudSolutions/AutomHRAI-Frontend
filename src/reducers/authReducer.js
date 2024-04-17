@@ -1,6 +1,6 @@
 const userdetails = localStorage.getItem("userAccount");
 const initialState = {
-  loggedIn: userdetails !== null,
+  loggedIn: localStorage.getItem("token") !== null,
   userData: userdetails !== null ? JSON.parse(userdetails) : null,
 };
 

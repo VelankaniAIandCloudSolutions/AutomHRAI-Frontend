@@ -35,19 +35,21 @@ import ProjectLanding from "./pages/Accounts/ProjectLanding";
 import Locations from "./pages/Accounts/Locations";
 import Category from "./pages/Accounts/Category";
 import Agency from "./pages/Accounts/Agency";
+import axios from "axios";
 
 export default function App() {
   const authState = useSelector((state) => state.auth);
-  const isStaff = authState.userData?.user_account?.is_staff;
-  console.log("isStaff App.js====", isStaff);
-  const isSuperuser = authState.userData?.user_account?.is_superuser;
-  console.log("isSuperuser App.js", isSuperuser);
-  const isActive = authState.userData?.user_account?.is_active;
+  const userDetails = authState.userData?.user_account;
+  console.log("dets", userDetails);
+  // const isActive = authState.userData?.user_account?.is_active;
 
   const [isAuth, setIsAuth] = useState(false);
   useEffect(() => {
-    if (localStorage.getItem("access_token") !== null) {
+    // if (localStorage.getItem("access_token") !== null) {
+    if (localStorage.getItem("token") !== null) {
       setIsAuth(true);
+      axios.defaults.headers.common["Authorization"] =
+        "Token " + localStorage.getItem("token");
     }
   }, [isAuth]);
 
@@ -71,7 +73,8 @@ export default function App() {
               <Route path="/attendance" exact component={attendanceList} />
 
               <Route path="/contract-workers">
-                {isSuperuser ? (
+                {userDetails?.is_supervisor_admin ||
+                userDetails?.is_superuser ? (
                   <>
                     <Route
                       path="/contract-workers/create-contract-worker"
@@ -94,7 +97,8 @@ export default function App() {
                 )}
               </Route>
               <Route path="/projects">
-                {isSuperuser ? (
+                {userDetails?.is_supervisor_admin ||
+                userDetails?.is_superuser ? (
                   <>
                     {/* <Route
                       path="/projects/create-contract-worker"
@@ -114,7 +118,7 @@ export default function App() {
               </Route>
 
               <Route path="/users">
-                {isSuperuser ? (
+                {userDetails?.is_superuser ? (
                   <>
                     <Route
                       path="/users/create-user"
@@ -134,7 +138,8 @@ export default function App() {
               </Route>
 
               <Route path="/">
-                {isStaff || isSuperuser ? (
+                {userDetails?.is_supervisor_admin ||
+                userDetails?.is_superuser ? (
                   <>
                     <Route
                       path="/resume-details"

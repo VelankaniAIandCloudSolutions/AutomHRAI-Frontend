@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 const Dashboard = () => {
-  const [jobGroups, setJobGroups] = useState([]);
+  const authState = useSelector((state) => state.auth);
+  const userDetails = authState.userData?.user_account;
+  const history = useHistory();
 
-  const fetchJobGroups = async () => {
-    try {
-      const response = await axios.get("candidate-ranking/jobgroup_list/");
-      console.log(response.data);
-      setJobGroups(response.data);
-    } catch (error) {
-      console.error("Error fetching Jobgroups:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchJobGroups();
-  }, []);
+  if (userDetails?.is_supervisor_admin || userDetails?.is_supervisor) {
+    history.push("/checkin-checkout");
+    return null;
+  }
 
   return (
     <div className="content-wrapper">

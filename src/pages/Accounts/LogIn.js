@@ -16,7 +16,7 @@ export const Login = () => {
       password: password,
     };
     const { data } = await axios.post(
-      "http://localhost:8000/api/v1/token/",
+      "http://localhost:8000/api/v1/token/login/",
       user,
       {
         headers: { "Content-Type": "application/json" },
@@ -24,12 +24,13 @@ export const Login = () => {
     );
 
     localStorage.clear();
-    localStorage.setItem("access_token", data.access);
-    localStorage.setItem("refresh_token", data.refresh);
-    axios.defaults.headers.common["Authorization"] = `Bearer ${data["access"]}`;
-    axios.defaults.baseURL = "http://localhost:8000/api/v1/";
-
-    console.log(axios.defaults.headers.common["Authorization"]);
+    localStorage.setItem("token", data.auth_token);
+    axios.defaults.headers.common[
+      "Authorization"
+    ] = `Token ${data["auth_token"]}`;
+    // localStorage.setItem("access_token", data.access);
+    // localStorage.setItem("refresh_token", data.refresh);
+    // axios.defaults.headers.common["Authorization"] = `Bearer ${data["access"]}`;
     getUserAccount();
   };
 
@@ -41,7 +42,6 @@ export const Login = () => {
         console.log(data);
         // const userData=JSON.stringify(data);
         localStorage.setItem("userAccount", JSON.stringify(data));
-        console.log("Dispatching login action with payload", data);
         const userData = JSON.parse(localStorage.getItem("userAccount"));
         dispatch(login(JSON.stringify(userData)));
         window.location.href = "/";
@@ -60,6 +60,11 @@ export const Login = () => {
           <div className="Auth-form-container">
             <div className="card-container">
               <div className="card">
+                <img
+                  src="/automhrlogo.png"
+                  class="rounded mx-auto d-block w-50 h-50"
+                  alt="AutomHR"
+                />
                 <form className="Auth-form mx-5 my-5" onSubmit={submit}>
                   <div className="Auth-form-content ">
                     <h3 className="Auth-form-title text-center">Sign In</h3>
