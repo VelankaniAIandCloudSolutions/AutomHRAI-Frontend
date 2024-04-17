@@ -33,8 +33,6 @@ function CheckInCheckOut() {
 
   const loggedUser = JSON.parse(localStorage.getItem("userAccount"));
   const id = loggedUser.user_account.id;
-  const loggedUser = JSON.parse(localStorage.getItem("userAccount"));
-  const id = loggedUser.user_account.id;
 
   const fetchCheckinData = async () => {
     try {
