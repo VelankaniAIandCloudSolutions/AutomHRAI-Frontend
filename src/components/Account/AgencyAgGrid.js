@@ -23,7 +23,7 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
       field: "labour_license",
       cellRenderer: (params) => {
         if (params.value) {
-          const baseUrl = "http://localhost:3000/";
+          const baseUrl = "http://localhost:8000";
           const fileUrl = `${baseUrl}/${params.value}`;
 
           return (
@@ -59,13 +59,15 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
       field: "pan",
       cellRenderer: (params) => {
         if (params.value) {
+          const baseUrl = "http://localhost:8000";
+          const fileUrl = `${baseUrl}/${params.value}`;
           return (
             <div style={{ marginLeft: "55px" }}>
               <a
-                href={params.value}
+                href={fileUrl}
                 target="_blank"
                 className="btn btn-primary btn-sm"
-                download={`pan_${params.data.id}.pdf`}
+                download
               >
                 <FontAwesomeIcon icon={faDownload} />
               </a>
@@ -92,13 +94,15 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
       field: "wcp",
       cellRenderer: (params) => {
         if (params.value) {
+          const baseUrl = "http://localhost:8000";
+          const fileUrl = `${baseUrl}/${params.value}`;
           return (
             <div style={{ marginLeft: "55px" }}>
               <a
-                href={params.value}
+                href={fileUrl}
                 target="_blank"
                 className="btn btn-primary btn-sm"
-                download={`wcp_${params.data.id}.pdf`}
+                download
               >
                 <FontAwesomeIcon icon={faDownload} />
               </a>
@@ -137,6 +141,8 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-danger btn-sm"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteAgencyModal" // Corrected modal ID
             onClick={() => handleAgGridDeleteClick(params.data)}
           >
             <FontAwesomeIcon icon={faTrash} />
