@@ -88,6 +88,7 @@ function CreateContractWorker() {
     setCapturedImage(null);
     imageRef.current.innerHTML = "";
     videoRef.current.classList.remove("not-visible");
+    setIsConfirmingSave(true);
   };
   const handleSavePhoto = () => {
     const canvas = document.createElement("canvas");
