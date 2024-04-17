@@ -33,7 +33,8 @@ import CreateContractWorker from "./pages/Accounts/CreateContractWorker";
 import ProjectLanding from "./pages/Accounts/ProjectLanding";
 
 import Locations from "./pages/Accounts/Locations";
-import Category from "./pages/Accounts/Category"
+import Category from "./pages/Accounts/Category";
+import Agency from "./pages/Accounts/Agency";
 
 export default function App() {
   const authState = useSelector((state) => state.auth);
@@ -166,7 +167,7 @@ export default function App() {
                     <Route path="/locations" exact component={Locations} />
                     <Route path="/categories" exact component={Category} />
 
-
+                    <Route path="/add-agencies" exact component={Agency} />
                   </>
                 ) : (
                   <Redirect to="/" />
