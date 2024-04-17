@@ -52,9 +52,9 @@ const Categories = () => {
         axios.post('/accounts/categories/create/', { category })
             .then(response => {
                 console.log('Location submitted successfully:', response.data);
-                // window.location.reload();
+                window.location.reload();
 
-                toast.success('Location created successfully');
+                toast.success('Category created successfully');
             })
             .catch(error => {
                 console.error('Error submitting location:', error);
