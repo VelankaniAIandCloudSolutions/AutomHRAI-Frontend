@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import LoadingScreen from "../../components/Layout/LoadingScreen";
 import ContractWorkerAttendanceGrid from "../../components/FaceRecognition/ContractWorkerAttendanceGrid";
 import DigitalClock from "../../components/Layout/DigitalClock";
+import { useSelector } from "react-redux";
 
 export default function CheckInCheckOutNew() {
   const formatDate = (date) => {
@@ -22,6 +23,8 @@ export default function CheckInCheckOutNew() {
   const videoRef = useRef(null);
   const imageRef = useRef(null);
   const modalRef = useRef(null);
+  const authState = useSelector((state) => state.auth);
+  const userDetails = authState.userData?.user_account;
 
   useEffect(() => {
     setupCamera();
@@ -30,7 +33,7 @@ export default function CheckInCheckOutNew() {
     if (modal) {
       new Modal(modal);
     }
-  }, []);
+  }, [selectedDate]);
 
   const handleChange = (event) => {
     setSelectedDate(event.target.value);
@@ -264,15 +267,17 @@ export default function CheckInCheckOutNew() {
           <div className="card-header d-flex justify-content-between align-items-center">
             <h6 className="me-auto">Attendance Details</h6>
             <div className="d-flex">
-              <button
-                type="button"
-                className="btn btn-primary me-2"
-                data-bs-toggle="modal"
-                data-bs-target="#assignProjectModal"
-                disabled={selectedRows.length === 0}
-              >
-                Assign Project
-              </button>
+              {userDetails?.is_supervisor_admin && (
+                <button
+                  type="button"
+                  className="btn btn-primary me-2"
+                  data-bs-toggle="modal"
+                  data-bs-target="#assignProjectModal"
+                  disabled={selectedRows.length === 0}
+                >
+                  Assign Project
+                </button>
+              )}
               <input
                 type="date"
                 value={selectedDate}

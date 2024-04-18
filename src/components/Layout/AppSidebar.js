@@ -7,7 +7,10 @@ export default function AppSidebar() {
   const userDetails = authState.userData?.user_account;
   console.log(userDetails);
 
-  if (userDetails && userDetails.is_supervisor_admin) {
+  if (
+    userDetails &&
+    (userDetails.is_supervisor_admin || userDetails?.is_supervisor)
+  ) {
     return (
       <aside className="main-sidebar sidebar-dark-primary elevation-4">
         <Link to="/" className="brand-link">
@@ -26,47 +29,50 @@ export default function AppSidebar() {
               data-widget="treeview"
               role="menu"
             >
-              <li className="nav-item has-treeview">
-                <Link to="#" className="nav-link">
-                  <i className="nav-icon fas fa-user"></i>
-                  <p>
-                    Accounts
-                    <i className="right fas fa-angle-left"></i>
-                  </p>
-                </Link>
-                <ul className="nav nav-treeview">
-                  <li className="nav-item">
-                    <Link to="/contract-workers" className="nav-link">
-                      <i className="far fa-circle nav-icon"></i>
-                      <p>Contract Workers</p>
-                    </Link>
-                  </li>{" "}
-                  <li className="nav-item">
-                    <Link to="/projects" className="nav-link">
-                      <i className="far fa-circle nav-icon"></i>
-                      <p>Projects</p>
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="/locations" className="nav-link">
-                      <i className="far fa-circle nav-icon"></i>
-                      <p>Locations</p>
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="/categories" className="nav-link">
-                      <i className="far fa-circle nav-icon"></i>
-                      <p>Categories</p>
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="/add-agencies" className="nav-link">
-                      <i className="far fa-circle nav-icon"></i>
-                      <p>Agencies</p>
-                    </Link>
-                  </li>
-                </ul>
-              </li>
+              {userDetails?.is_supervisor_admin && (
+                <li className="nav-item has-treeview">
+                  <Link to="#" className="nav-link">
+                    <i className="nav-icon fas fa-user"></i>
+                    <p>
+                      Accounts
+                      <i className="right fas fa-angle-left"></i>
+                    </p>
+                  </Link>
+                  <ul className="nav nav-treeview">
+                    <li className="nav-item">
+                      <Link to="/contract-workers" className="nav-link">
+                        <i className="far fa-circle nav-icon"></i>
+                        <p>Contract Workers</p>
+                      </Link>
+                    </li>{" "}
+                    <li className="nav-item">
+                      <Link to="/projects" className="nav-link">
+                        <i className="far fa-circle nav-icon"></i>
+                        <p>Projects</p>
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link to="/locations" className="nav-link">
+                        <i className="far fa-circle nav-icon"></i>
+                        <p>Locations</p>
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link to="/categories" className="nav-link">
+                        <i className="far fa-circle nav-icon"></i>
+                        <p>Categories</p>
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link to="/add-agencies" className="nav-link">
+                        <i className="far fa-circle nav-icon"></i>
+                        <p>Agencies</p>
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+              )}
+
               <li className="nav-item has-treeview">
                 <Link to="#" className="nav-link">
                   <i className="nav-icon fas fa-camera-retro"></i>
