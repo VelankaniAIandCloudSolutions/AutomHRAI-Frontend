@@ -98,14 +98,14 @@ function AgGridUserList({ rowData, onDeleteContractWorker }) {
   const colDefs = [
     {
       headerName: "Employee Name",
-      width: 277,
+      width: 270,
       field: "user.full_name",
       filter: true,
     },
     {
       headerName: "Worked Hours",
       field: "work_time",
-      width: 277,
+      width: 270,
       filter: true,
       valueFormatter: ({ value }) => formatTimeFromSeconds(value),
     },
@@ -113,13 +113,13 @@ function AgGridUserList({ rowData, onDeleteContractWorker }) {
       headerName: "Break Time",
       field: "break_time",
       filter: true,
-      width: 277,
+      width: 270,
       valueFormatter: ({ value }) => formatTimeFromSeconds(value),
     },
     {
       field: "id",
       headerName: "See All Entries",
-      width: 277,
+      width: 270,
       cellRenderer: ActionsCellRenderer,
     },
   ];
@@ -154,6 +154,7 @@ function AgGridUserList({ rowData, onDeleteContractWorker }) {
               <ContractWorkerAttendanceGrid
                 attendanceData={modalData}
                 onSelectionChange={handleSelectionChange}
+                showImgInNewWindow={true}
               />
             </div>
             <div className="modal-footer">
@@ -164,14 +165,14 @@ function AgGridUserList({ rowData, onDeleteContractWorker }) {
               >
                 Close
               </button>
-              <button
+              {/* <button
                 type="button"
                 className="btn btn-primary"
                 onClick={handleConfirmDelete}
                 data-bs-dismiss="modal"
               >
                 Confirm
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
