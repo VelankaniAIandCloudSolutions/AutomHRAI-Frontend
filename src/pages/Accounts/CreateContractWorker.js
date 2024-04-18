@@ -233,7 +233,6 @@ function CreateContractWorker() {
         password: "",
       });
     }
-    dob;
   };
   const handleCreateUser = () => {
     const missingFields = requiredFields.filter((field) => !formData[field]);
