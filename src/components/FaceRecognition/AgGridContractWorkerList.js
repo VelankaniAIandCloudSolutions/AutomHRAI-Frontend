@@ -22,8 +22,8 @@ function AgGridUserList({ rowData, onDeleteContractWorker }) {
     const history = useHistory();
     console.log(props.data.id);
     const handleEditClick = () => {
-      const userId = props.data.id;
-      history.push(`/contract-worker/edit-contract-worker/${userId}`);
+      const contractWorkerId = props.data.id;
+      history.push(`/contract-worker/edit-contract-worker/${contractWorkerId}`);
     };
     const handleDeleteClickInRenderer = () => {
       const contractWorkerId = props.data.id;

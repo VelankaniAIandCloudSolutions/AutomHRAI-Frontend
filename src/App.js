@@ -31,11 +31,11 @@ import TestPage from "./pages/TestPage";
 import ContractWorkers from "./pages/Accounts/ContractWorkers";
 import CreateContractWorker from "./pages/Accounts/CreateContractWorker";
 import ProjectLanding from "./pages/Accounts/ProjectLanding";
-
 import Locations from "./pages/Accounts/Locations";
 import Category from "./pages/Accounts/Category";
 import Agency from "./pages/Accounts/Agency";
 import axios from "axios";
+import ContractWorkersAttendanceReport from "./pages/Accounts/ContractWorkersAttendanceReport";
 
 export default function App() {
   const authState = useSelector((state) => state.auth);
@@ -65,6 +65,11 @@ export default function App() {
               <Route path="/login" exact component={Login} />
               <Route path="/load" exact component={LoadingScreen} />
               <Route path="/checkin" exact component={CheckInCheckOut} />
+              <Route
+                path="/test"
+                exact
+                component={ContractWorkersAttendanceReport}
+              />
               <Route
                 path="/checkin-checkout"
                 exact

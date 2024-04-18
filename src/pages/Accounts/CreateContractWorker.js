@@ -27,12 +27,17 @@ function CreateContractWorker() {
   const [aadhaarCard, setAadhaarCard] = useState(null);
   const [panCard, setPanCard] = useState(null);
   const [agencies, setAgencies] = useState([]);
+  const [isConfirmingSave, setIsConfirmingSave] = useState(true);
   const history = useHistory();
+  const [automaticGeneration, setAutomaticGeneration] = useState(false);
+  const [generatedEmail, setGeneratedEmail] = useState("");
+  const [generatedPassword, setGeneratedPassword] = useState("");
   const [requiredFields, setRequiredFields] = useState([
     "first_name",
     "email",
     "password",
   ]);
+  const [showPassword, setShowPassword] = useState(false);
   // Define a state variable to hold the selected image option
   const [imageOption, setImageOption] = useState("upload"); // Defaulting to 'upload'
 
@@ -51,6 +56,9 @@ function CreateContractWorker() {
     setCapturedImage(imageSrc);
   };
   const [videoStream, setVideoStream] = useState(null);
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword(!showPassword); // Toggle the state variable
+  };
 
   useEffect(() => {
     // Fetch agency and location data
@@ -87,6 +95,7 @@ function CreateContractWorker() {
     setCapturedImage(null);
     imageRef.current.innerHTML = "";
     videoRef.current.classList.remove("not-visible");
+    setIsConfirmingSave(true);
   };
   const handleSavePhoto = () => {
     const canvas = document.createElement("canvas");
@@ -105,17 +114,40 @@ function CreateContractWorker() {
       imageRef.current.appendChild(img);
 
       // Set the captured image in state
+      setIsConfirmingSave(false);
       setCapturedImage(blob);
       const file = new File([blob], "captured_photo.jpg", {
         type: blob.type,
       });
       console.log("User images array before setting:", [file]);
-      setUserImages([file]);
+
       console.log("User images array after setting:", [file]);
 
       // Hide the live stream
       videoRef.current.classList.add("not-visible");
     }, "image/jpeg");
+  };
+  const handleConfirmSave = () => {
+    // Logic to save the captured image
+    // For now, I'm just logging the image blob
+    console.log("Captured image Blob:", capturedImage);
+
+    const modal = modalRef.current;
+
+    if (modal) {
+      const bsModal = Modal.getInstance(modal);
+      if (bsModal) {
+        bsModal.hide();
+      }
+    }
+    // Create a file object from the blob
+    const file = new File([capturedImage], "captured_photo.jpg", {
+      type: capturedImage.type,
+    });
+    setUserImages([file]);
+    setIsConfirmingSave(true);
+
+    // Reset the button text
   };
 
   const setupCamera = () => {
@@ -152,13 +184,57 @@ function CreateContractWorker() {
       setPanCard(e.target.files[0]);
     } else {
       // If the input is not a file input, update form data state directly
+      // unless automatic generation is enabled
+
       setFormData((prevData) => ({
         ...prevData,
         [id]: value,
       }));
+
+      // Always update email and password fields directly, regardless of automatic generation
+      if (id === "email") {
+        setFormData((prevData) => ({
+          ...prevData,
+          email: value,
+        }));
+      }
+
+      if (id === "password") {
+        setFormData((prevData) => ({
+          ...prevData,
+          password: value,
+        }));
+      }
     }
   };
+  const handleAutomaticGeneration = (e) => {
+    setAutomaticGeneration(e.target.checked);
+    if (e.target.checked) {
+      // Generate email and password
+      const generatedEmail = `${formData.first_name}@automhr.com`;
+      const generatedPassword = "test"; // You can replace 'test' with your password generation logic
+      setGeneratedEmail(generatedEmail);
+      setGeneratedPassword(generatedPassword);
 
+      // Update formData state with generated values
+      setFormData({
+        ...formData,
+        email: generatedEmail,
+        password: generatedPassword,
+      });
+    } else {
+      // Reset email and password fields
+      setGeneratedEmail("");
+      setGeneratedPassword("");
+      // Reset formData state for email and password
+      setFormData({
+        ...formData,
+        email: "",
+        password: "",
+      });
+    }
+    dob;
+  };
   const handleCreateUser = () => {
     const missingFields = requiredFields.filter((field) => !formData[field]);
     if (missingFields.length > 0) {
@@ -184,6 +260,7 @@ function CreateContractWorker() {
     if (panCard) {
       formDataToSend.append("pan", panCard);
     }
+    console.log("Multipart form data:", formDataToSend);
 
     dispatch(showLoading());
     axios
@@ -274,6 +351,31 @@ function CreateContractWorker() {
                   </div>
                   <div className="row g-3 mb-2">
                     <div className="col-md-6">
+                      <label
+                        htmlFor="automaticGeneration"
+                        className="form-label"
+                      >
+                        Automatic Generation
+                      </label>
+                      <div className="form-check">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          id="automaticGeneration"
+                          onChange={handleAutomaticGeneration}
+                          checked={automaticGeneration}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="automaticGeneration"
+                        >
+                          Auto Generate Email & Password
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row g-3 mb-2">
+                    <div className="col-md-6">
                       <label htmlFor="email" className="form-label">
                         Email <span className="text-danger">*</span>
                       </label>
@@ -281,6 +383,7 @@ function CreateContractWorker() {
                         type="text"
                         className="form-control"
                         id="email"
+                        value={formData.email} // Always use formData.email
                         onChange={handleChange}
                       />
                     </div>
@@ -288,12 +391,26 @@ function CreateContractWorker() {
                       <label htmlFor="password" className="form-label">
                         Password <span className="text-danger">*</span>
                       </label>
-                      <input
-                        type="password"
-                        className="form-control"
-                        id="password"
-                        onChange={handleChange}
-                      />
+                      <div className="input-group">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          className="form-control"
+                          id="password"
+                          value={formData.password}
+                          onChange={handleChange}
+                        />
+                        <button
+                          className="btn btn-outline-secondary"
+                          type="button"
+                          onClick={handleTogglePasswordVisibility}
+                        >
+                          <i
+                            className={`fas ${
+                              showPassword ? "fa-eye-slash" : "fa-eye"
+                            }`}
+                          ></i>
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <div className="row g-3 mb-2">
@@ -323,23 +440,29 @@ function CreateContractWorker() {
                   <div className="row g-3 mb-2">
                     <div className="col-md-6 ">
                       <label htmlFor="agency" className="form-label">
-                        Agency
+                        Agency <span className="text-danger">*</span>
                       </label>
-                      {agencies && agencies.length > 0 && (
-                        <select
-                          className="form-select"
-                          id="agency"
-                          value={formData.agency}
-                          onChange={handleChange}
-                        >
-                          <option value="">Select Agency</option>
-                          {agencies.map((agency, index) => (
-                            <option key={index} value={agency.id}>
-                              {agency.name}
-                            </option>
-                          ))}
-                        </select>
-                      )}
+                      <select
+                        className="form-select"
+                        id="agency"
+                        value={formData.agency}
+                        onChange={handleChange}
+                      >
+                        {agencies && agencies.length > 0 ? (
+                          <>
+                            <option value="">Select Agency</option>
+                            {agencies.map((agency, index) => (
+                              <option key={index} value={agency.id}>
+                                {agency.name}
+                              </option>
+                            ))}
+                          </>
+                        ) : (
+                          <option value="" disabled>
+                            No agencies available
+                          </option>
+                        )}
+                      </select>
                     </div>
                     <div className="col-md-6">
                       <label htmlFor="dob" className="form-label">
@@ -417,6 +540,19 @@ function CreateContractWorker() {
                           <i className="fas fa-camera ml-1"></i>
                           {/* Font Awesome camera icon */}
                         </button>
+                        {isConfirmingSave && capturedImage && (
+                          <div>
+                            <span>captured_photo.jpg</span>
+                            <a
+                              href={URL.createObjectURL(capturedImage)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn btn-link"
+                            >
+                              View
+                            </a>
+                          </div>
+                        )}
                       </div>
                     )}
 
@@ -491,12 +627,21 @@ function CreateContractWorker() {
                     Close
                   </button>
 
-                  <button
-                    className="btn btn-primary "
-                    onClick={handleSavePhoto}
-                  >
-                    Save Photo
-                  </button>
+                  {isConfirmingSave ? (
+                    <button
+                      className="btn btn-primary"
+                      onClick={handleSavePhoto}
+                    >
+                      Take Photo
+                    </button>
+                  ) : (
+                    <button
+                      className="btn btn-success"
+                      onClick={handleConfirmSave}
+                    >
+                      Confirm Photo
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

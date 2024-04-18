@@ -6,6 +6,7 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 export default function ContractWorkerAttendanceGrid({
   attendanceData,
   onSelectionChange,
+  showImgInNewWindow = false,
 }) {
   const [selectedImage, setSelectedImage] = useState({});
   const [selectedRows, setSelectedRows] = useState([]);
@@ -23,19 +24,45 @@ export default function ContractWorkerAttendanceGrid({
     { headerName: "Attendance Type", field: "type", filter: true },
     { headerName: "Date Time", field: "created_at", filter: true },
     { headerName: "Location", field: "location.name", filter: true },
+    // {
+    //   headerName: "Image",
+    //   cellRenderer: (params) => (
+    //     <button
+    //       type="button"
+    //       className="btn btn-primary btn-sm"
+    //       data-bs-toggle="modal"
+    //       data-bs-target="#imageModal"
+    //       onClick={() => handleViewImage(params.data)}
+    //     >
+    //       <i className="fas fa-eye"></i>
+    //     </button>
+    //   ),
+    // },
     {
       headerName: "Image",
-      cellRenderer: (params) => (
-        <button
-          type="button"
-          className="btn btn-primary btn-sm"
-          data-bs-toggle="modal"
-          data-bs-target="#imageModal"
-          onClick={() => handleViewImage(params.data)}
-        >
-          <i className="fas fa-eye"></i>
-        </button>
-      ),
+      cellRenderer: (params) => {
+        const handleClick = () => {
+          if (showImgInNewWindow) {
+            // Open image in new window
+            window.open(params.data.image, "_blank");
+          } else {
+            // Open image in modal
+            handleViewImage(params.data);
+          }
+        };
+
+        return (
+          <button
+            type="button"
+            className="btn btn-primary btn-sm"
+            data-bs-toggle={showImgInNewWindow ? "" : "modal"}
+            data-bs-target={showImgInNewWindow ? "" : "#imageModal"}
+            onClick={handleClick}
+          >
+            <i className="fas fa-eye"></i>
+          </button>
+        );
+      },
     },
     {
       headerName: "Project",
