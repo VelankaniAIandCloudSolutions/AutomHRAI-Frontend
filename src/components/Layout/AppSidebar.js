@@ -69,6 +69,12 @@ export default function AppSidebar() {
                         <p>Agencies</p>
                       </Link>
                     </li>
+                    <li className="nav-item">
+                      <Link to="/sub-categories" className="nav-link">
+                        <i className="far fa-circle nav-icon"></i>
+                        <p>Sub-Category</p>
+                      </Link>
+                    </li>
                   </ul>
                 </li>
               )}

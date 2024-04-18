@@ -3,30 +3,32 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { useHistory } from "react-router-dom";
-function AgGridUserList({ rowData, onDeleteProject }) {
-  const [selectedProjectId, setSelectedProjectId] = useState(null);
+import SubCategoryForm from "../../components/Account/SubCategoryForm";
+function SubCategoryAgGrid({ rowData, onDeleteSubCategory }) {
+  const [selectedSubCategoryId, setSelectedSubCategoryId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
-  const handleDeleteClick = (projectId) => {
-    setSelectedProjectId(projectId);
+  const handleDeleteClick = (subCategoryId) => {
+    setSelectedSubCategoryId(subCategoryId);
   };
   const handleClose = () => {
-    setSelectedProjectId(null);
+    setSelectedSubCategoryId(null);
   };
 
   const handleConfirmDelete = () => {
-    onDeleteProject(selectedProjectId, handleClose);
+    onDeleteSubCategory(selectedSubCategoryId, handleClose);
   };
 
   function ActionsCellRenderer(props) {
     const history = useHistory();
     console.log(props.data.id);
     const handleEditClick = () => {
-      const projectId = props.data.id;
-      history.push(`/projects/edit-project/${projectId}`);
+      const subCategoryId = props.data.id;
+      history.push(`/sub-categories/edit-project/${subCategoryId}`);
     };
     const handleDeleteClickInRenderer = () => {
-      const projectId = props.data.id;
-      handleDeleteClick(projectId);
+      const subCategoryId = props.data.id;
+      handleDeleteClick(subCategoryId);
     };
 
     return (
@@ -49,13 +51,13 @@ function AgGridUserList({ rowData, onDeleteProject }) {
   }
 
   const colDefs = [
-    { headerName: "Project Name", field: "name", width: 300, filter: true },
     {
-      headerName: "Location",
-      field: "location.name",
+      headerName: "Sub Category Name",
+      field: "name",
       width: 300,
       filter: true,
     },
+
     {
       headerName: "Category",
       field: "category.name",
@@ -74,6 +76,40 @@ function AgGridUserList({ rowData, onDeleteProject }) {
     <div>
       <div className="ag-theme-quartz" style={{ height: 500 }}>
         <AgGridReact rowData={rowData} columnDefs={colDefs} />
+      </div>
+
+      <div
+        className="modal fade"
+        id="createOrEditModal"
+        tabIndex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">
+                Edit Sub Category
+              </h1>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              {/* <SubCategoryForm
+                show={showModal}
+                handleClose={() => setShowModal(false)}
+                // categories={category} // Pass the array of category objects
+                // onSubmit={handleSubmit} // Pass the function to handle form submission
+                mode="edit" // Pass the mode of the form
+                // initialData={initialData} // Pass initial data when editing a subcategory
+              /> */}
+            </div>
+          </div>
+        </div>
       </div>
 
       <div
@@ -97,7 +133,7 @@ function AgGridUserList({ rowData, onDeleteProject }) {
               ></button>
             </div>
             <div className="modal-body">
-              Are you sure you want to delete this project?
+              Are you sure you want to delete this Sub Category?
             </div>
             <div className="modal-footer">
               <button
@@ -123,4 +159,4 @@ function AgGridUserList({ rowData, onDeleteProject }) {
   );
 }
 
-export default AgGridUserList;
+export default SubCategoryAgGrid;
