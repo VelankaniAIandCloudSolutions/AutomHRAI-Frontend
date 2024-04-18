@@ -23,6 +23,7 @@ function ContractWorkersAttendanceReport() {
     // Call your API here with the new date
     if (newDate) {
       console.log("Calling API with date:", newDate);
+
       fetchReportData(newDate);
     }
   };
@@ -35,11 +36,12 @@ function ContractWorkersAttendanceReport() {
       })
       .then((response) => {
         console.log("api data", response.data);
-        setRowData(response.data.projects);
+        toast.success("Report Fetched Successfully");
+        setRowData(response.data.user_data);
         dispatch(hideLoading());
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching report:", error);
         dispatch(hideLoading());
         // Handle error if needed
       });

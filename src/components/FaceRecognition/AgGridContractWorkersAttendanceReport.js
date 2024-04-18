@@ -3,8 +3,11 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { useHistory } from "react-router-dom";
+import ContractWorkerAttendanceGrid from "../../components/FaceRecognition/ContractWorkerAttendanceGrid";
 function AgGridUserList({ rowData, onDeleteContractWorker }) {
   const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [modalData, setModalData] = useState(null);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const handleDeleteClick = (projectId) => {
     setSelectedProjectId(projectId);
@@ -16,49 +19,107 @@ function AgGridUserList({ rowData, onDeleteContractWorker }) {
   const handleConfirmDelete = () => {
     onDeleteContractWorker(selectedProjectId, handleClose);
   };
+  const handleSelectionChange = (selectedRows) => {
+    setSelectedRows(selectedRows);
+  };
+
+  // function ActionsCellRenderer(props) {
+  //   const history = useHistory();
+  //   console.log(props.data.id);
+  //   const handleEditClick = () => {
+  //     const projectId = props.data.id;
+  //     history.push(`/projects/edit-project/${projectId}`);
+  //   };
+  //   const handleDeleteClickInRenderer = () => {
+  //     const projectId = props.data.id;
+  //     handleDeleteClick(projectId);
+  //   };
+
+  //   return (
+  //     <div className="p-0">
+  //       {
+  //         <button className="btn btn-primary btn-sm " onClick={handleEditClick}>
+  //           <i className="fas fa-pen"></i> Edit
+  //         </button>
+  //       }
+  //       <button
+  //         className="btn btn-danger btn-sm mx-2"
+  //         data-bs-toggle="modal"
+  //         data-bs-target="#deletemodal"
+  //         onClick={handleDeleteClickInRenderer}
+  //       >
+  //         <i className="fas fa-trash"></i> Delete
+  //       </button>
+  //     </div>
+  //   );
+  // }
 
   function ActionsCellRenderer(props) {
-    const history = useHistory();
-    console.log(props.data.id);
-    const handleEditClick = () => {
-      const projectId = props.data.id;
-      history.push(`/projects/edit-project/${projectId}`);
-    };
-    const handleDeleteClickInRenderer = () => {
-      const projectId = props.data.id;
-      handleDeleteClick(projectId);
+    const handleViewClick = () => {
+      const rowData = props.data; // Get the row data
+      // Pass the rowData to your modal component
+      // For simplicity, let's assume you have a function to set modal data
+      console.log(" this is the rowDAta being passed in the modal", rowData);
+      setModalData(rowData.entries);
     };
 
     return (
       <div className="p-0">
-        {
-          <button className="btn btn-primary btn-sm " onClick={handleEditClick}>
-            <i className="fas fa-pen"></i> Edit
-          </button>
-        }
         <button
-          className="btn btn-danger btn-sm mx-2"
+          className="btn btn-success btn-sm"
+          onClick={handleViewClick}
           data-bs-toggle="modal"
-          data-bs-target="#deletemodal"
-          onClick={handleDeleteClickInRenderer}
+          data-bs-target="#exampleModal"
         >
-          <i className="fas fa-trash"></i> Delete
+          <i className="fas fa-eye"></i>
         </button>
       </div>
     );
   }
 
-  const colDefs = [
-    { headerName: "Employee ID", field: "emp_id", filter: true },
-    { headerName: "Employee Name", field: "name", filter: true },
-    { headerName: "Email", field: "email", width: 250, filter: true },
-    { headerName: "Date", field: "date", filter: true },
-    { headerName: "Check-In Time", field: "checkin_time", width: 150 },
-    { headerName: "Check-Out Time", field: "checkout_time", width: 150 },
+  const formatTimeFromSeconds = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    return `${hours}hrs ${minutes}min`;
+  };
+  // const formatTimeFromSeconds = (seconds) => {
+  //   const hours = Math.floor(seconds / 3600);
+  //   const minutes = Math.floor((seconds % 3600) / 60);
+  //   const remainingSeconds = seconds % 60;
 
+  //   // Ensure leading zeros for single-digit values
+  //   const formattedHours = hours.toString().padStart(2, "0");
+  //   const formattedMinutes = minutes.toString().padStart(2, "0");
+  //   const formattedSeconds = remainingSeconds.toString().padStart(2, "0");
+
+  //   return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+  // };
+
+  const colDefs = [
+    {
+      headerName: "Employee Name",
+      width: 277,
+      field: "user.full_name",
+      filter: true,
+    },
+    {
+      headerName: "Worked Hours",
+      field: "work_time",
+      width: 277,
+      filter: true,
+      valueFormatter: ({ value }) => formatTimeFromSeconds(value),
+    },
+    {
+      headerName: "Break Time",
+      field: "break_time",
+      filter: true,
+      width: 277,
+      valueFormatter: ({ value }) => formatTimeFromSeconds(value),
+    },
     {
       field: "id",
-      headerName: "Actions",
+      headerName: "See All Entries",
+      width: 277,
       cellRenderer: ActionsCellRenderer,
     },
   ];
@@ -71,16 +132,16 @@ function AgGridUserList({ rowData, onDeleteContractWorker }) {
 
       <div
         className="modal fade"
-        id="deletemodal"
+        id="exampleModal"
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div className="modal-dialog">
+        <div className="modal-dialog modal-xl">
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="exampleModalLabel">
-                Delete User
+                All Entries
               </h1>
               <button
                 type="button"
@@ -89,7 +150,12 @@ function AgGridUserList({ rowData, onDeleteContractWorker }) {
                 aria-label="Close"
               ></button>
             </div>
-            <div className="modal-body">Are you sure you want to delete?</div>
+            <div className="modal-body">
+              <ContractWorkerAttendanceGrid
+                attendanceData={modalData}
+                onSelectionChange={handleSelectionChange}
+              />
+            </div>
             <div className="modal-footer">
               <button
                 type="button"
