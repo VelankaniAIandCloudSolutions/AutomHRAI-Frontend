@@ -32,7 +32,7 @@ function LoadingScreen() {
           style={loadingScreenStyle}
           role="status"
         >
-          <spans className="visually-hidden">Loading...</spans>
+          <span className="visually-hidden">Loading...</span>
         </div>
       </div>
     </div>

@@ -89,15 +89,17 @@ export default function CheckInCheckOutNew() {
               fd
             );
             console.log(response.data);
-            setIsLoading(false);
-            if (response.data.message) {
-              toast.success(response.data.message);
+            if (response.data.task_id) {
+              checkTaskStatus(response.data.task_id);
             } else {
-              toast.error(response.data.error || "Failed to detect user");
+              setIsLoading(false);
+              toast.error(
+                response.data.error || "Failed to process the request"
+              );
+              setTimeout(() => {
+                window.location.reload();
+              }, 3000);
             }
-            setTimeout(() => {
-              window.location.reload();
-            }, 3000);
           } catch (error) {
             console.log(error);
             setIsLoading(false);
@@ -116,7 +118,50 @@ export default function CheckInCheckOutNew() {
       }
     }, 2000);
   };
-
+  const checkTaskStatus = async (task_id) => {
+    let interval;
+    try {
+      const interval = setInterval(async () => {
+        try {
+          const response = await axios.get(
+            `facial-recognition/get_classify_face_task_result/${task_id}`
+          );
+          const data = response.data;
+          console.log(data);
+          if (data.status === "SUCCESS") {
+            clearInterval(interval);
+            setIsLoading(false);
+            toast.success(data.message);
+            setTimeout(() => {
+              window.location.reload();
+            }, 3000);
+          } else if (data.status === "FAILURE") {
+            clearInterval(interval);
+            setIsLoading(false);
+            toast.error("Failed to detect the user");
+            setTimeout(() => {
+              window.location.reload();
+            }, 3000);
+          } else if (data.status === "PROCESSING") {
+            console.log("Task is still processing...");
+          }
+        } catch (error) {
+          console.log(error);
+          toast.error("An error occured, please try again");
+          clearInterval(interval);
+          setIsLoading(false);
+          setTimeout(() => {
+            window.location.reload();
+          }, 3000);
+        }
+      }, 5000);
+    } catch (error) {
+      clearInterval(interval);
+      console.log("Polling error: ", error);
+      setIsLoading(false);
+      toast.error("Error while checking the task status");
+    }
+  };
   const closeModal = () => {
     const modal = modalRef.current;
     if (modal) {
