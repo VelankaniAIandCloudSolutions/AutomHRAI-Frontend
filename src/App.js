@@ -35,6 +35,7 @@ import ProjectLanding from "./pages/Accounts/ProjectLanding";
 import Locations from "./pages/Accounts/Locations";
 import Category from "./pages/Accounts/Category";
 import Agency from "./pages/Accounts/Agency";
+import ContractWorkersTimesheet from "./pages/FaceRecognition/ContractWorkersTimesheet";
 
 export default function App() {
   const authState = useSelector((state) => state.auth);
@@ -88,6 +89,8 @@ export default function App() {
                       exact
                       component={ContractWorkers}
                     />
+                   
+                    
                   </>
                 ) : (
                   <Redirect to="/" />
@@ -168,6 +171,11 @@ export default function App() {
                     <Route path="/categories" exact component={Category} />
 
                     <Route path="/add-agencies" exact component={Agency} />
+                    <Route 
+                      path="/contract-workers-timesheet"
+                      exact
+                      component={ContractWorkersTimesheet}
+                      />
                   </>
                 ) : (
                   <Redirect to="/" />
