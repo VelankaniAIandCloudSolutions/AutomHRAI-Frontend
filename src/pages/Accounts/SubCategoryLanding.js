@@ -99,7 +99,7 @@ function SubCategoryLanding() {
                 data-bs-target="#sampleModal"
                 onClick={handleAddNewSubCategory}
               >
-                <i className="fas fa-plus"> </i> Add SubCategory
+                <i className="fas fa-plus"> </i> Add Subcategory
               </button>
             </div>
 
@@ -107,6 +107,8 @@ function SubCategoryLanding() {
               <SubCategoryAgGrid
                 rowData={rowData}
                 onDeleteSubCategory={handleDeleteSubCategory}
+                categories={category}
+                handleSubCategoryCreated={handleSubCategoryCreated}
               />
             </div>
             {/* <CreateProjectModal

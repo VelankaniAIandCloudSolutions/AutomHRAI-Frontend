@@ -4,9 +4,16 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { useHistory } from "react-router-dom";
 import SubCategoryForm from "../../components/Account/SubCategoryForm";
-function SubCategoryAgGrid({ rowData, onDeleteSubCategory }) {
+function SubCategoryAgGrid({
+  rowData,
+  onDeleteSubCategory,
+  categories,
+  handleSubCategoryCreated,
+}) {
   const [selectedSubCategoryId, setSelectedSubCategoryId] = useState(null);
+  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [mode, setMode] = useState("edit");
 
   const handleDeleteClick = (subCategoryId) => {
     setSelectedSubCategoryId(subCategoryId);
@@ -30,11 +37,28 @@ function SubCategoryAgGrid({ rowData, onDeleteSubCategory }) {
       const subCategoryId = props.data.id;
       handleDeleteClick(subCategoryId);
     };
+    const handleRowClicked = (event) => {
+      const rowData = event.data;
+      setSelectedSubCategory(rowData);
+
+      setMode("edit");
+    };
+    const handleEditButtonClick = (event) => {
+      const rowData = props.node.data; // Access the row data from the event
+      console.log("Row Data:", rowData); // Log the row data
+      setSelectedSubCategory(rowData);
+      setMode("edit");
+    };
 
     return (
       <div className="p-0">
         {
-          <button className="btn btn-primary btn-sm " onClick={handleEditClick}>
+          <button
+            className="btn btn-primary btn-sm "
+            data-bs-toggle="modal"
+            data-bs-target="#createOrEditModal"
+            onClick={handleEditButtonClick}
+          >
             <i className="fas fa-pen"></i> Edit
           </button>
         }
@@ -99,14 +123,15 @@ function SubCategoryAgGrid({ rowData, onDeleteSubCategory }) {
               ></button>
             </div>
             <div className="modal-body">
-              {/* <SubCategoryForm
+              <SubCategoryForm
                 show={showModal}
                 handleClose={() => setShowModal(false)}
-                // categories={category} // Pass the array of category objects
+                categories={categories} // Pass the array of category objects
                 // onSubmit={handleSubmit} // Pass the function to handle form submission
-                mode="edit" // Pass the mode of the form
-                // initialData={initialData} // Pass initial data when editing a subcategory
-              /> */}
+                mode={mode} // Pass the mode of the form
+                initialData={selectedSubCategory} // Pass initial data when editing a subcategory
+                onSubCategoryCreated={handleSubCategoryCreated} // Pass the function to handle subcategory creation =
+              />
             </div>
           </div>
         </div>
