@@ -16,6 +16,7 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
 
   const columnDefs = [
     { headerName: "Name", field: "name" },
+    { headerName: "Agency-Id", field: "agency_id" },
     { headerName: "Owner Name", field: "agency_owner" },
     { headerName: "GST", field: "gst" },
     {
