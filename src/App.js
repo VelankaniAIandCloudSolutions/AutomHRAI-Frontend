@@ -36,6 +36,7 @@ import Category from "./pages/Accounts/Category";
 import Agency from "./pages/Accounts/Agency";
 import axios from "axios";
 import ContractWorkersAttendanceReport from "./pages/Accounts/ContractWorkersAttendanceReport";
+import SubCategoryLanding from "./pages/Accounts/SubCategoryLanding";
 
 export default function App() {
   const authState = useSelector((state) => state.auth);
@@ -69,14 +70,13 @@ export default function App() {
                 path="/test"
                 exact
                 component={ContractWorkersAttendanceReport}
-              />
+              />{" "}
               <Route
                 path="/checkin-checkout"
                 exact
                 component={CheckInCheckOutNew}
               />
               <Route path="/attendance" exact component={attendanceList} />
-
               <Route path="/contract-workers">
                 {userDetails?.is_supervisor_admin ||
                 userDetails?.is_superuser ? (
@@ -95,6 +95,25 @@ export default function App() {
                       path="/contract-workers"
                       exact
                       component={ContractWorkers}
+                    />
+                  </>
+                ) : (
+                  <Redirect to="/" />
+                )}
+              </Route>
+              <Route path="/sub-categories">
+                {userDetails?.is_supervisor_admin ||
+                userDetails?.is_superuser ? (
+                  <>
+                    <Route
+                      path="/sub-categories"
+                      exact
+                      component={SubCategoryLanding}
+                    />
+                    <Route
+                      path="/contract-workers/edit-contract-worker/:id"
+                      exact
+                      component={EditUser}
                     />
                   </>
                 ) : (
@@ -121,7 +140,6 @@ export default function App() {
                   <Redirect to="/" />
                 )}
               </Route>
-
               <Route path="/users">
                 {userDetails?.is_superuser ? (
                   <>
@@ -141,7 +159,6 @@ export default function App() {
                   <Redirect to="/" />
                 )}
               </Route>
-
               <Route path="/">
                 {userDetails?.is_supervisor_admin ||
                 userDetails?.is_superuser ? (
@@ -183,7 +200,6 @@ export default function App() {
                   <Redirect to="/" />
                 )}
               </Route>
-
               {/* <Redirect to="/" />  */}
             </Switch>
           </div>

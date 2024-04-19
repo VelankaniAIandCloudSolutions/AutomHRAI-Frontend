@@ -3,7 +3,7 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { useHistory } from "react-router-dom";
-function AgGridUserList({ rowData, onDeleteContractWorker }) {
+function AgGridUserList({ rowData, onDeleteProject }) {
   const [selectedProjectId, setSelectedProjectId] = useState(null);
 
   const handleDeleteClick = (projectId) => {
@@ -14,7 +14,7 @@ function AgGridUserList({ rowData, onDeleteContractWorker }) {
   };
 
   const handleConfirmDelete = () => {
-    onDeleteContractWorker(selectedProjectId, handleClose);
+    onDeleteProject(selectedProjectId, handleClose);
   };
 
   function ActionsCellRenderer(props) {
@@ -96,7 +96,9 @@ function AgGridUserList({ rowData, onDeleteContractWorker }) {
                 aria-label="Close"
               ></button>
             </div>
-            <div className="modal-body">Are you sure you want to delete?</div>
+            <div className="modal-body">
+              Are you sure you want to delete this project?
+            </div>
             <div className="modal-footer">
               <button
                 type="button"
