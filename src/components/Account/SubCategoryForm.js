@@ -179,7 +179,6 @@ const SubCategoryForm = ({
         );
       }
     } catch (error) {
-      cons;
       console.error(
         `Error ${mode === "create" ? "creating" : "updating"} Subcategory:`,
         error
