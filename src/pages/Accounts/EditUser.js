@@ -24,6 +24,8 @@ function EditUser() {
     is_active: true,
     is_superuser: false,
     is_staff: false,
+    is_supervisor: false,
+    is_supervisor_admin: false,
 
     // Add other fields as needed
   });
@@ -293,6 +295,31 @@ function EditUser() {
                           Is Admin
                         </label>
                       </div>
+                      <div className="form-check form-switch ">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          role="switch"
+                          id="is_supervisor_admin"
+                          checked={userData.is_supervisor_admin}
+                          onChange={(e) => {
+                            const is_supervisor_admin = e.target.checked;
+                            setUserData({
+                              ...userData,
+                              is_supervisor_admin,
+                              is_supervisor: is_supervisor_admin
+                                ? true
+                                : userData.is_supervisor, // Set is_staff to true if is_supervisor is checked
+                            });
+                          }}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="is_supervisor_admin"
+                        >
+                          Is Supervisor Admin
+                        </label>
+                      </div>
                     </div>
                     <div className="col-md-3">
                       <div className="form-check form-switch mt-4">
@@ -311,6 +338,27 @@ function EditUser() {
                         />
                         <label className="form-check-label" htmlFor="is_staff">
                           Is Staff
+                        </label>
+                      </div>
+                      <div className="form-check form-switch ">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          role="switch"
+                          id="is_supervisor"
+                          checked={userData.is_supervisor}
+                          onChange={(e) => {
+                            setUserData({
+                              ...userData,
+                              is_supervisor: e.target.checked,
+                            });
+                          }}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="is_supervisor"
+                        >
+                          Is Supervisor
                         </label>
                       </div>
                     </div>
