@@ -30,6 +30,7 @@ import { useSelector } from "react-redux";
 import TestPage from "./pages/TestPage";
 import ContractWorkers from "./pages/Accounts/ContractWorkers";
 import CreateContractWorker from "./pages/Accounts/CreateContractWorker";
+import EditContractWorker from "./pages/Accounts/EditContractWorker";
 import ProjectLanding from "./pages/Accounts/ProjectLanding";
 
 import Locations from "./pages/Accounts/Locations";
@@ -81,10 +82,15 @@ export default function App() {
                       exact
                       component={CreateContractWorker}
                     />
-                    <Route
+                    {/* <Route
                       path="/contract-workers/edit-contract-worker/:id"
                       exact
                       component={EditUser}
+                    /> */}
+                    <Route
+                      path="/contract-workers/edit-contract-worker/:id"
+                      exact
+                      component={EditContractWorker}
                     />
                     <Route
                       path="/contract-workers"
