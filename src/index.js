@@ -13,7 +13,7 @@ import loadingReducer from "./reducers/loadingReducer";
 import authReducer from "./reducers/authReducer";
 import { Provider } from "react-redux";
 
-axios.defaults.baseURL = "https://ai.automhr.com/api/v1/";
+axios.defaults.baseURL = "https://aidev.automhr.com/api/v1/";
 const rootReducer = combineReducers({
   loading: loadingReducer,
   auth: authReducer,
