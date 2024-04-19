@@ -1,30 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { AgGridReact } from 'ag-grid-react';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { AgGridReact } from "ag-grid-react";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+import axios from "axios";
 
-const ResumeGrid = ({ rowData, onEdit  }) => {
+const ResumeGrid = ({ rowData, onEdit }) => {
   const [gridApi, setGridApi] = useState(null);
-
-  
 
   const onGridReady = (params) => {
     setGridApi(params.api);
-    params.api.addEventListener('cellValueChanged', handleCellValueChanged);
+    params.api.addEventListener("cellValueChanged", handleCellValueChanged);
     // params.api.addEventListener('rowDataChanged', handleRowDataChanged);
   };
   const handleCellValueChanged = (event) => {
-    const updatedRowData = event.api.getModel().rowsToDisplay.map((rowNode) => rowNode.data);
-    console.log('Row Data Changed:', updatedRowData);
+    const updatedRowData = event.api
+      .getModel()
+      .rowsToDisplay.map((rowNode) => rowNode.data);
+    console.log("Row Data Changed:", updatedRowData);
     onEdit(updatedRowData);
-
   };
 
   const handleUpdateButtonClick = (data) => {
-    const { id, name, email, mobile_number, education, skills, college_name, company_name, experience, total_experience } = data;
-
-    const updatedResumes = [{
+    const {
       id,
       name,
       email,
@@ -35,8 +32,23 @@ const ResumeGrid = ({ rowData, onEdit  }) => {
       company_name,
       experience,
       total_experience,
-    }];
-    console.log('Updated Resumes:', updatedResumes);
+    } = data;
+
+    const updatedResumes = [
+      {
+        id,
+        name,
+        email,
+        mobile_number,
+        education,
+        skills,
+        college_name,
+        company_name,
+        experience,
+        total_experience,
+      },
+    ];
+    console.log("Updated Resumes:", updatedResumes);
 
     onEdit(updatedResumes);
 
@@ -51,56 +63,62 @@ const ResumeGrid = ({ rowData, onEdit  }) => {
       experience,
       total_experience,
     });
-
-   
   };
 
   const updateResumeData = async (resumeId, updatedData) => {
     try {
-      const response = await axios.put(`http://localhost:8000/api/v1/resume-parser/update_resume/${resumeId}/`, {
-        updated_data: updatedData,
-      });
-      console.log('Resume updated successfully:', response.data);
-
+      const response = await axios.put(
+        `resume-parser/update_resume/${resumeId}/`,
+        {
+          updated_data: updatedData,
+        }
+      );
+      console.log("Resume updated successfully:", response.data);
     } catch (error) {
-      console.error('Error updating resume:', error);
+      console.error("Error updating resume:", error);
     }
   };
 
   const UpdateButtonRenderer = ({ data }) => {
     return (
-      <button className='btn btn-outline-success mb-1' onClick={() => handleUpdateButtonClick(data)}>
+      <button
+        className="btn btn-outline-success mb-1"
+        onClick={() => handleUpdateButtonClick(data)}
+      >
         Update
       </button>
     );
   };
 
   const gridOptions = {
-    columnDefs : [
-      { headerName: 'Name', field: 'name', editable: true },
-      { headerName: 'Email', field: 'email', editable: true },
-      { headerName: 'Mobile No', field: 'mobile_number', editable: true },
-      { headerName: 'Qualification', field: 'education', editable: true },
-      { headerName: 'Skills', field: 'skills', editable: true },
-      { headerName: 'College Name', field: 'college_name', editable: true },
-      { headerName: 'Company Name', field: 'company_name', editable: true },
-      { headerName: 'Experience', field: 'experience', editable: true },
-      { headerName: 'Total Experience', field: 'total_experience', editable: true },
+    columnDefs: [
+      { headerName: "Name", field: "name", editable: true },
+      { headerName: "Email", field: "email", editable: true },
+      { headerName: "Mobile No", field: "mobile_number", editable: true },
+      { headerName: "Qualification", field: "education", editable: true },
+      { headerName: "Skills", field: "skills", editable: true },
+      { headerName: "College Name", field: "college_name", editable: true },
+      { headerName: "Company Name", field: "company_name", editable: true },
+      { headerName: "Experience", field: "experience", editable: true },
       {
-        headerName: 'Update',
+        headerName: "Total Experience",
+        field: "total_experience",
+        editable: true,
+      },
+      {
+        headerName: "Update",
         cellRenderer: UpdateButtonRenderer,
         suppressMovable: true,
         width: 100,
       },
-      
     ],
-    
   };
 
- 
-
   return (
-    <div className="ag-theme-alpine container" style={{ height: 400, width: '100%' }}>
+    <div
+      className="ag-theme-alpine container"
+      style={{ height: 400, width: "100%" }}
+    >
       <AgGridReact
         rowData={rowData}
         columnDefs={gridOptions.columnDefs}
@@ -114,4 +132,3 @@ const ResumeGrid = ({ rowData, onEdit  }) => {
 };
 
 export default ResumeGrid;
-

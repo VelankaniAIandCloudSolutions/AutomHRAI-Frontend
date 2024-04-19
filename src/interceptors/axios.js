@@ -1,5 +1,5 @@
 import axios from "axios";
-axios.defaults.baseURL = "http://localhost:8000/api/v1/";
+axios.defaults.baseURL = "https://ai.automhr.com/api/v1/";
 if (localStorage.getItem("access_token")) {
   axios.defaults.headers.common[
     "Authorization"
