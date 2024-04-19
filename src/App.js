@@ -37,6 +37,7 @@ import Agency from "./pages/Accounts/Agency";
 import axios from "axios";
 import ContractWorkersAttendanceReport from "./pages/Accounts/ContractWorkersAttendanceReport";
 import SubCategoryLanding from "./pages/Accounts/SubCategoryLanding";
+import ContractWorkersTimesheet from "./pages/FaceRecognition/ContractWorkersTimesheet";
 
 export default function App() {
   const authState = useSelector((state) => state.auth);
@@ -95,6 +96,25 @@ export default function App() {
                       path="/contract-workers"
                       exact
                       component={ContractWorkers}
+                    />
+                  </>
+                ) : (
+                  <Redirect to="/" />
+                )}
+              </Route>
+              <Route path="/sub-categories">
+                {userDetails?.is_supervisor_admin ||
+                userDetails?.is_superuser ? (
+                  <>
+                    <Route
+                      path="/sub-categories"
+                      exact
+                      component={SubCategoryLanding}
+                    />
+                    <Route
+                      path="/contract-workers/edit-contract-worker/:id"
+                      exact
+                      component={EditUser}
                     />
                   </>
                 ) : (
@@ -195,6 +215,11 @@ export default function App() {
                     <Route path="/categories" exact component={Category} />
 
                     <Route path="/add-agencies" exact component={Agency} />
+                    <Route
+                      path="/contract-workers-timesheet"
+                      exact
+                      component={ContractWorkersTimesheet}
+                    />
                   </>
                 ) : (
                   <Redirect to="/" />
