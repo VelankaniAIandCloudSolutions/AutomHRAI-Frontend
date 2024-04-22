@@ -16,9 +16,10 @@ export const Login = () => {
       email: email,
       password: password,
     };
-    const { data } = await axios.post("token/login/", user, {
-      headers: { "Content-Type": "application/json" },
-    });
+    try {
+      const { data } = await axios.post("token/login/", user, {
+        headers: { "Content-Type": "application/json" },
+      });
 
       localStorage.clear();
       localStorage.setItem("token", data.auth_token);
