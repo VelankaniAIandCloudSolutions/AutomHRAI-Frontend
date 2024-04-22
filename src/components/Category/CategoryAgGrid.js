@@ -148,7 +148,7 @@ function AgGridCategory({
                 data-bs-dismiss="modal"
                 onClick={handleSaveChanges}
               >
-                Save Changes
+                Update
               </button>
             </div>
           </div>
