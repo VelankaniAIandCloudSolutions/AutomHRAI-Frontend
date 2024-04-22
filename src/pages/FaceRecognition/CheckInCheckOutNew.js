@@ -411,7 +411,7 @@ export default function CheckInCheckOutNew() {
             </div>
             <div className="modal-body">
               <div className="mb-3">
-                <label for="select" className="form-label">
+                <label htmlFor="select" className="form-label">
                   Select a Project
                 </label>
                 <select

@@ -9,29 +9,37 @@ export const Login = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const submit = async (e) => {
     e.preventDefault();
     const user = {
       email: email,
       password: password,
     };
-    const { data } = await axios.post(
-      "http://localhost:8000/api/v1/token/login/",
-      user,
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    );
 
-    localStorage.clear();
-    localStorage.setItem("token", data.auth_token);
-    axios.defaults.headers.common[
-      "Authorization"
-    ] = `Token ${data["auth_token"]}`;
-    // localStorage.setItem("access_token", data.access);
-    // localStorage.setItem("refresh_token", data.refresh);
-    // axios.defaults.headers.common["Authorization"] = `Bearer ${data["access"]}`;
-    getUserAccount();
+    try {
+      const { data } = await axios.post(
+        "http://localhost:8000/api/v1/token/login/",
+        user,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      localStorage.clear();
+      localStorage.setItem("token", data.auth_token);
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Token ${data.auth_token}`;
+
+      // Fetch user account after successful login
+      getUserAccount();
+    } catch (error) {
+      console.error("Error logging in:", error);
+      toast.error(
+        "Incorrect email or password. Please provide correct credentials."
+      );
+    }
   };
 
   const getUserAccount = async () => {
@@ -45,11 +53,15 @@ export const Login = () => {
         const userData = JSON.parse(localStorage.getItem("userAccount"));
         dispatch(login(JSON.stringify(userData)));
         toast.success("Logged in successfully");
-        window.location.href = "/";
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1500);
       })
+
       .catch((error) => {
         // console.log("ihuhuhuhuhu");
         console.error("Error fetching user account:", error);
+        toast.error("Incorrect credentials");
       });
   };
 
