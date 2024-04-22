@@ -88,7 +88,7 @@ const Locations = () => {
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      <i className="fas fa-list-alt me-1"></i>
+                      <i className="fa fa-map-marker-alt me-1"></i>
                       Locations
                     </li>
                   </ol>

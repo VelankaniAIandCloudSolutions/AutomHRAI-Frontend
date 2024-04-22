@@ -101,7 +101,7 @@ function Projects() {
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      <i className="fas fa-users"> </i> Projects
+                      <i className="fas fa-project-diagram"> </i> Projects
                     </li>
                   </ol>
                 </nav>

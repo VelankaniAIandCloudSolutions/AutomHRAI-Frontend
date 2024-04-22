@@ -85,7 +85,7 @@ function SubCategoryLanding() {
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      <i className="fas fa-users"> </i> Sub-Categories
+                      <i className="fas fa-list"> </i> Sub-Categories
                     </li>
                   </ol>
                 </nav>
