@@ -28,7 +28,7 @@ export default function AppSidebar() {
           <nav className="mt-2">
             <ul
               className="nav nav-pills nav-sidebar flex-column"
-              data-widget="treeview"
+              // data-widget="treeview"
               role="menu"
             >
               {userDetails?.is_supervisor_admin && (
