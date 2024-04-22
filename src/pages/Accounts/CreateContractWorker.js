@@ -121,12 +121,15 @@ function CreateContractWorker() {
   };
   const handleConfirmSave = (index) => {
     const { blob } = capturedImages[index];
-    const file = new File([blob], "captured_photo.jpg", {
+    const timestamp = new Date().getTime();
+    const randomString = Math.random().toString(36).substring(7);
+    const uniqueFilename = `captured_photo_${timestamp}_${randomString}.jpg`;
+
+    const file = new File([blob], uniqueFilename, {
       type: blob.type,
     });
 
     setUserImages((prevImages) => [...prevImages, file]);
-    // Optionally clear or keep captured images
     setCapturedImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
 
@@ -232,9 +235,9 @@ function CreateContractWorker() {
       formDataToSend.append(key, value);
     });
 
-    // userImages.forEach((imageFile) => {
-    //   formDataToSend.append("user_images", imageFile);
-    // });
+    userImages.forEach((imageFile) => {
+      formDataToSend.append("user_images", imageFile);
+    });
     capturedImages.forEach((image) => {
       const file = new File([image.blob], "captured_photo.jpg", {
         type: "image/jpeg",
