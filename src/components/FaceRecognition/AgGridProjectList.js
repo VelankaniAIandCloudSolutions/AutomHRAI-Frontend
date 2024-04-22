@@ -3,12 +3,14 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { useHistory } from "react-router-dom";
-function AgGridUserList({ rowData, onDeleteProject }) {
+
+function AgGridUserList({ rowData, onDeleteProject, onEditProject }) {
   const [selectedProjectId, setSelectedProjectId] = useState(null);
 
   const handleDeleteClick = (projectId) => {
     setSelectedProjectId(projectId);
   };
+
   const handleClose = () => {
     setSelectedProjectId(null);
   };
@@ -20,9 +22,9 @@ function AgGridUserList({ rowData, onDeleteProject }) {
   function ActionsCellRenderer(props) {
     const history = useHistory();
     console.log(props.data.id);
-    const handleEditClick = () => {
-      const projectId = props.data.id;
-      history.push(`/projects/edit-project/${projectId}`);
+    const handleEditClick = (projectId) => {
+      setSelectedProjectId(projectId);
+      onEditProject(projectId, true);
     };
     const handleDeleteClickInRenderer = () => {
       const projectId = props.data.id;
@@ -32,7 +34,10 @@ function AgGridUserList({ rowData, onDeleteProject }) {
     return (
       <div className="p-0">
         {
-          <button className="btn btn-primary btn-sm " onClick={handleEditClick}>
+          <button
+            className="btn btn-primary btn-sm "
+            onClick={() => handleEditClick(props.data.id)}
+          >
             <i className="fas fa-pen"></i> Edit
           </button>
         }
