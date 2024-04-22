@@ -22,16 +22,12 @@ function CreateContractWorker() {
     dob: "",
     company: "",
     agency: "",
-    subcategory: "",
   });
   const [userImages, setUserImages] = useState([]);
-  const [capturedImages, setCapturedImages] = useState([]);
   const [aadhaarCard, setAadhaarCard] = useState(null);
   const [panCard, setPanCard] = useState(null);
   const [agencies, setAgencies] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [subcategories, setSubcategories] = useState([]);
-
+  const [isConfirmingSave, setIsConfirmingSave] = useState(true);
   const history = useHistory();
   const [automaticGeneration, setAutomaticGeneration] = useState(false);
   const [generatedEmail, setGeneratedEmail] = useState("");
@@ -72,18 +68,17 @@ function CreateContractWorker() {
       new Modal(modal);
     }
 
-    const fetchAgenciesAndSubcategories = async () => {
+    const fetchAgencies = async () => {
       try {
         const response = await axios.get("/accounts/contract-workers/create/");
         console.log(response.data);
         setAgencies(response.data.agencies);
-        setSubcategories(response.data.subCategories);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
-    fetchAgenciesAndSubcategories();
+    fetchAgencies();
   }, []);
 
   const handleCapture = () => {
@@ -100,6 +95,7 @@ function CreateContractWorker() {
     setCapturedImage(null);
     imageRef.current.innerHTML = "";
     videoRef.current.classList.remove("not-visible");
+    setIsConfirmingSave(true);
   };
   const handleSavePhoto = () => {
     const canvas = document.createElement("canvas");
@@ -108,26 +104,50 @@ function CreateContractWorker() {
     const context = canvas.getContext("2d");
     context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
     canvas.toBlob((blob) => {
-      const url = URL.createObjectURL(blob);
-      const newImage = {
-        blob: blob,
-        url: url,
-      };
+      // Log the captured image Blob
+      console.log("Captured image Blob:", blob);
 
-      setCapturedImages((prevImages) => [...prevImages, newImage]);
+      const img = new Image();
+      img.src = URL.createObjectURL(blob);
+      img.className = "captured-image";
+      imageRef.current.innerHTML = "";
+      imageRef.current.appendChild(img);
+
+      // Set the captured image in state
+      setIsConfirmingSave(false);
+      setCapturedImage(blob);
+      const file = new File([blob], "captured_photo.jpg", {
+        type: blob.type,
+      });
+      console.log("User images array before setting:", [file]);
+
+      console.log("User images array after setting:", [file]);
+
+      // Hide the live stream
       videoRef.current.classList.add("not-visible");
-      // Reset for new captures if needed
     }, "image/jpeg");
   };
-  const handleConfirmSave = (index) => {
-    const { blob } = capturedImages[index];
-    const file = new File([blob], "captured_photo.jpg", {
-      type: blob.type,
-    });
+  const handleConfirmSave = () => {
+    // Logic to save the captured image
+    // For now, I'm just logging the image blob
+    console.log("Captured image Blob:", capturedImage);
 
-    setUserImages((prevImages) => [...prevImages, file]);
-    // Optionally clear or keep captured images
-    setCapturedImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    const modal = modalRef.current;
+
+    if (modal) {
+      const bsModal = Modal.getInstance(modal);
+      if (bsModal) {
+        bsModal.hide();
+      }
+    }
+    // Create a file object from the blob
+    const file = new File([capturedImage], "captured_photo.jpg", {
+      type: capturedImage.type,
+    });
+    setUserImages([file]);
+    setIsConfirmingSave(true);
+
+    // Reset the button text
   };
 
   const setupCamera = () => {
@@ -214,10 +234,6 @@ function CreateContractWorker() {
       });
     }
   };
-  const handleRemoveImage = (index) => {
-    URL.revokeObjectURL(capturedImages[index].url); // Clean up to avoid memory leaks
-    setCapturedImages((prevImages) => prevImages.filter((_, i) => i !== index));
-  };
   const handleCreateUser = () => {
     const missingFields = requiredFields.filter((field) => !formData[field]);
     if (missingFields.length > 0) {
@@ -232,15 +248,10 @@ function CreateContractWorker() {
       formDataToSend.append(key, value);
     });
 
-    // userImages.forEach((imageFile) => {
-    //   formDataToSend.append("user_images", imageFile);
-    // });
-    capturedImages.forEach((image) => {
-      const file = new File([image.blob], "captured_photo.jpg", {
-        type: "image/jpeg",
-      });
-      formDataToSend.append("user_images", file);
+    userImages.forEach((image) => {
+      formDataToSend.append("user_images", image);
     });
+
     if (aadhaarCard) {
       formDataToSend.append("aadhaar_card", aadhaarCard);
     }
@@ -360,33 +371,6 @@ function CreateContractWorker() {
                           Auto Generate Email & Password
                         </label>
                       </div>
-                    </div>
-                    <div className="col-md-6 ">
-                      <label htmlFor="subcategory" className="form-label">
-                        Subcategory
-                        {/* <span className="text-danger">*</span> */}
-                      </label>
-                      <select
-                        className="form-select"
-                        id="subcategory"
-                        value={formData.subcategory}
-                        onChange={handleChange}
-                      >
-                        {subcategories && subcategories.length > 0 ? (
-                          <>
-                            <option value="">Select Subcategory</option>
-                            {subcategories.map((subcategory, index) => (
-                              <option key={index} value={subcategory.id}>
-                                {subcategory.name}
-                              </option>
-                            ))}
-                          </>
-                        ) : (
-                          <option value="" disabled>
-                            No sub categories available
-                          </option>
-                        )}
-                      </select>
                     </div>
                   </div>
                   <div className="row g-3 mb-2">
@@ -525,7 +509,7 @@ function CreateContractWorker() {
                           htmlFor="capture_photo"
                           style={{ marginLeft: "5px", fontWeight: "normal" }}
                         >
-                          Capture Photos from Webcam
+                          Capture Photo from Webcam
                         </label>
                       </div>
                     </div>
@@ -551,11 +535,11 @@ function CreateContractWorker() {
                           className="btn btn-link mt-2"
                           onClick={handleCapture}
                         >
-                          {" Capture Images "}
+                          {" Capture Image "}
                           <i className="fas fa-camera ml-1"></i>
                           {/* Font Awesome camera icon */}
                         </button>
-                        {capturedImage && (
+                        {isConfirmingSave && capturedImage && (
                           <div>
                             <span>captured_photo.jpg</span>
                             <a
@@ -570,28 +554,6 @@ function CreateContractWorker() {
                         )}
                       </div>
                     )}
-                    <div className="col-md-12">
-                      {capturedImages.map((image, index) => (
-                        <div
-                          key={index}
-                          className="thumbnail position-relative"
-                          style={{ display: "inline-block", margin: "5px" }}
-                        >
-                          <img
-                            src={image.url}
-                            alt="Captured"
-                            style={{ width: "200px", height: "150px" }}
-                          />
-                          <button
-                            className="btn btn-danger position-absolute top-0 end-0"
-                            onClick={() => handleRemoveImage(index)}
-                            style={{ borderRadius: "50%" }}
-                          >
-                            <i className="fas fa-times"></i>
-                          </button>
-                        </div>
-                      ))}
-                    </div>
 
                     <div className="col-md-6">
                       <label htmlFor="aadhaar_card" className="form-label">
@@ -664,13 +626,21 @@ function CreateContractWorker() {
                     Close
                   </button>
 
-                  <button
-                    className="btn btn-primary"
-                    onClick={handleSavePhoto}
-                    data-bs-dismiss="modal"
-                  >
-                    Take Photo
-                  </button>
+                  {isConfirmingSave ? (
+                    <button
+                      className="btn btn-primary"
+                      onClick={handleSavePhoto}
+                    >
+                      Take Photo
+                    </button>
+                  ) : (
+                    <button
+                      className="btn btn-success"
+                      onClick={handleConfirmSave}
+                    >
+                      Confirm Photo
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

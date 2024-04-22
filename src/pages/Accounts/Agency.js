@@ -3,9 +3,14 @@ import LoadingScreen from "../../components/Layout/LoadingScreen";
 import AgencyAgGrid from "../../components/Account/AgencyAgGrid";
 import AgencyForm from "../../components/Account/AgencyForm";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+
+import { hideLoading, showLoading } from "../../actions/loadingActions";
 import { toast } from "react-toastify";
 
-const Agency = ({ loading }) => {
+const Agency = () => {
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.loading.loading);
   const [formData, setFormData] = useState({
     name: "",
     agency_owner: "",
@@ -27,6 +32,7 @@ const Agency = ({ loading }) => {
   };
 
   const handleSubmit = async () => {
+    dispatch(showLoading());
     try {
       const formDataToSend = new FormData();
       for (const key in formData) {
@@ -37,19 +43,27 @@ const Agency = ({ loading }) => {
         formDataToSend
       );
       console.log(response.data);
+      dispatch(hideLoading());
+      toast.success("Agency deleted successfully");
+
       window.location.reload();
     } catch (error) {
       console.error("Error creating agency:", error);
+      toast.error("Error Creating Agency");
+      dispatch(hideLoading());
     }
   };
 
   const getAgencyList = async () => {
     try {
+      dispatch(showLoading());
       const getResponse = await axios.get("/accounts/agency_list/");
       setAgencyData(getResponse.data);
       console.log(getResponse.data);
+      dispatch(hideLoading());
     } catch (error) {
       console.error("Error getting agency: ", error);
+      dispatch(hideLoading());
     }
   };
   useEffect(() => {
@@ -57,14 +71,18 @@ const Agency = ({ loading }) => {
   }, []);
 
   const confirmDelete = () => {
+    dispatch(showLoading());
     axios
       .delete(`accounts/delete_agency/${selectedAgency.id}/`)
       .then((response) => {
-        toast.success("Candidate deleted successfully");
-        window.location.reload(); // Reload the page after successful deletion
+        toast.success("Agency deleted successfully");
+        window.location.reload();
+        dispatch(hideLoading()); // Reload the page after successful deletion
       })
       .catch((error) => {
         console.error("Error deleting candidate:", error);
+        toast.success("Error Deleting Agency");
+        dispatch(hideLoading());
       });
   };
 

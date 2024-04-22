@@ -120,18 +120,6 @@ function AgGridLocation({ rowData, onRowSelected, onDeleteClick }) {
                   onChange={(e) => setEditedName(e.target.value)}
                 />
               </div>
-              <div className="mb-3">
-                <label htmlFor="company" className="form-label">
-                  Company:
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="company"
-                  value={editedCompany}
-                  onChange={(e) => setEditedCompany(e.target.value)}
-                />
-              </div>
             </div>
             <div className="modal-footer">
               <button
