@@ -5,7 +5,12 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-function AgGridLocation({ rowData, onRowSelected, onDeleteClick }) {
+function AgGridLocation({
+  rowData,
+  onRowSelected,
+  onDeleteClick,
+  fetchLocations,
+}) {
   const [modalData, setModalData] = useState(null);
   const [editedName, setEditedName] = useState("");
   const [editedCompany, setEditedCompany] = useState("");
@@ -28,12 +33,13 @@ function AgGridLocation({ rowData, onRowSelected, onDeleteClick }) {
       .put(`/accounts/locations/update/${modalData.id}/`, updatedLocation)
       .then((response) => {
         console.log("Location updated successfully:", response.data);
-        window.location.reload();
+        fetchLocations();
 
         toast.success("Location updated successfully");
       })
       .catch((error) => {
         console.error("Error updating location:", error);
+        toast.error("Error updating location");
       });
   };
 
@@ -124,18 +130,18 @@ function AgGridLocation({ rowData, onRowSelected, onDeleteClick }) {
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-primary"
-                data-bs-dismiss="modal"
-                onClick={handleSaveChanges}
-              >
-                Save Changes
-              </button>
-              <button
-                type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
               >
                 Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={handleSaveChanges}
+              >
+                Update
               </button>
             </div>
           </div>

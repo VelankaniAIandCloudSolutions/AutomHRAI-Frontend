@@ -35,6 +35,12 @@ const Categories = () => {
   };
 
   const handleDeleteClick = (id) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this category?"
+    );
+    if (!confirmed) {
+      return;
+    }
     axios
       .delete(`/accounts/categories/delete/${id}/`)
       .then((response) => {
@@ -48,16 +54,20 @@ const Categories = () => {
   };
 
   const handleSubmit = () => {
+    if (!category.trim()) {
+      toast.error(" Error : Category Field cannot be empty");
+      return;
+    }
     axios
       .post("/accounts/categories/create/", { category })
       .then((response) => {
         console.log("Location submitted successfully:", response.data);
-        window.location.reload();
-
+        fetchCategory();
         toast.success("Category created successfully");
       })
       .catch((error) => {
         console.error("Error submitting location:", error);
+        toast.error("Error creating category");
       });
   };
 
@@ -137,18 +147,18 @@ const Categories = () => {
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-primary"
-                data-bs-dismiss="modal"
-                onClick={handleSubmit}
-              >
-                Submit
-              </button>
-              <button
-                type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
               >
                 Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={handleSubmit}
+              >
+                Create
               </button>
             </div>
           </div>
@@ -156,7 +166,11 @@ const Categories = () => {
       </div>
 
       <div className="container" style={{ marginTop: "25px" }}>
-        <CategoryAgGrid rowData={rowData} onDeleteClick={handleDeleteClick} />
+        <CategoryAgGrid
+          rowData={rowData}
+          onDeleteClick={handleDeleteClick}
+          fetchCategory={fetchCategory}
+        />
       </div>
     </div>
   );
