@@ -78,7 +78,6 @@ function CreateContractWorker() {
         console.log(response.data);
         setAgencies(response.data.agencies);
         setSubcategories(response.data.subCategories);
-        set;
       } catch (error) {
         console.error("Error fetching data:", error);
       }
