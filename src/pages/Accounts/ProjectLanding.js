@@ -9,6 +9,7 @@ import { hideLoading, showLoading } from "../../actions/loadingActions";
 import AgGridContractWorkerList from "../../components/FaceRecognition/AgGridContractWorkerList";
 import AgGridProjectList from "../../components/FaceRecognition/AgGridProjectList";
 import CreateProjectModal from "../../components/FaceRecognition/CreateProjectModal";
+import EditProjectModal from "../../components/FaceRecognition/EditProjectModal";
 
 function Projects() {
   const [rowData, setRowData] = useState([]);
@@ -16,11 +17,14 @@ function Projects() {
   const [category, setCategory] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [projects, setProjects] = useState([]);
+  const [selectedProject, setSelectedProject] = useState("");
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading.loading);
+
   const handleProjectCreated = (newProjects) => {
     setRowData(newProjects);
   };
+
   const fetchAllProjects = async () => {
     dispatch(showLoading());
     await axios
@@ -63,6 +67,16 @@ function Projects() {
     }
   };
 
+  const handleEditProject = (projectId) => {
+    console.log("Edit project with ID:", projectId);
+    const projectData = rowData.find((project) => project.id === projectId);
+    if (projectData) {
+      console.log("Project data:", projectData);
+      setSelectedProject(projectData);
+      setShowModal(true);
+    }
+  };
+
   return (
     <div className="container">
       {loading ? (
@@ -99,6 +113,7 @@ function Projects() {
               <AgGridProjectList
                 rowData={rowData}
                 onDeleteProject={handleDeleteProject}
+                onEditProject={handleEditProject}
               />
             </div>
             <CreateProjectModal
@@ -107,6 +122,13 @@ function Projects() {
               locations={location}
               categories={category}
               onProjectCreated={handleProjectCreated}
+            />
+            <EditProjectModal
+              show={showModal}
+              handleClose={() => setShowModal(false)}
+              project={selectedProject}
+              locations={location}
+              categories={category}
             />
           </div>
 
