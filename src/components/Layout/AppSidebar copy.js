@@ -28,7 +28,7 @@ export default function AppSidebar() {
           <nav className="mt-2">
             <ul
               className="nav nav-pills nav-sidebar flex-column"
-              // data-widget="treeview"
+              data-widget="treeview"
               role="menu"
             >
               {userDetails?.is_supervisor_admin && (
@@ -44,16 +44,15 @@ export default function AppSidebar() {
                   ]}
                 />
               )}
-              <SidebarMenuItem
-                title="Face Recognition"
-                icon="fas fa-camera-retro"
-                items={[
-                  { label: "Attendance", link: "/checkin-checkout" },
-                  { label: "Reports", link: "/face-recognition-reports" },
-                ]}
-              />
-              {/* 
+
               <li className="nav-item has-treeview">
+                <Link to="#" className="nav-link">
+                  <i className="nav-icon fas fa-camera-retro"></i>
+                  <p>
+                    Face Recognition
+                    <i className="right fas fa-angle-left"></i>
+                  </p>
+                </Link>
                 <ul className="nav nav-treeview">
                   <li className="nav-item">
                     <Link to="/checkin-checkout" className="nav-link">
@@ -68,7 +67,7 @@ export default function AppSidebar() {
                     </Link>
                   </li>
                 </ul>
-              </li> */}
+              </li>
             </ul>
           </nav>
         </div>

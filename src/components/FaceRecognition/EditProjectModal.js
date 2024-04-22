@@ -21,8 +21,8 @@ const EditProjectModal = ({
   handleClose,
   locations,
   categories,
-
   project,
+  fetchAllProjects,
 }) => {
   useEffect(() => {
     console.log("Row Data:", project);
@@ -85,7 +85,7 @@ const EditProjectModal = ({
         handleClose();
 
         toast.success("Project Edited successfully");
-        window.location.reload();
+        fetchAllProjects();
       } else {
         console.error("Failed to create project");
         dispatch(hideLoading());

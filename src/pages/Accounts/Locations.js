@@ -33,6 +33,12 @@ const Locations = () => {
   };
 
   const handleDeleteClick = (id) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this category?"
+    );
+    if (!confirmed) {
+      return;
+    }
     axios
       .delete(`/accounts/locations/delete/${id}/`)
       .then((response) => {
@@ -46,16 +52,20 @@ const Locations = () => {
   };
 
   const handleSubmit = () => {
+    if (!location.trim()) {
+      toast.error(" Error : Location Field cannot be empty");
+      return;
+    }
     axios
       .post("/accounts/locations/create/", { location })
       .then((response) => {
         console.log("Location submitted successfully:", response.data);
-        window.location.reload();
-
+        fetchLocations();
         toast.success("Location created successfully");
       })
       .catch((error) => {
         console.error("Error submitting location:", error);
+        toast.error("Error creating location");
       });
   };
 
@@ -78,7 +88,7 @@ const Locations = () => {
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      <i className="fas fa-list-alt me-1"></i>
+                      <i className="fa fa-map-marker-alt me-1"></i>
                       Locations
                     </li>
                   </ol>
@@ -135,25 +145,29 @@ const Locations = () => {
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-primary"
-                data-bs-dismiss="modal"
-                onClick={handleSubmit}
-              >
-                Submit
-              </button>
-              <button
-                type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
               >
                 Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={handleSubmit}
+              >
+                Create
               </button>
             </div>
           </div>
         </div>
       </div>
       <div className="mt-3">
-        <LocationAgGrid rowData={rowData} onDeleteClick={handleDeleteClick} />
+        <LocationAgGrid
+          rowData={rowData}
+          onDeleteClick={handleDeleteClick}
+          fetchLocations={fetchLocations}
+        />
       </div>
     </div>
   );

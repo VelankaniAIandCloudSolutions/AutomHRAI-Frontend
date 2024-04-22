@@ -39,7 +39,9 @@ import axios from "axios";
 import ContractWorkersAttendanceReport from "./pages/Accounts/ContractWorkersAttendanceReport";
 import SubCategoryLanding from "./pages/Accounts/SubCategoryLanding";
 import ContractWorkersTimesheet from "./pages/FaceRecognition/ContractWorkersTimesheet";
+import FaceRecognitionReports from "./pages/FaceRecognition/FaceRecognitionReports";
 
+import useAxiosInterceptor from "./interceptors/axios";
 export default function App() {
   const authState = useSelector((state) => state.auth);
   const userDetails = authState.userData?.user_account;
@@ -55,7 +57,7 @@ export default function App() {
         "Token " + localStorage.getItem("token");
     }
   }, [isAuth]);
-
+  useAxiosInterceptor();
   if (isAuth) {
     return (
       <Router>
@@ -69,7 +71,7 @@ export default function App() {
               <Route path="/load" exact component={LoadingScreen} />
               <Route path="/checkin" exact component={CheckInCheckOut} />
               <Route
-                path="/test"
+                path="/bulk-attendance-report"
                 exact
                 component={ContractWorkersAttendanceReport}
               />{" "}
@@ -77,6 +79,11 @@ export default function App() {
                 path="/checkin-checkout"
                 exact
                 component={CheckInCheckOutNew}
+              />
+              <Route
+                path="/face-recognition-reports"
+                exact
+                component={FaceRecognitionReports}
               />
               <Route path="/attendance" exact component={attendanceList} />
               <Route path="/contract-workers">
@@ -243,6 +250,15 @@ export default function App() {
       </Router>
     );
   } else {
-    return <Login />;
+    return (
+      <>
+        <Login />;
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          theme="colored"
+        />
+      </>
+    );
   }
 }

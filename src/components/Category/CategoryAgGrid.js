@@ -8,7 +8,12 @@ import { faDownload, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-function AgGridCategory({ rowData, onRowSelected, onDeleteClick }) {
+function AgGridCategory({
+  rowData,
+  onRowSelected,
+  onDeleteClick,
+  fetchCategory,
+}) {
   const [categoryData, setCategoryData] = useState(null);
   const [editedName, setEditedName] = useState("");
 
@@ -25,12 +30,12 @@ function AgGridCategory({ rowData, onRowSelected, onDeleteClick }) {
     axios
       .put(`/accounts/categories/update/${categoryData.id}/`, updatedCategory)
       .then((response) => {
-        window.location.reload();
-
+        fetchCategory();
         toast.success("Category updated successfully");
       })
       .catch((error) => {
         console.error("Error updating location:", error);
+        toast.error("Error updating category");
       });
   };
 
@@ -106,7 +111,7 @@ function AgGridCategory({ rowData, onRowSelected, onDeleteClick }) {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="EditCategoryModalLabel">
-                Edit Location
+                Edit Category
               </h5>
               <button
                 type="button"
@@ -132,18 +137,18 @@ function AgGridCategory({ rowData, onRowSelected, onDeleteClick }) {
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-primary"
-                data-bs-dismiss="modal"
-                onClick={handleSaveChanges}
-              >
-                Save Changes
-              </button>
-              <button
-                type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
               >
                 Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={handleSaveChanges}
+              >
+                Update
               </button>
             </div>
           </div>

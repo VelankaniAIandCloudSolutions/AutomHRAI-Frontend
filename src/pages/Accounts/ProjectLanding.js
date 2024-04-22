@@ -15,7 +15,8 @@ function Projects() {
   const [rowData, setRowData] = useState([]);
   const [location, setLocation] = useState([]);
   const [category, setCategory] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [showCreateModal, setCreateShowModal] = useState(false);
+  const [showEditModal, setEditShowModal] = useState(false);
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState("");
   const dispatch = useDispatch();
@@ -23,6 +24,10 @@ function Projects() {
 
   const handleProjectCreated = (newProjects) => {
     setRowData(newProjects);
+  };
+
+  const handleProjectEdited = () => {
+    setEditShowModal(true);
   };
 
   const fetchAllProjects = async () => {
@@ -45,7 +50,7 @@ function Projects() {
   }, []);
 
   const handleAddNewProject = () => {
-    setShowModal(true);
+    setCreateShowModal(true);
   };
 
   const handleDeleteProject = async (projectId) => {
@@ -73,7 +78,7 @@ function Projects() {
     if (projectData) {
       console.log("Project data:", projectData);
       setSelectedProject(projectData);
-      setShowModal(true);
+      setEditShowModal(true);
     }
   };
 
@@ -96,7 +101,7 @@ function Projects() {
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      <i className="fas fa-users"> </i> Projects
+                      <i className="fas fa-project-diagram"> </i> Projects
                     </li>
                   </ol>
                 </nav>
@@ -117,18 +122,20 @@ function Projects() {
               />
             </div>
             <CreateProjectModal
-              show={showModal}
-              handleClose={() => setShowModal(false)}
+              show={showCreateModal}
+              handleClose={() => setCreateShowModal(false)}
               locations={location}
               categories={category}
               onProjectCreated={handleProjectCreated}
             />
             <EditProjectModal
-              show={showModal}
-              handleClose={() => setShowModal(false)}
+              show={showEditModal}
+              handleClose={() => setEditShowModal(false)}
               project={selectedProject}
               locations={location}
               categories={category}
+              onEditProject={handleProjectEdited}
+              fetchAllProjects={fetchAllProjects}
             />
           </div>
 
