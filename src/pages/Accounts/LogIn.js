@@ -62,7 +62,7 @@ export const Login = () => {
               <div className="card">
                 <img
                   src="/automhrlogo.png"
-                  class="rounded mx-auto d-block w-50 h-50"
+                  className="rounded mx-auto d-block w-50 h-50"
                   alt="AutomHR"
                 />
                 <form className="Auth-form mx-5 my-5" onSubmit={submit}>

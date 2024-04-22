@@ -204,7 +204,7 @@ const ContractWorkersTimesheet = ({ loading }) => {
             </div>
           </div>
 
-          <div class=" mt-4">
+          <div className=" mt-4">
             <ContractWorkerAgGrid responseData={responseData} />
           </div>
         </>
