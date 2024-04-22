@@ -135,10 +135,11 @@ export default function CheckInCheckOutNew() {
             setTimeout(() => {
               window.location.reload();
             }, 3000);
+            getContractWorkerAttendance(selectedDate);
           } else if (data.status === "FAILURE") {
             clearInterval(interval);
             setIsLoading(false);
-            toast.error("Failed to detect the user");
+            toast.warning(data.message);
             setTimeout(() => {
               window.location.reload();
             }, 3000);
@@ -148,6 +149,9 @@ export default function CheckInCheckOutNew() {
         } catch (error) {
           console.log(error);
           toast.error("An error occured, please try again");
+          if (error.message) {
+            toast.error(error.message);
+          }
           clearInterval(interval);
           setIsLoading(false);
           setTimeout(() => {

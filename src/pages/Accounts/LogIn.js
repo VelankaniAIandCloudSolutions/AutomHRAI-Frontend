@@ -44,11 +44,11 @@ export const Login = () => {
         localStorage.setItem("userAccount", JSON.stringify(data));
         const userData = JSON.parse(localStorage.getItem("userAccount"));
         dispatch(login(JSON.stringify(userData)));
-        window.location.href = "/";
-
         toast.success("Logged in successfully");
+        window.location.href = "/";
       })
       .catch((error) => {
+        // console.log("ihuhuhuhuhu");
         console.error("Error fetching user account:", error);
       });
   };
