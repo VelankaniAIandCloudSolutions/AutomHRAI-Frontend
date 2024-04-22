@@ -24,6 +24,8 @@ function EditUser() {
     is_active: true,
     is_superuser: false,
     is_staff: false,
+    is_supervisor: false,
+    is_supervisor_admin: false,
 
     // Add other fields as needed
   });
@@ -69,31 +71,29 @@ function EditUser() {
       });
   };
 
-  useEffect(async () => {
-    dispatch(showLoading());
-    // Fetch user details based on the id when the component mounts
-    try {
-      const response = await axios.get(`/accounts/users/${id}`);
-      // Update state with fetched user data
-      setUserData(response.data.user);
-      console.log(response.data);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      dispatch(showLoading());
+      try {
+        const response = await axios.get(`/accounts/users/${id}`);
+        console.log(response.data); // Logging the whole user data response
 
-      setUserData((prevData) => ({
-        ...prevData,
-        emp_id: response.data.user.emp_id,
-      }));
-      // setInitialImage(`${response.data.user.user_image}`);
-      setCurrentImage(`${response.data.user.user_image}`); // Set initial image URL
-      console.log(`${response.data.user.user_image.split("/").pop()}`);
-      const LabelImg = response.data.user.user_image.split("/").pop();
-      setImageLabel(LabelImg);
-      dispatch(hideLoading());
-    } catch (error) {
-      console.error("Error fetching user details:", error);
-      dispatch(hideLoading());
-    }
-  }, [dispatch, id]); // Include id in the dependency array to re-run the effect when id changes
+        setUserData(response.data.user);
+        // Assuming response.data.user contains `emp_id` and `user_image` properties
+        setCurrentImage(response.data.user.user_image); // Set initial image URL
 
+        const imageName = response.data.user.user_image.split("/").pop(); // Extracting image name from URL
+        console.log(imageName); // Logging the image name
+        setImageLabel(imageName); // Setting the image label state
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      } finally {
+        dispatch(hideLoading());
+      }
+    };
+
+    fetchUserData();
+  }, [id, dispatch]);
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setUserData((prevData) => ({
@@ -293,6 +293,31 @@ function EditUser() {
                           Is Admin
                         </label>
                       </div>
+                      <div className="form-check form-switch ">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          role="switch"
+                          id="is_supervisor_admin"
+                          checked={userData.is_supervisor_admin}
+                          onChange={(e) => {
+                            const is_supervisor_admin = e.target.checked;
+                            setUserData({
+                              ...userData,
+                              is_supervisor_admin,
+                              is_supervisor: is_supervisor_admin
+                                ? true
+                                : userData.is_supervisor, // Set is_staff to true if is_supervisor is checked
+                            });
+                          }}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="is_supervisor_admin"
+                        >
+                          Is Supervisor Admin
+                        </label>
+                      </div>
                     </div>
                     <div className="col-md-3">
                       <div className="form-check form-switch mt-4">
@@ -311,6 +336,27 @@ function EditUser() {
                         />
                         <label className="form-check-label" htmlFor="is_staff">
                           Is Staff
+                        </label>
+                      </div>
+                      <div className="form-check form-switch ">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          role="switch"
+                          id="is_supervisor"
+                          checked={userData.is_supervisor}
+                          onChange={(e) => {
+                            setUserData({
+                              ...userData,
+                              is_supervisor: e.target.checked,
+                            });
+                          }}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="is_supervisor"
+                        >
+                          Is Supervisor
                         </label>
                       </div>
                     </div>

@@ -16,6 +16,7 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
 
   const columnDefs = [
     { headerName: "Name", field: "name" },
+    { headerName: "Agency-Id", field: "agency_id" },
     { headerName: "Owner Name", field: "agency_owner" },
     { headerName: "GST", field: "gst" },
     {
@@ -59,6 +60,7 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
       field: "pan",
       cellRenderer: (params) => {
         if (params.value) {
+          console.log("PAN Params.value", params.value);
           const baseUrl = "http://localhost:8000";
           const fileUrl = `${baseUrl}/${params.value}`;
           return (
@@ -94,6 +96,7 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
       field: "wcp",
       cellRenderer: (params) => {
         if (params.value) {
+          console.log("WCP Params.value", params.value);
           const baseUrl = "http://localhost:8000";
           const fileUrl = `${baseUrl}/${params.value}`;
           return (
