@@ -9,29 +9,37 @@ export const Login = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const submit = async (e) => {
     e.preventDefault();
     const user = {
       email: email,
       password: password,
     };
-    const { data } = await axios.post(
-      "http://localhost:8000/api/v1/token/login/",
-      user,
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    );
 
-    localStorage.clear();
-    localStorage.setItem("token", data.auth_token);
-    axios.defaults.headers.common[
-      "Authorization"
-    ] = `Token ${data["auth_token"]}`;
-    // localStorage.setItem("access_token", data.access);
-    // localStorage.setItem("refresh_token", data.refresh);
-    // axios.defaults.headers.common["Authorization"] = `Bearer ${data["access"]}`;
-    getUserAccount();
+    try {
+      const { data } = await axios.post(
+        "http://localhost:8000/api/v1/token/login/",
+        user,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      localStorage.clear();
+      localStorage.setItem("token", data.auth_token);
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Token ${data.auth_token}`;
+
+      // Fetch user account after successful login
+      getUserAccount();
+    } catch (error) {
+      console.error("Error logging in:", error);
+      toast.error(
+        "Incorrect email or password. Please provide correct credentials."
+      );
+    }
   };
 
   const getUserAccount = async () => {
@@ -44,12 +52,15 @@ export const Login = () => {
         localStorage.setItem("userAccount", JSON.stringify(data));
         const userData = JSON.parse(localStorage.getItem("userAccount"));
         dispatch(login(JSON.stringify(userData)));
-        window.location.href = "/";
-
         toast.success("Logged in successfully");
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1500);
       })
+
       .catch((error) => {
         console.error("Error fetching user account:", error);
+        toast.error("Incorrect credentials");
       });
   };
 
@@ -62,7 +73,7 @@ export const Login = () => {
               <div className="card">
                 <img
                   src="/automhrlogo.png"
-                  class="rounded mx-auto d-block w-50 h-50"
+                  className="rounded mx-auto d-block w-50 h-50"
                   alt="AutomHR"
                 />
                 <form className="Auth-form mx-5 my-5" onSubmit={submit}>

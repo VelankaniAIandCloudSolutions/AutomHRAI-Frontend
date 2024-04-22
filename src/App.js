@@ -243,6 +243,16 @@ export default function App() {
       </Router>
     );
   } else {
-    return <Login />;
+    return (
+      <>
+        <Login />
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          theme="colored"
+        />
+        ;
+      </>
+    );
   }
 }
