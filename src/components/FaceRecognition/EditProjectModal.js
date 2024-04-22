@@ -36,7 +36,6 @@ const EditProjectModal = ({
       setLocation(project.location.id);
       setCategory(project.category.id);
     }
-    const locationObj = locations.find((loc) => loc.id === project.location.id);
     setProjectId(project.id);
   }, [project, locations]);
 
