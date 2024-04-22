@@ -7,7 +7,6 @@ import "react-toastify/dist/ReactToastify.css";
 import LoadingScreen from "../../components/Layout/LoadingScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { hideLoading, showLoading } from "../../actions/loadingActions";
-import Webcam from "react-webcam";
 
 function CreateContractWorker() {
   const dispatch = useDispatch();
@@ -29,42 +28,32 @@ function CreateContractWorker() {
   const [aadhaarCard, setAadhaarCard] = useState(null);
   const [panCard, setPanCard] = useState(null);
   const [agencies, setAgencies] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
 
   const history = useHistory();
   const [automaticGeneration, setAutomaticGeneration] = useState(false);
   const [generatedEmail, setGeneratedEmail] = useState("");
   const [generatedPassword, setGeneratedPassword] = useState("");
-  const [requiredFields, setRequiredFields] = useState([
-    "first_name",
-    "email",
-    "password",
-  ]);
+  const requiredFields = ["first_name", "email", "password"];
   const [showPassword, setShowPassword] = useState(false);
   // Define a state variable to hold the selected image option
   const [imageOption, setImageOption] = useState("upload"); // Defaulting to 'upload'
 
   // Function to handle radio button change and update the selected image option
-  const handleImageOptionChange = (option) => {
-    setImageOption(option);
-  };
-  const webcamRef = useRef(null);
+
   const [capturedImage, setCapturedImage] = useState(null);
   const fileInputRef = useRef(null);
   const videoRef = useRef(null);
   const imageRef = useRef(null);
   const modalRef = useRef(null);
-  const capture = () => {
-    const imageSrc = webcamRef.current.getScreenshot();
-    setCapturedImage(imageSrc);
-  };
+
   const [videoStream, setVideoStream] = useState(null);
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword); // Toggle the state variable
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     // Fetch agency and location data
     setupCamera();
     const modal = modalRef.current;
@@ -143,6 +132,7 @@ function CreateContractWorker() {
       .getUserMedia({ video: true })
       .then((stream) => {
         setVideoStream(stream);
+        console.log(videoStream);
         videoRef.current.srcObject = stream;
       })
       .catch((error) => {
@@ -194,10 +184,10 @@ function CreateContractWorker() {
     setAutomaticGeneration(e.target.checked);
     if (e.target.checked) {
       // Generate email and password
-      const generatedEmail = `${formData.first_name}@automhr.com`;
-      const generatedPassword = "test"; // You can replace 'test' with your password generation logic
-      setGeneratedEmail(generatedEmail);
-      setGeneratedPassword(generatedPassword);
+      const generatedEmailString = `${formData.first_name}@automhr.com`;
+      const generatedPasswordString = "test"; // You can replace 'test' with your password generation logic
+      setGeneratedEmail(generatedEmailString);
+      setGeneratedPassword(generatedPasswordString);
 
       // Update formData state with generated values
       setFormData({
