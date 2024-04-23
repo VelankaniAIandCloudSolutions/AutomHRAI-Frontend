@@ -66,7 +66,7 @@ function AgGridUserList({ rowData, onDeleteContractWorker }) {
     return (
       <div className="p-0">
         <button
-          className="btn btn-outline-primary btn-sm"
+          className="btn btn-primary btn-sm"
           onClick={handleViewClick}
           data-bs-toggle="modal"
           data-bs-target="#exampleModal"
