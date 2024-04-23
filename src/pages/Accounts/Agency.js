@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import LoadingScreen from "../../components/Layout/LoadingScreen";
 import AgencyAgGrid from "../../components/Account/AgencyAgGrid";
 import AgencyForm from "../../components/Account/AgencyForm";
+import EditAgencyForm from "../../components/Account/EditAgencyForm";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -11,14 +12,9 @@ import { toast } from "react-toastify";
 const Agency = () => {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading.loading);
-  const [formData, setFormData] = useState({
-    name: "",
-    agency_owner: "",
-    GST: "",
-    labour_license: null,
-    PAN: "",
-    wcp: null,
-  });
+  const [formData, setFormData] = useState("");
+  const [editFormData, setEditFormData] = useState("");
+
   const [agencyData, setAgencyData] = useState(null);
   const [selectedAgency, setSelectedAgency] = useState(null);
 
@@ -26,9 +22,31 @@ const Agency = () => {
     setSelectedAgency(agency);
     console.log("Selected Agency:", agency);
   };
+  const handleEditAgency = (agency) => {
+    setSelectedAgency(agency);
+    setEditFormData({
+      name: agency.name,
+      ownerName: agency.agency_owner,
+      gst: agency.gst,
+      labourLicense: agency.labour_license,
+      pan: agency.pan,
+      wcp: agency.wcp,
+    });
+    console.log("Selected Agency Edit:", agency);
+  };
 
   const handleFormDataChange = (newFormData) => {
     setFormData(newFormData);
+    console.log("create");
+
+    console.log("new form data", newFormData);
+    console.log("new form data state ", formData);
+  };
+  const handleFormDataChangeEdit = (newFormData) => {
+    setEditFormData(newFormData);
+    console.log("edit");
+    console.log("new form data", newFormData);
+    console.log("new form data state ", editFormData);
   };
 
   const handleSubmit = async () => {
@@ -49,6 +67,29 @@ const Agency = () => {
     } catch (error) {
       console.error("Error creating agency:", error);
       toast.error("Error Creating Agency");
+      dispatch(hideLoading());
+    }
+  };
+
+  const handleUpdate = async () => {
+    try {
+      const formDataToSend = new FormData();
+      console.log(formData);
+      for (const key in formData) {
+        formDataToSend.append(key, editFormData[key]);
+      }
+      const response = await axios.put(
+        `/accounts/edit_agency/${selectedAgency.id}/`,
+        formDataToSend
+      );
+      console.log(response.data);
+      dispatch(hideLoading());
+      toast.success("Agency Edited successfully");
+
+      window.location.reload();
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Error Editing Agency");
       dispatch(hideLoading());
     }
   };
@@ -206,6 +247,54 @@ const Agency = () => {
 
             <div
               className="modal fade"
+              id="editAgencyModal"
+              tabindex="-1"
+              aria-labelledby="editAgencyModalLabel"
+              aria-hidden="true"
+            >
+              <div className="modal-dialog">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h1 className="modal-title fs-5" id="editAgencyModalLabel">
+                      Edit Agency
+                    </h1>
+
+                    <button
+                      type="button"
+                      className="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div className="modal-body">
+                    <EditAgencyForm
+                      onFormDataChange={handleFormDataChangeEdit}
+                      isEdit={true}
+                      selectedAgency={selectedAgency}
+                    />
+                  </div>
+                  <div className="modal-footer">
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-outline-success"
+                      onClick={handleUpdate}
+                    >
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              className="modal fade"
               id="agencyFormModal"
               tabIndex="-1"
               aria-labelledby="agencyFormModalLabel"
@@ -265,6 +354,7 @@ const Agency = () => {
             <AgencyAgGrid
               agencyData={agencyData}
               onSelectAgency={handleSelectedAgency}
+              onEditAgency={handleEditAgency}
             />
           </div>
         </>
