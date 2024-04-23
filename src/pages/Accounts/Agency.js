@@ -44,9 +44,8 @@ const Agency = () => {
       );
       console.log(response.data);
       dispatch(hideLoading());
-      toast.success("Agency deleted successfully");
-
-      window.location.reload();
+      toast.success("Agency Created successfully");
+      getAgencyList();
     } catch (error) {
       console.error("Error creating agency:", error);
       toast.error("Error Creating Agency");
@@ -238,10 +237,11 @@ const Agency = () => {
                     </button>
                     <button
                       type="button"
-                      className="btn btn-outline-success"
+                      className="btn btn-primary"
                       onClick={handleSubmit}
+                      data-bs-dismiss="modal"
                     >
-                      Save
+                      Create
                     </button>
                   </div>
                 </div>
