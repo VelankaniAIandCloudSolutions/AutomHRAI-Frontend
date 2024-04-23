@@ -6,12 +6,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 
-const AgGridComponent = ({ agencyData, onSelectAgency }) => {
+const AgGridComponent = ({ agencyData, onSelectAgency, onEditAgency }) => {
   const [selectedAgency, setSelectedAgency] = useState(null);
 
   const handleAgGridDeleteClick = (agency) => {
     setSelectedAgency(agency);
     onSelectAgency(agency);
+  };
+  const handleAgGridEditClick = (agency) => {
+    setSelectedAgency(agency);
+    onEditAgency(agency);
   };
 
   const columnDefs = [
@@ -136,6 +140,9 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-primary btn-sm me-1"
+            data-bs-toggle="modal"
+            data-bs-target="#editAgencyModal"
+            onClick={() => handleAgGridEditClick(params.data)}
           >
             <FontAwesomeIcon icon={faEdit} />
             Edit
