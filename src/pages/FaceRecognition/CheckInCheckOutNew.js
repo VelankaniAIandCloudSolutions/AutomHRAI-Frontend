@@ -135,11 +135,10 @@ export default function CheckInCheckOutNew() {
             setTimeout(() => {
               window.location.reload();
             }, 3000);
-            getContractWorkerAttendance(selectedDate);
           } else if (data.status === "FAILURE") {
             clearInterval(interval);
             setIsLoading(false);
-            toast.warning(data.message);
+            toast.error(data.message);
             setTimeout(() => {
               window.location.reload();
             }, 3000);
