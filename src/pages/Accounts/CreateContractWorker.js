@@ -232,9 +232,9 @@ function CreateContractWorker() {
       formDataToSend.append(key, value);
     });
 
-    // userImages.forEach((imageFile) => {
-    //   formDataToSend.append("user_images", imageFile);
-    // });
+    userImages.forEach((imageFile) => {
+      formDataToSend.append("user_images", imageFile);
+    });
     capturedImages.forEach((image) => {
       const file = new File([image.blob], "captured_photo.jpg", {
         type: "image/jpeg",
