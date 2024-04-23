@@ -24,8 +24,7 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
       field: "labour_license",
       cellRenderer: (params) => {
         if (params.value) {
-          const baseUrl = "http://localhost:8000";
-          const fileUrl = `${baseUrl}/${params.value}`;
+          const fileUrl = `${params.value}`;
 
           return (
             <div style={{ marginLeft: "55px" }}>
@@ -60,9 +59,7 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
       field: "pan",
       cellRenderer: (params) => {
         if (params.value) {
-          console.log("PAN Params.value", params.value);
-          const baseUrl = "http://localhost:8000";
-          const fileUrl = `${baseUrl}/${params.value}`;
+          const fileUrl = `${params.value}`;
           return (
             <div style={{ marginLeft: "55px" }}>
               <a
@@ -96,9 +93,7 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
       field: "wcp",
       cellRenderer: (params) => {
         if (params.value) {
-          console.log("WCP Params.value", params.value);
-          const baseUrl = "http://localhost:8000";
-          const fileUrl = `${baseUrl}/${params.value}`;
+          const fileUrl = `${params.value}`;
           return (
             <div style={{ marginLeft: "55px" }}>
               <a
