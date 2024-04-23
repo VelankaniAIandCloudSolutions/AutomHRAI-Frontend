@@ -24,8 +24,7 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
       field: "labour_license",
       cellRenderer: (params) => {
         if (params.value) {
-          const baseUrl = "https://aidev.automhr.com";
-          const fileUrl = `${baseUrl}/${params.value}`;
+          const fileUrl = `${params.value}`;
 
           return (
             <div style={{ marginLeft: "55px" }}>
@@ -60,8 +59,7 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
       field: "pan",
       cellRenderer: (params) => {
         if (params.value) {
-          const baseUrl = "https://aidev.automhr.com";
-          const fileUrl = `${baseUrl}/${params.value}`;
+          const fileUrl = `${params.value}`;
           return (
             <div style={{ marginLeft: "55px" }}>
               <a
@@ -95,8 +93,7 @@ const AgGridComponent = ({ agencyData, onSelectAgency }) => {
       field: "wcp",
       cellRenderer: (params) => {
         if (params.value) {
-          const baseUrl = "http://aidev.automhr.com";
-          const fileUrl = `${baseUrl}/${params.value}`;
+          const fileUrl = `${params.value}`;
           return (
             <div style={{ marginLeft: "55px" }}>
               <a
