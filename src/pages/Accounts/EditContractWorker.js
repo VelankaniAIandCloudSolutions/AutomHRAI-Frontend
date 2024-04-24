@@ -276,16 +276,16 @@ const [clearPan, setClearPan] = useState(false);
     });
 
     // Append deleted images
-    const deletedImageIds = deletedImages.map((image) => image.id);
+    const deletedImageIds = deletedImages.map((image) => image?.id);
     formDataToSend.append("deleted_images", JSON.stringify(deletedImageIds));
 
     // Append user image IDs
-    const allImageIds = allImages.map((image) => image.id);
+    const allImageIds = allImages.map((image) => image?.id);
     allImages.forEach((image) => {
       if (image instanceof File) {
         formDataToSend.append("user_images", image);
       } else {
-        allImageIds.push(image.id);
+        allImageIds.push(image?.id);
       }
     });
     formDataToSend.append("all_image_ids", JSON.stringify(allImageIds));
@@ -493,12 +493,12 @@ const [clearPan, setClearPan] = useState(false);
                         <select
                           className="form-select"
                           id="sub_category"
-                          value={formData.worker.sub_category.id}
+                          value={formData.worker.sub_category?.id}
                           onChange={handleChange}
                         >
                           <option value="">Select Subcategory</option>
                           {subcategories.map((subcategory, index) => (
-                            <option key={index} value={subcategory.id}>
+                            <option key={index} value={subcategory?.id}>
                               {subcategory.name}
                             </option>
                           ))}
@@ -562,12 +562,12 @@ const [clearPan, setClearPan] = useState(false);
                         <select
                           className="form-select"
                           id="agency"
-                          value={formData.worker.agency.id}
+                          value={formData.worker.agency?.id}
                           onChange={handleChange}
                         >
                           <option value="">Select Agency</option>
                           {agencies.map((agency, index) => (
-                            <option key={index} value={agency.id}>
+                            <option key={index} value={agency?.id}>
                               {agency.name}
                             </option>
                           ))}
