@@ -38,8 +38,9 @@ const ContractWorkersTimesheet = ({ loading }) => {
           "/facial-recognition/get_contract_worker_timesheet/"
         );
         if (response.status === 200) {
-          setContractWorkers(response.data);
-          console.log(response.data);
+          const responseData = response.data.user_data; // Assuming response data is in the format { user_data: [...] }
+          setContractWorkers(responseData);
+          console.log(responseData);
         } else {
           console.error("Error:", response.data);
         }
@@ -47,7 +48,6 @@ const ContractWorkersTimesheet = ({ loading }) => {
         console.error("Network Error:", error);
       }
     };
-
     fetchContractWorkers();
   }, []);
 
@@ -66,12 +66,10 @@ const ContractWorkersTimesheet = ({ loading }) => {
 
   const columnDefs = [
     {
+      headerName: "Employee ID",
+      field: "emp_id",
       checkboxSelection: true,
-      headerName: "Select",
-      field: "select",
-      width: 100,
     },
-    { headerName: "Employee ID", field: "emp_id" },
     { headerName: "Full Name", field: "full_name" },
     { headerName: "Email", field: "email" },
     { headerName: "Phone Number", field: "phone_number" },
@@ -112,8 +110,11 @@ const ContractWorkersTimesheet = ({ loading }) => {
                 data-bs-target="#selectWorkerModal"
                 className="btn btn-outline-primary"
               >
-                Select Workers
+                Select Worker
               </button>
+              {selectContractWorker && (
+                <p className="h5 mt-2">{selectContractWorker.full_name}</p>
+              )}
             </div>
             <div className="col-md-9 mt-1 ">
               <div className="row align-items-center">
