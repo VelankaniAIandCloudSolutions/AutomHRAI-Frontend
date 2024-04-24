@@ -20,10 +20,10 @@ const Agency = () => {
 
   const handleSelectedAgency = (agency) => {
     setSelectedAgency(agency);
-    console.log("Selected Agency:", agency);
   };
   const handleEditAgency = (agency) => {
     setSelectedAgency(agency);
+    console.log("is Agency", agency);
     setEditFormData({
       name: agency.name,
       ownerName: agency.agency_owner,
@@ -56,6 +56,7 @@ const Agency = () => {
       for (const key in formData) {
         formDataToSend.append(key, formData[key]);
       }
+
       const response = await axios.post(
         "/accounts/agency_list/",
         formDataToSend
@@ -74,8 +75,8 @@ const Agency = () => {
   const handleUpdate = async () => {
     try {
       const formDataToSend = new FormData();
-      console.log(formData);
-      for (const key in formData) {
+      console.log("coming data to api", editFormData);
+      for (const key in editFormData) {
         formDataToSend.append(key, editFormData[key]);
       }
       const response = await axios.put(
@@ -84,9 +85,9 @@ const Agency = () => {
       );
       console.log(response.data);
       dispatch(hideLoading());
-      toast.success("Agency Edited successfully");
 
-      window.location.reload();
+      toast.success("Agency Edited successfully");
+      getAgencyList();
     } catch (error) {
       console.error("Error:", error);
       toast.error("Error Editing Agency");
@@ -276,17 +277,18 @@ const Agency = () => {
                   <div className="modal-footer">
                     <button
                       type="button"
-                      className="btn btn-outline-secondary"
+                      className="btn btn-secondary"
                       data-bs-dismiss="modal"
                     >
                       Close
                     </button>
                     <button
                       type="button"
-                      className="btn btn-outline-success"
+                      className="btn btn-primary"
+                      data-bs-dismiss="modal"
                       onClick={handleUpdate}
                     >
-                      Save
+                      Update
                     </button>
                   </div>
                 </div>

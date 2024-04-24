@@ -7,11 +7,32 @@ const ContractWorkerAgGrid = ({ responseData }) => {
   const [selectedRow, setSelectedRow] = useState(null);
 
   const columnDefs = [
-    { headerName: "Date", field: "date" },
-    { headerName: "Working Time", field: "work_time" },
-    { headerName: "Break Time", field: "break_time" },
     {
-      headerName: "Image",
+      headerName: "Date",
+      field: "date",
+      valueFormatter: (params) => {
+        if (params.value) {
+          const date = new Date(params.value);
+          const day = date.getDate().toString().padStart(2, "0");
+          const month = (date.getMonth() + 1).toString().padStart(2, "0");
+          const year = date.getFullYear();
+          return `${day}/${month}/${year}`;
+        }
+        return "";
+      },
+    },
+    {
+      headerName: "Working Time",
+      field: "work_time",
+      valueFormatter: (params) => formatTime(params.value),
+    },
+    {
+      headerName: "Break Time",
+      field: "break_time",
+      valueFormatter: (params) => formatTime(params.value),
+    },
+    {
+      headerName: "Event List",
       cellRenderer: (params) => (
         <button
           type="button"
@@ -25,6 +46,22 @@ const ContractWorkerAgGrid = ({ responseData }) => {
       ),
     },
   ];
+
+  const formatTime = (timeInSeconds) => {
+    if (isNaN(timeInSeconds)) {
+      return "NAN";
+    }
+    const hours = Math.floor(timeInSeconds / 3600);
+    const minutes = Math.floor((timeInSeconds % 3600) / 60);
+
+    const formattedHours = hours < 10 ? `0${hours}` : hours.toString();
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes.toString();
+
+    const hourSuffix = hours <= 1 ? "hr" : "hrs";
+    const minuteSuffix = minutes <= 1 ? "min" : "mins";
+
+    return `${formattedHours} ${hourSuffix} ${formattedMinutes} ${minuteSuffix}`;
+  };
 
   const handleViewImage = (data) => {
     setSelectedRow(data);
