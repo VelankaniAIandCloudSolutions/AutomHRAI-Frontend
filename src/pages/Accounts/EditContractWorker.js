@@ -24,6 +24,7 @@ function EditContractWorker() {
       phone_number: "",
       dob: "",
       agency: "",
+      sub_category: "",
       aadhaar_card: "", // Assume these are URLs to images or PDFs
       pan: "",
     },
@@ -37,6 +38,7 @@ function EditContractWorker() {
   const [aadhaarCard, setAadhaarCard] = useState(null);
   const [panCard, setPanCard] = useState(null);
   const [agencies, setAgencies] = useState([]);
+  const [subcategories, setSubCategories] = useState([]);
   const history = useHistory();
   const [requiredFields, setRequiredFields] = useState([
     "first_name",
@@ -56,6 +58,11 @@ function EditContractWorker() {
   const [allImages, setAllImages] = useState([]);
   const [showAadhaarCard, setShowAadhaarCard] = useState(false);
   const [showPanCard, setShowPanCard] = useState(false);
+  const [deletedImages, setDeletedImages] = useState([]);
+
+  const [clearAadhaar, setClearAadhaar] = useState(false);
+const [clearPan, setClearPan] = useState(false);
+  
 
   useEffect(() => {
     setupCamera();
@@ -71,6 +78,14 @@ function EditContractWorker() {
         );
         setFormData(response.data);
         console.log("the fetched worker data", response.data);
+
+        if (response.data.subCategories) {
+          // Correct key is subcategories
+          const subcategoryData = response.data.subCategories; // Correct key is subCategories
+          setSubCategories(subcategoryData);
+        }
+
+        console.log("the sub categories", subcategories);
 
         // if (response.data.worker.aadhaar_card) {
         //   setAadhaarCardUrl(response.data.worker.aadhaar_card);
@@ -210,9 +225,30 @@ function EditContractWorker() {
     }
   };
 
+  const handleDeleteImage = (index) => {
+    console.log("Deleting image at index:", index);
+    const deletedImage = allImages[index];
+    // Add the deleted image to deletedImages array
+    setDeletedImages((prevDeletedImages) => [
+      ...prevDeletedImages,
+      deletedImage,
+    ]);
+    const updatedImages = [...allImages];
+    updatedImages.splice(index, 1);
+    setAllImages(updatedImages);
+
+    const updatedUserDocuments = [...formData.user_documents];
+    updatedUserDocuments.splice(index, 1); // Remove the deleted image from formData.user_documents array
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      user_documents: updatedUserDocuments
+    }));
+    
+  };
+
   const handleUpdateUser = () => {
     const formDataToSend = new FormData();
-    
+
     // Iterate over each field in formData
     Object.entries(formData).forEach(([key, value]) => {
       if (key === "user_documents") {
@@ -226,15 +262,34 @@ function EditContractWorker() {
         formDataToSend.append(key, value);
       }
     });
-  
-    // Append all images to formDataToSend
-    allImages.forEach((image) => {
-      // Check if image is in binary format, if not, convert it
-      formDataToSend.append("user_images", image);
+
+    // Append worker data
+    // formDataToSend.append("worker", JSON.stringify(formData.worker));
+
+    // Append user documents
+    formData.user_documents.forEach((document) => {
+      if (document instanceof File) {
+        formDataToSend.append("user_documents", document);
+      } else {
+        formDataToSend.append("user_documents", document.document);
+      }
     });
-  
-    // Check other sources of images (confirmedUploadedImages, confirmedCapturedImages) and append them if needed
-  
+
+    // Append deleted images
+    const deletedImageIds = deletedImages.map((image) => image.id);
+    formDataToSend.append("deleted_images", JSON.stringify(deletedImageIds));
+
+    // Append user image IDs
+    const allImageIds = allImages.map((image) => image.id);
+    allImages.forEach((image) => {
+      if (image instanceof File) {
+        formDataToSend.append("user_images", image);
+      } else {
+        allImageIds.push(image.id);
+      }
+    });
+    formDataToSend.append("all_image_ids", JSON.stringify(allImageIds));
+
     // Append additional documents (aadhaarCard, panCard) if available
     if (aadhaarCard) {
       formDataToSend.append("aadhaar_card", aadhaarCard);
@@ -242,10 +297,17 @@ function EditContractWorker() {
     if (panCard) {
       formDataToSend.append("pan", panCard);
     }
-  
+    
+    if (clearAadhaar) {
+      formDataToSend.append("clearAadhaar", true);
+    }
+    if (clearPan) {
+      formDataToSend.append("clearPan", true);
+    }
+
     dispatch(showLoading());
     axios
-      .put(`/accounts/contract-workers/update/${id}/`, formDataToSend, {
+      .put(`accounts/contract-workers/update/${id}/`, formDataToSend, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -262,7 +324,7 @@ function EditContractWorker() {
         dispatch(hideLoading());
       });
   };
-  
+
   // const handleUpdateUser = () => {
   //   const formDataToSend = new FormData();
   //   Object.entries(formData).forEach(([key, value]) => {
@@ -318,12 +380,12 @@ function EditContractWorker() {
     }
   };
 
-  const handleDeleteImage = (index) => {
-    console.log("Deleting image at index:", index);
-    const updatedImages = [...allImages];
-    updatedImages.splice(index, 1);
-    setAllImages(updatedImages);
-  };
+  // const handleDeleteImage = (index) => {
+  //   console.log("Deleting image at index:", index);
+  //   const updatedImages = [...allImages];
+  //   updatedImages.splice(index, 1);
+  //   setAllImages(updatedImages);
+  // };
 
   const handleEyeButtonClick = (type) => {
     if (type === "aadhaar_card") {
@@ -333,27 +395,14 @@ function EditContractWorker() {
     }
   };
 
-  const handleClearAadhaarCard = () => {
-    setShowAadhaarCard(false);
-    setFormData((prevData) => ({
-      ...prevData,
-      worker: {
-        ...prevData.worker,
-        aadhaar_card: "",
-      },
-    }));
+  const handleClearAadhaarCard = (e) => {
+    setClearAadhaar(e.target.checked);
+  };
+  
+  const handleClearPanCard = (e) => {
+    setClearPan(e.target.checked);
   };
 
-  const handleClearPanCard = () => {
-    setShowPanCard(false);
-    setFormData((prevData) => ({
-      ...prevData,
-      worker: {
-        ...prevData.worker,
-        pan: "",
-      },
-    }));
-  };
 
   return (
     <div className="container">
@@ -435,6 +484,36 @@ function EditContractWorker() {
                         onChange={handleChange}
                       />
                     </div>
+                    <div className="col-md-6">
+                      <label htmlFor="subcategory" className="form-label">
+                        Subcategory
+                        {/* <span className="text-danger">*</span> */}
+                      </label>
+                      {subcategories && subcategories.length > 0 ? (
+                        <select
+                          className="form-select"
+                          id="sub_category"
+                          value={formData.worker.sub_category.id}
+                          onChange={handleChange}
+                        >
+                          <option value="">Select Subcategory</option>
+                          {subcategories.map((subcategory, index) => (
+                            <option key={index} value={subcategory.id}>
+                              {subcategory.name}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <select
+                          className="form-select"
+                          id="subcategory"
+                          disabled
+                        >
+                          <option value="">No sub categories available</option>
+                        </select>
+                      )}
+                    </div>
+
                     {/* <div className="col-md-6">
                       <label htmlFor="password" className="form-label">
                         Password <span className="text-danger">*</span>
@@ -514,9 +593,9 @@ function EditContractWorker() {
                       {allImages.map((document, index) => (
                         <div className="col-md-2" key={index}>
                           <div className="card position-relative">
-                            {document && document.document_url && (
+                            {document && document.document && (
                               <img
-                                src={document.document_url}
+                                src={document.document}
                                 className="card-img-top"
                                 alt="Document"
                                 style={{ height: "200px", objectFit: "cover" }}
@@ -870,15 +949,9 @@ function EditContractWorker() {
                                 style={{ marginBottom: "0", marginLeft: "3%" }}
                               >
                                 {formData.worker.pan ? (
-                                  <p>
-                                    {formData.worker.pan.split("/").pop()}
-                                  </p>
+                                  <p>{formData.worker.pan.split("/").pop()}</p>
                                 ) : (
-                                  <p
-                                   
-                                  >
-                                    Pan Card Not Uploaded
-                                  </p>
+                                  <p>Pan Card Not Uploaded</p>
                                 )}
                               </p>
                             </div>
