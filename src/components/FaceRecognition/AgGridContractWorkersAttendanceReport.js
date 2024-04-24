@@ -66,7 +66,7 @@ function AgGridUserList({ rowData, onDeleteContractWorker }) {
     return (
       <div className="p-0">
         <button
-          className="btn btn-success btn-sm"
+          className="btn btn-primary btn-sm"
           onClick={handleViewClick}
           data-bs-toggle="modal"
           data-bs-target="#exampleModal"
@@ -78,9 +78,13 @@ function AgGridUserList({ rowData, onDeleteContractWorker }) {
   }
 
   const formatTimeFromSeconds = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    return `${hours}hrs ${minutes}min`;
+    if (seconds === null || isNaN(seconds)) {
+      return "-";
+    } else {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      return `${hours}hrs ${minutes}min`;
+    }
   };
   // const formatTimeFromSeconds = (seconds) => {
   //   const hours = Math.floor(seconds / 3600);
