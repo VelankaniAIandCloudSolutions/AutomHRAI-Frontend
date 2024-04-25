@@ -15,7 +15,7 @@ function Projects() {
   const [rowData, setRowData] = useState([]);
   const [location, setLocation] = useState([]);
   const [category, setCategory] = useState([]);
-  const [showCreateModal, setCreateShowModal] = useState(false);
+  // const [showCreateModal, setCreateShowModal] = useState(false);
   const [showEditModal, setEditShowModal] = useState(false);
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState("");
@@ -49,9 +49,9 @@ function Projects() {
     fetchAllProjects();
   }, []);
 
-  const handleAddNewProject = () => {
-    setCreateShowModal(true);
-  };
+  // const handleAddNewProject = () => {
+  //   setCreateShowModal(true);
+  // };
 
   const handleDeleteProject = async (projectId) => {
     try {
@@ -109,7 +109,12 @@ function Projects() {
             </div>
 
             <div className="col-md-3 d-flex justify-content-end mt-4">
-              <button className="btn btn-primary" onClick={handleAddNewProject}>
+              <button
+                className="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#CreateNewProjectModal"
+                // onClick={handleAddNewProject}
+              >
                 <i className="fas fa-plus"> </i> Add New Project
               </button>
             </div>
@@ -121,13 +126,7 @@ function Projects() {
                 onEditProject={handleEditProject}
               />
             </div>
-            <CreateProjectModal
-              show={showCreateModal}
-              handleClose={() => setCreateShowModal(false)}
-              locations={location}
-              categories={category}
-              onProjectCreated={handleProjectCreated}
-            />
+
             <EditProjectModal
               show={showEditModal}
               handleClose={() => setEditShowModal(false)}
@@ -138,9 +137,8 @@ function Projects() {
               fetchAllProjects={fetchAllProjects}
             />
           </div>
-
           <div
-            className="modal fade"
+            className="modal"
             id="deletemodal"
             tabIndex="-1"
             aria-labelledby="exampleModalLabel"
@@ -174,6 +172,53 @@ function Projects() {
                     Confirm
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* create Project Modal */}
+
+          <div
+            class="modal"
+            id="CreateNewProjectModal"
+            tabindex="-1"
+            aria-labelledby="CreateNewProjectModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="CreateNewProjectModalLabel">
+                    Create Project
+                  </h1>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <CreateProjectModal
+                    // show={showCreateModal}
+                    // handleClose={() => setCreateShowModal(false)}
+                    locations={location}
+                    categories={category}
+                    onProjectCreated={handleProjectCreated}
+                  />
+                </div>
+                {/* <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button type="button" class="btn btn-primary">
+                    Save changes
+                  </button>
+                </div> */}
               </div>
             </div>
           </div>

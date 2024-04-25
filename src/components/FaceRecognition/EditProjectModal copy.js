@@ -17,8 +17,8 @@ const Backdrop = ({ show, handleClose }) => {
 };
 
 const EditProjectModal = ({
-  show,
-  handleClose,
+  // show,
+  // handleClose,
   locations,
   categories,
   project,
@@ -169,12 +169,11 @@ const EditProjectModal = ({
                     ))}
                   </select>
                 </div>
-                <hr></hr>
                 <div className="text-end">
                   {" "}
                   {/* Align button to the right */}
                   <button type="submit" className="btn btn-primary">
-                    Save
+                    Edit
                   </button>
                 </div>
               </form>

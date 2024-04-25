@@ -183,14 +183,14 @@ const Agency = () => {
                   <div className="modal-footer">
                     <button
                       type="button"
-                      className="btn btn-outline-secondary"
+                      className="btn btn-secondary"
                       data-bs-dismiss="modal"
                     >
                       Close
                     </button>
                     <button
                       type="button"
-                      className="btn btn-outline-danger"
+                      className="btn btn-danger"
                       onClick={confirmDelete}
                     >
                       Delete
@@ -288,7 +288,7 @@ const Agency = () => {
                       data-bs-dismiss="modal"
                       onClick={handleUpdate}
                     >
-                      Update
+                      Save
                     </button>
                   </div>
                 </div>
@@ -321,7 +321,7 @@ const Agency = () => {
                   <div className="modal-footer">
                     <button
                       type="button"
-                      className="btn btn-outline-secondary"
+                      className="btn btn-secondary"
                       data-bs-dismiss="modal"
                     >
                       Close
@@ -332,7 +332,7 @@ const Agency = () => {
                       onClick={handleSubmit}
                       data-bs-dismiss="modal"
                     >
-                      Create
+                      Save
                     </button>
                   </div>
                 </div>

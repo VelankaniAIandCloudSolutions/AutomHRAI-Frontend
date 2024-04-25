@@ -92,7 +92,7 @@ function AgGridUserList({ rowData, onDeleteProject, onEditProject }) {
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="exampleModalLabel">
-                Delete User
+                Delete Project
               </h1>
               <button
                 type="button"
@@ -114,11 +114,11 @@ function AgGridUserList({ rowData, onDeleteProject, onEditProject }) {
               </button>
               <button
                 type="button"
-                className="btn btn-primary"
+                className="btn btn-danger"
                 onClick={handleConfirmDelete}
                 data-bs-dismiss="modal"
               >
-                Confirm
+                Delete
               </button>
             </div>
           </div>

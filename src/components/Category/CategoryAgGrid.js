@@ -3,14 +3,11 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDownload, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { toast } from "react-toastify";
 
 function AgGridCategory({
   rowData,
-  onRowSelected,
   onDeleteClick,
   fetchCategory,
 }) {
@@ -34,33 +31,30 @@ function AgGridCategory({
         toast.success("Category updated successfully");
       })
       .catch((error) => {
-        console.error("Error updating location:", error);
+        console.error("Error updating category:", error);
         toast.error("Error updating category");
+      });
+  };
+
+  const handleDeleteCategory = () => {
+    axios
+      .delete(`/accounts/categories/delete/${categoryData.id}/`)
+      .then((response) => {
+        fetchCategory();
+        toast.success("Category deleted successfully");
+      })
+      .catch((error) => {
+        console.error("Error deleting category:", error);
+        toast.error("Error deleting category");
       });
   };
 
   const colDefs = [
     { headerName: "Name", field: "name", filter: true },
-
     {
       headerName: "Actions",
       cellRenderer: ActionsCellRenderer,
     },
-
-    // {
-    //   headerName: "Delete",
-    //   field: "id",
-    //   cellRenderer: (params) => (
-    //     <div style={{ marginLeft: "55px" }}>
-    //       <button
-    //         className="btn btn-danger btn-sm"
-    //         onClick={() => onDeleteClick(params.data.id)}
-    //       >
-    //         <FontAwesomeIcon icon={faTrash} />
-    //       </button>
-    //     </div>
-    //   ),
-    // },
   ];
 
   function ActionsCellRenderer(params) {
@@ -76,7 +70,9 @@ function AgGridCategory({
         </button>
         <button
           className="btn btn-danger btn-sm mx-2"
-          onClick={() => onDeleteClick(params.data.id)}
+          data-bs-toggle="modal"
+          data-bs-target="#DeleteCategoryModal"
+          onClick={() => setCategoryData(params.data)} // Store category data
         >
           <i className="fas fa-trash"></i> Delete
         </button>
@@ -100,6 +96,7 @@ function AgGridCategory({
         />
       </div>
 
+      {/* Edit Category Modal */}
       <div
         className="modal fade"
         id="EditCategoryModal"
@@ -148,7 +145,53 @@ function AgGridCategory({
                 data-bs-dismiss="modal"
                 onClick={handleSaveChanges}
               >
-                Update
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Delete Category Modal */}
+      <div
+        className="modal fade"
+        id="DeleteCategoryModal"
+        tabIndex="-1"
+        aria-labelledby="DeleteCategoryModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="DeleteCategoryModalLabel">
+                Delete Category
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              Are you sure you want to delete the category:{" "}
+              {categoryData && categoryData.name}?
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-danger"
+                data-bs-dismiss="modal"
+                onClick={handleDeleteCategory}
+              >
+                Delete
               </button>
             </div>
           </div>

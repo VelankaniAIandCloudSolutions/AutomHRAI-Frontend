@@ -102,11 +102,11 @@ function AgGridUserList({ rowData, onDeleteContractWorker }) {
               </button>
               <button
                 type="button"
-                className="btn btn-primary"
+                className="btn btn-danger"
                 onClick={handleConfirmDelete}
                 data-bs-dismiss="modal"
               >
-                Confirm
+                Delete
               </button>
             </div>
           </div>

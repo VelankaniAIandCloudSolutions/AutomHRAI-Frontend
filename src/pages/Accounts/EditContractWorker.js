@@ -10,6 +10,7 @@ import { hideLoading, showLoading } from "../../actions/loadingActions";
 import Webcam from "react-webcam";
 import { useParams } from "react-router-dom";
 
+
 function EditContractWorker() {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -61,8 +62,10 @@ function EditContractWorker() {
   const [deletedImages, setDeletedImages] = useState([]);
 
   const [clearAadhaar, setClearAadhaar] = useState(false);
-const [clearPan, setClearPan] = useState(false);
-  
+  const [clearPan, setClearPan] = useState(false);
+
+  const [showAadhaarCardDetails, setShowAadhaarCardDetails] = useState(true);
+  const [showPanCardDetails, setShowPanCardDetails] = useState(true);
 
   useEffect(() => {
     setupCamera();
@@ -239,11 +242,10 @@ const [clearPan, setClearPan] = useState(false);
 
     const updatedUserDocuments = [...formData.user_documents];
     updatedUserDocuments.splice(index, 1); // Remove the deleted image from formData.user_documents array
-    setFormData(prevFormData => ({
+    setFormData((prevFormData) => ({
       ...prevFormData,
-      user_documents: updatedUserDocuments
+      user_documents: updatedUserDocuments,
     }));
-    
   };
 
   const handleUpdateUser = () => {
@@ -276,16 +278,16 @@ const [clearPan, setClearPan] = useState(false);
     });
 
     // Append deleted images
-    const deletedImageIds = deletedImages.map((image) => image?.id);
+    const deletedImageIds = deletedImages.map((image) => image.id);
     formDataToSend.append("deleted_images", JSON.stringify(deletedImageIds));
 
     // Append user image IDs
-    const allImageIds = allImages.map((image) => image?.id);
+    const allImageIds = allImages.map((image) => image.id);
     allImages.forEach((image) => {
       if (image instanceof File) {
         formDataToSend.append("user_images", image);
       } else {
-        allImageIds.push(image?.id);
+        allImageIds.push(image.id);
       }
     });
     formDataToSend.append("all_image_ids", JSON.stringify(allImageIds));
@@ -297,7 +299,7 @@ const [clearPan, setClearPan] = useState(false);
     if (panCard) {
       formDataToSend.append("pan", panCard);
     }
-    
+
     if (clearAadhaar) {
       formDataToSend.append("clearAadhaar", true);
     }
@@ -396,13 +398,20 @@ const [clearPan, setClearPan] = useState(false);
   };
 
   const handleClearAadhaarCard = (e) => {
+    setShowAadhaarCardDetails(!showAadhaarCardDetails);
     setClearAadhaar(e.target.checked);
   };
-  
+
   const handleClearPanCard = (e) => {
+    setShowPanCardDetails(!showPanCardDetails);
     setClearPan(e.target.checked);
   };
 
+ 
+
+  const handleCancel = () => {
+    history.push("/contract-workers");
+  };
 
   return (
     <div className="container">
@@ -435,8 +444,17 @@ const [clearPan, setClearPan] = useState(false);
               </div>
             </div>
             <div className="col-md-3 d-flex justify-content-end mt-4">
+              <button
+                className="btn btn-secondary"
+                style={{ marginRight: "2%" }}
+                onClick={handleCancel}
+              >
+                {/* <i className="fas fa-times"></i> */}
+                 Cancel
+              </button>
               <button className="btn btn-primary" onClick={handleUpdateUser}>
-                <i className="fas fa-save"></i> Save Worker
+                {/* <i className="fas fa-save"></i> */}
+                 Save
               </button>
             </div>
           </div>
@@ -493,12 +511,12 @@ const [clearPan, setClearPan] = useState(false);
                         <select
                           className="form-select"
                           id="sub_category"
-                          value={formData.worker.sub_category?.id}
+                          value={formData.worker.sub_category.id}
                           onChange={handleChange}
                         >
                           <option value="">Select Subcategory</option>
                           {subcategories.map((subcategory, index) => (
-                            <option key={index} value={subcategory?.id}>
+                            <option key={index} value={subcategory.id}>
                               {subcategory.name}
                             </option>
                           ))}
@@ -562,12 +580,12 @@ const [clearPan, setClearPan] = useState(false);
                         <select
                           className="form-select"
                           id="agency"
-                          value={formData.worker.agency?.id}
+                          value={formData.worker.agency.id}
                           onChange={handleChange}
                         >
                           <option value="">Select Agency</option>
                           {agencies.map((agency, index) => (
-                            <option key={index} value={agency?.id}>
+                            <option key={index} value={agency.id}>
                               {agency.name}
                             </option>
                           ))}
@@ -851,7 +869,9 @@ const [clearPan, setClearPan] = useState(false);
                               }}
                             >
                               <a
-                                className="btn btn-outline-primary rounded-circle"
+                                className={`btn btn-outline-primary rounded-circle ${
+                                  showAadhaarCardDetails ? "" : "d-none"
+                                }`}
                                 href={formData.worker.aadhaar_card}
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -860,12 +880,17 @@ const [clearPan, setClearPan] = useState(false);
                                 }
                                 style={{
                                   fontWeight: "normal",
-                                  marginRight: "5px", // Add margin between button and text
+                                  marginRight: "5px",
                                 }}
                               >
                                 <i className="fas fa-eye"></i>
                               </a>
-                              <p style={{ marginBottom: "0" }}>
+                              <p
+                                style={{ marginBottom: "0" }}
+                                className={`${
+                                  showAadhaarCardDetails ? "" : "d-none"
+                                }`}
+                              >
                                 {formData.worker.aadhaar_card ? (
                                   <p
                                     style={{
@@ -883,22 +908,25 @@ const [clearPan, setClearPan] = useState(false);
                                       marginBottom: "0",
                                       marginLeft: "3%",
                                     }}
-                                  >
-                                    Aadhaar Card Not Uploaded
-                                  </p>
+                                  ></p>
                                 )}
                               </p>
                             </div>
                           </label>
 
-                          <div className="input-group">
-                            <input
-                              type="file"
-                              className="form-control"
-                              id="aadhaar_card"
-                              onChange={handleChange}
-                            />
-                          </div>
+                          {showAadhaarCardDetails && (
+                            <>
+                              <div className="input-group">
+                                <input
+                                  type="file"
+                                  className="form-control"
+                                  id="aadhaar_card"
+                                  onChange={handleChange}
+                                />
+                              </div>
+                            </>
+                          )}
+
                           {/* Clear checkbox for Aadhaar Card */}
                           <div className="form-check mt-2">
                             <input
@@ -934,7 +962,10 @@ const [clearPan, setClearPan] = useState(false);
                             >
                               <a
                                 href={formData.worker.pan}
-                                className="btn btn-outline-primary rounded-circle"
+                                // className="btn btn-outline-primary rounded-circle"
+                                className={` btn btn-outline-primary rounded-circle ${
+                                  showPanCardDetails ? "" : "d-none"
+                                }`}
                                 style={{
                                   marginLeft: "5px",
                                   fontWeight: "normal",
@@ -947,23 +978,30 @@ const [clearPan, setClearPan] = useState(false);
                               </a>
                               <p
                                 style={{ marginBottom: "0", marginLeft: "3%" }}
+                                className={` ${
+                                  showPanCardDetails ? "" : "d-none"
+                                }`}
                               >
                                 {formData.worker.pan ? (
                                   <p>{formData.worker.pan.split("/").pop()}</p>
                                 ) : (
-                                  <p>Pan Card Not Uploaded</p>
+                                  <p></p>
                                 )}
                               </p>
                             </div>
                           </label>
-                          <div className="input-group">
-                            <input
-                              type="file"
-                              className="form-control"
-                              id="pan"
-                              onChange={handleChange}
-                            />
-                          </div>
+                          {showPanCardDetails && (
+                            <>
+                              <div className="input-group">
+                                <input
+                                  type="file"
+                                  className="form-control"
+                                  id="pan"
+                                  onChange={handleChange}
+                                />
+                              </div>
+                            </>
+                          )}
                           {/* Clear checkbox for PAN Card */}
                           <div className="form-check mt-2">
                             <input

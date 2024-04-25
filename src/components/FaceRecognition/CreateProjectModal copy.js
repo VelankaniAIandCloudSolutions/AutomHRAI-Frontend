@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
@@ -16,34 +16,17 @@ const Backdrop = ({ show, handleClose }) => {
   );
 };
 
-const EditProjectModal = ({
+const CreateProjectModal = ({
   show,
   handleClose,
   locations,
   categories,
-  project,
-  fetchAllProjects,
+  onProjectCreated,
 }) => {
-  useEffect(() => {
-    console.log("Row Data:", project);
-    console.log("Locations:", locations);
-    console.log("categories:", categories);
-    if (project) {
-      setName(project.name || "");
-      const locationObj = locations.find(
-        (loc) => loc.name === project.location
-      );
-      setLocation(project.location.id);
-      setCategory(project.category.id);
-    }
-    setProjectId(project.id);
-  }, [project, locations]);
-
   const dispatch = useDispatch();
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
-  const [projectId, setProjectId] = useState("");
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -57,23 +40,20 @@ const EditProjectModal = ({
     setCategory(event.target.value);
   };
 
-  const handleSubmit = async (event, project) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     console.log("Name:", name);
     console.log("Location:", location);
     console.log("Category:", category);
-    console.log("Id:", projectId);
     dispatch(showLoading());
     try {
-      const response = await axios.put(
-        `/accounts/projects/edit/${projectId}/`,
-        {
-          name,
-          location,
-          category,
-        }
-      );
+      const response = await axios.post("/accounts/projects/create/", {
+        name,
+        location,
+        category,
+      });
 
+      // Check if response is successful (you may need to adjust this based on your API's response format)
       if (response.status >= 200 && response.status < 300) {
         console.log("Project created successfully");
 
@@ -81,11 +61,13 @@ const EditProjectModal = ({
         setLocation("");
         setCategory("");
         const newProjects = response.data.projects;
+        onProjectCreated(newProjects);
         dispatch(hideLoading());
         handleClose();
 
-        toast.success("Project Edited successfully");
-        fetchAllProjects();
+        toast.success("Project created successfully");
+        // Close the modal after submission
+        // Redirect the user to the /projects page
       } else {
         console.error("Failed to create project");
         dispatch(hideLoading());
@@ -109,7 +91,7 @@ const EditProjectModal = ({
         <div className="modal-dialog modal-lg" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">Edit Project</h5>
+              <h5 className="modal-title">Create Project</h5>
               <button
                 type="button"
                 className="btn-close"
@@ -169,12 +151,11 @@ const EditProjectModal = ({
                     ))}
                   </select>
                 </div>
-                <hr></hr>
                 <div className="text-end">
                   {" "}
                   {/* Align button to the right */}
                   <button type="submit" className="btn btn-primary">
-                    Save
+                    Create
                   </button>
                 </div>
               </form>
@@ -186,4 +167,4 @@ const EditProjectModal = ({
   );
 };
 
-export default EditProjectModal;
+export default CreateProjectModal;
