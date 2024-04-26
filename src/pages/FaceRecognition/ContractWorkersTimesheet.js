@@ -27,7 +27,6 @@ const ContractWorkersTimesheet = ({ loading }) => {
       setResponseData(response.data);
     } catch (error) {
       console.error("Error:", error);
-      // Handle errors
     }
   };
 
@@ -82,9 +81,9 @@ const ContractWorkersTimesheet = ({ loading }) => {
       ) : (
         <>
           <div className="row align-items-center">
-            <div className="col-md-9 mt-4">
+            <div className="col-md-12 mt-4">
               <div className="d-flex align-items-center">
-                <h2 className="mb-0">Contract Workers Timesheet</h2>
+                <h2 className="mb-0">Contract Worker Attendance Report</h2>
                 <span className="ms-3 fs-4 text-muted">|</span>
                 <nav aria-label="breadcrumb" className="d-inline-block ms-3">
                   <ol className="breadcrumb bg-transparent m-0 p-0">
@@ -93,120 +92,132 @@ const ContractWorkersTimesheet = ({ loading }) => {
                         <i className="fas fa-home me-1"></i>Home
                       </a>
                     </li>
+                    <li className="breadcrumb-item">
+                      <a href="/face-recognition-reports">
+                        <i className="fas fa-list-alt me-1"></i>Report
+                      </a>
+                    </li>
                     <li className="breadcrumb-item active" aria-current="page">
                       <i className="fas fa-list-alt me-1"></i>
-                      Contract Workers Timesheet
+                      Contract Worker Attendance Report
                     </li>
                   </ol>
                 </nav>
               </div>
             </div>
           </div>
-
-          <div className="row mt-3">
-            <div className="col-md-3 mt-4">
-              <button
-                data-bs-toggle="modal"
-                data-bs-target="#selectWorkerModal"
-                className="btn btn-outline-primary"
-              >
-                Select Worker
-              </button>
-              {selectContractWorker && (
-                <p className="h5 mt-2">{selectContractWorker.full_name}</p>
-              )}
-            </div>
-            <div className="col-md-9 mt-1 ">
-              <div className="row align-items-center">
-                <div className="col-md-4">
-                  <label htmlFor="start_date">Start Date:</label>
-                  <input
-                    type="date"
-                    className="form-control"
-                    id="start_date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                  />
-                </div>
-                <div className="col-md-4">
-                  <label htmlFor="end_date">End Date:</label>
-                  <input
-                    type="date"
-                    className="form-control"
-                    id="end_date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                  />
-                </div>
-                <div className="col-md-4 mt-4 ">
-                  <button
-                    type="button"
-                    onClick={handleSubmit}
-                    className="btn btn-primary"
-                  >
-                    Submit
-                  </button>
-                </div>
+          <div className="container">
+            <div className="row mt-3">
+              <div className="col-md-3 mt-4">
+                <button
+                  data-bs-toggle="modal"
+                  data-bs-target="#selectWorkerModal"
+                  className="btn btn-secondary"
+                >
+                  Select Worker
+                  {selectContractWorker && (
+                    <span className="h6 mt-2 pl-1">
+                      : {selectContractWorker.full_name}
+                    </span>
+                  )}
+                </button>
               </div>
-            </div>
-          </div>
 
-          <div
-            className="modal fade"
-            id="selectWorkerModal"
-            tabIndex="-1"
-            aria-labelledby="selectWorkerModalLabel"
-            aria-hidden="true"
-          >
-            <div className="modal-dialog modal-lg">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h1 className="modal-title fs-5" id="selectWorkerModalLabel">
-                    Contract Workers
-                  </h1>
-                  <button
-                    type="button"
-                    className="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div className="modal-body">
-                  <div
-                    className="ag-theme-quartz"
-                    style={{ height: "500px", width: "100%" }}
-                  >
-                    <AgGridReact
-                      rowData={contractWorkers}
-                      columnDefs={columnDefs}
-                      onSelectionChanged={onSelectionChanged}
-                      pagination={true}
-                      paginationPageSize={10}
+              <div className="col-md-9 mt-1 d-flex justify-content-end">
+                <div className="row align-items-center">
+                  <div className="col-md-4 ">
+                    <label htmlFor="start_date">Start Date:</label>
+                    <input
+                      type="date"
+                      className="form-control"
+                      id="start_date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
                     />
                   </div>
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary"
-                    data-bs-dismiss="modal"
-                  >
-                    Close
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-outline-success"
-                    data-bs-dismiss="modal"
-                  >
-                    Save
-                  </button>
+                  <div className="col-md-4">
+                    <label htmlFor="end_date">End Date:</label>
+                    <input
+                      type="date"
+                      className="form-control "
+                      id="end_date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                    />
+                  </div>
+                  <div className="col-md-4 mt-4 ">
+                    <button
+                      type="button"
+                      onClick={handleSubmit}
+                      className="btn btn-primary w-100"
+                    >
+                      Submit
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className=" mt-4">
-            <ContractWorkerAgGrid responseData={responseData} />
+            <div
+              className="modal fade"
+              id="selectWorkerModal"
+              tabIndex="-1"
+              aria-labelledby="selectWorkerModalLabel"
+              aria-hidden="true"
+            >
+              <div className="modal-dialog modal-lg">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h1
+                      className="modal-title fs-5"
+                      id="selectWorkerModalLabel"
+                    >
+                      Contract Workers
+                    </h1>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div className="modal-body">
+                    <div
+                      className="ag-theme-quartz"
+                      style={{ height: "500px", width: "100%" }}
+                    >
+                      <AgGridReact
+                        rowData={contractWorkers}
+                        columnDefs={columnDefs}
+                        onSelectionChanged={onSelectionChanged}
+                        pagination={true}
+                        paginationPageSize={10}
+                      />
+                    </div>
+                  </div>
+                  <div className="modal-footer">
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      data-bs-dismiss="modal"
+                    >
+                      Select
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className=" mt-4">
+              <ContractWorkerAgGrid responseData={responseData} />
+            </div>
           </div>
         </>
       )}
