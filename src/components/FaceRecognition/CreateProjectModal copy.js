@@ -78,14 +78,20 @@ const CreateProjectModal = ({
       toast.error("Error Creating Project");
     }
   };
+  function handleBackdrop() {
+    document.getElementById("editProjectModalbackdrop").style.display = "none";
+    document.getElementById("editProjectModal").style.display = "none";
+    document.getElementById("customBomRevisionModal").classList.remove("show");
+    console.log("Backdrop clicked");
+  }
 
   return (
     <div>
-      {show && <Backdrop show={show} handleClose={handleClose} />}
       <div
         className={`modal fade ${show ? "show" : ""}`}
         tabIndex="-1"
         role="dialog"
+        id="editProjectModal"
         style={{ display: show ? "block" : "none" }}
       >
         <div className="modal-dialog modal-lg" role="document">
@@ -163,6 +169,13 @@ const CreateProjectModal = ({
           </div>
         </div>
       </div>
+      {show && (
+        <div
+          className="modal-backdrop fade show"
+          // style={{ display: show ? "block" : "none" }}
+          onClick={handleBackdrop} // Clicking on backdrop closes the modal
+        ></div>
+      )}
     </div>
   );
 };

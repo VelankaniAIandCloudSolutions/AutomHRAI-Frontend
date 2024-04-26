@@ -10,7 +10,6 @@ import { hideLoading, showLoading } from "../../actions/loadingActions";
 import Webcam from "react-webcam";
 import { useParams } from "react-router-dom";
 
-
 function EditContractWorker() {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -407,8 +406,6 @@ function EditContractWorker() {
     setClearPan(e.target.checked);
   };
 
- 
-
   const handleCancel = () => {
     history.push("/contract-workers");
   };
@@ -450,11 +447,11 @@ function EditContractWorker() {
                 onClick={handleCancel}
               >
                 {/* <i className="fas fa-times"></i> */}
-                 Cancel
+                Cancel
               </button>
               <button className="btn btn-primary" onClick={handleUpdateUser}>
                 {/* <i className="fas fa-save"></i> */}
-                 Save
+                Save
               </button>
             </div>
           </div>
@@ -511,12 +508,12 @@ function EditContractWorker() {
                         <select
                           className="form-select"
                           id="sub_category"
-                          value={formData.worker.sub_category.id}
+                          value={formData?.worker?.sub_category?.id}
                           onChange={handleChange}
                         >
                           <option value="">Select Subcategory</option>
                           {subcategories.map((subcategory, index) => (
-                            <option key={index} value={subcategory.id}>
+                            <option key={index} value={subcategory?.id}>
                               {subcategory.name}
                             </option>
                           ))}

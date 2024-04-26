@@ -117,67 +117,73 @@ const EditProjectModal = ({
               ></button>
             </div>
             <div className="modal-body">
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label htmlFor="name" className="form-label">
-                    Name:
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="name"
-                    value={name}
-                    onChange={handleNameChange}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="location" className="form-label">
-                    Location:
-                  </label>
-                  <select
-                    className="form-select"
-                    id="location"
-                    value={location}
-                    onChange={handleLocationChange}
-                    required
-                  >
-                    <option value="">Select Location</option>
-                    {locations.map((loc, index) => (
-                      <option key={index} value={loc.id}>
-                        {loc.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="category" className="form-label">
-                    Category:
-                  </label>
-                  <select
-                    className="form-select"
-                    id="category"
-                    value={category}
-                    onChange={handleCategoryChange}
-                    required
-                  >
-                    <option value="">Select Category</option>
-                    {categories.map((cat, index) => (
-                      <option key={index} value={cat.id}>
-                        {cat.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <hr></hr>
-                <div className="text-end">
-                  {" "}
-                  {/* Align button to the right */}
-                  <button type="submit" className="btn btn-primary">
-                    Save
-                  </button>
-                </div>
-              </form>
+              <div className="mb-3">
+                <label htmlFor="name" className="form-label">
+                  Name:
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="name"
+                  value={name}
+                  onChange={handleNameChange}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="location" className="form-label">
+                  Location:
+                </label>
+                <select
+                  className="form-select"
+                  id="location"
+                  value={location}
+                  onChange={handleLocationChange}
+                  required
+                >
+                  <option value="">Select Location</option>
+                  {locations.map((loc, index) => (
+                    <option key={index} value={loc.id}>
+                      {loc.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="category" className="form-label">
+                  Category:
+                </label>
+                <select
+                  className="form-select"
+                  id="category"
+                  value={category}
+                  onChange={handleCategoryChange}
+                  required
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((cat, index) => (
+                    <option key={index} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="submit"
+                className="btn btn-secondary"
+                onClick={handleClose}
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary ms-2"
+                onClick={handleSubmit}
+              >
+                Save
+              </button>
             </div>
           </div>
         </div>
