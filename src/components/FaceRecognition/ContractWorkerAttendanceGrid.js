@@ -23,7 +23,11 @@ export default function ContractWorkerAttendanceGrid({
     { headerName: "Agency", field: "user.agency.name", filter: true },
     { headerName: "Attendance Type", field: "type", filter: true },
     { headerName: "Date Time", field: "created_at", filter: true },
-    { headerName: "Location", field: "location.name", filter: true },
+    {
+      headerName: "Location",
+      field: "location.name",
+      filter: true,
+    },
     // {
     //   headerName: "Image",
     //   cellRenderer: (params) => (
@@ -40,13 +44,12 @@ export default function ContractWorkerAttendanceGrid({
     // },
     {
       headerName: "Image",
+      field: "image",
       cellRenderer: (params) => {
         const handleClick = () => {
           if (showImgInNewWindow) {
-            // Open image in new window
             window.open(params.data.image, "_blank");
           } else {
-            // Open image in modal
             handleViewImage(params.data);
           }
         };

@@ -27,11 +27,13 @@ export default function FaceRecognitionReports() {
           <ul className="list-group">
             <li className="list-group-item">
               <Link to="/contract-workers-timesheet">
-                Individual Contract Worker Attendance Report
+                Contract Worker Attendance Report
               </Link>
             </li>
             <li className="list-group-item">
-              <Link to="/bulk-attendance-report">Bulk Attendance Report</Link>
+              <Link to="/bulk-attendance-report">
+                Bulk Contract Worker Attendance Report
+              </Link>
             </li>
           </ul>
         </div>
