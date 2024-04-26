@@ -34,24 +34,24 @@ const Categories = () => {
       });
   };
 
-  const handleDeleteClick = (id) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this category?"
-    );
-    if (!confirmed) {
-      return;
-    }
-    axios
-      .delete(`/accounts/categories/delete/${id}/`)
-      .then((response) => {
-        console.log("Location deleted successfully:", response.data);
-        fetchCategory();
-        toast.success("Location deleted successfully");
-      })
-      .catch((error) => {
-        console.error("Error deleting location:", error);
-      });
-  };
+  // const handleDeleteClick = (id) => {
+  //   const confirmed = window.confirm(
+  //     "Are you sure you want to delete this category?"
+  //   );
+  //   if (!confirmed) {
+  //     return;
+  //   }
+  //   axios
+  //     .delete(`/accounts/categories/delete/${id}/`)
+  //     .then((response) => {
+  //       console.log("Location deleted successfully:", response.data);
+  //       fetchCategory();
+  //       toast.success("Location deleted successfully");
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error deleting location:", error);
+  //     });
+  // };
 
   const handleSubmit = () => {
     if (!category.trim()) {
@@ -101,7 +101,7 @@ const Categories = () => {
               <button
                 className="btn btn-primary"
                 data-bs-toggle="modal"
-                data-bs-target="#exampleModal"
+                data-bs-target="#CreateCategoryModal"
               >
                 <i className="fas fa-plus"></i> Create Category
               </button>
@@ -112,15 +112,15 @@ const Categories = () => {
 
       <div
         className="modal fade"
-        id="exampleModal"
+        id="CreateCategoryModal"
         tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
+        aria-labelledby="CreateCategoryModalLabel"
         aria-hidden="true"
       >
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
+              <h5 className="modal-title" id="CreateCategoryModalLabel">
                 Create Category
               </h5>
               <button
@@ -158,7 +158,7 @@ const Categories = () => {
                 data-bs-dismiss="modal"
                 onClick={handleSubmit}
               >
-                Create
+                Save
               </button>
             </div>
           </div>
@@ -168,7 +168,7 @@ const Categories = () => {
       <div className="container" style={{ marginTop: "25px" }}>
         <CategoryAgGrid
           rowData={rowData}
-          onDeleteClick={handleDeleteClick}
+          // onDeleteClick={handleDeleteClick}
           fetchCategory={fetchCategory}
         />
       </div>
