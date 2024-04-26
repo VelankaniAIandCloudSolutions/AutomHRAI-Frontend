@@ -2,14 +2,17 @@ import React, { useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
+import ContractWorkerAttendanceGrid from "./ContractWorkerAttendanceGrid";
 
 const ContractWorkerAgGrid = ({ responseData }) => {
   const [selectedRow, setSelectedRow] = useState(null);
+  const [modalData, setModalData] = useState(null);
 
   const columnDefs = [
     {
       headerName: "Date",
       field: "date",
+      width: 250,
       valueFormatter: (params) => {
         if (params.value) {
           const date = new Date(params.value);
@@ -24,15 +27,18 @@ const ContractWorkerAgGrid = ({ responseData }) => {
     {
       headerName: "Working Time",
       field: "work_time",
+      width: 300,
       valueFormatter: (params) => formatTime(params.value),
     },
     {
       headerName: "Break Time",
       field: "break_time",
+      width: 300,
       valueFormatter: (params) => formatTime(params.value),
     },
     {
-      headerName: "Event List",
+      headerName: "Attendance List",
+      width: 260,
       cellRenderer: (params) => (
         <button
           type="button"
@@ -49,7 +55,7 @@ const ContractWorkerAgGrid = ({ responseData }) => {
 
   const formatTime = (timeInSeconds) => {
     if (isNaN(timeInSeconds)) {
-      return "NAN";
+      return "-- hr : -- min";
     }
     const hours = Math.floor(timeInSeconds / 3600);
     const minutes = Math.floor((timeInSeconds % 3600) / 60);
@@ -66,15 +72,13 @@ const ContractWorkerAgGrid = ({ responseData }) => {
   const handleViewImage = (data) => {
     setSelectedRow(data);
   };
-  const modalColumnDefs = [
-    { headerName: "Type", field: "type" },
-    { headerName: "Created At", field: "created_at" },
-    { headerName: "Location Name", field: "location.name" },
-    // Add other fields as needed
-  ];
 
   // Transform responseData.user_data into rowData expected by Ag-Grid
   const rowData = responseData?.user_data || [];
+
+  const handleSelectionChange = () => {
+    setModalData();
+  };
 
   console.log("Response Data:", responseData);
   const filterEntries = selectedRow?.entries || [];
@@ -92,6 +96,7 @@ const ContractWorkerAgGrid = ({ responseData }) => {
           columnDefs={columnDefs}
           pagination={true}
           paginationPageSize={10}
+          domLayout="autoHeight"
         />
       </div>
 
@@ -107,7 +112,7 @@ const ContractWorkerAgGrid = ({ responseData }) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="imageModalLabel">
-                Events List
+                Attendance List
               </h5>
               <button
                 type="button"
@@ -117,15 +122,11 @@ const ContractWorkerAgGrid = ({ responseData }) => {
               ></button>
             </div>
             <div className="modal-body">
-              <div
-                className="ag-theme-quartz"
-                style={{ height: "300px", width: "100%" }}
-              >
-                <AgGridReact
-                  rowData={filterEntries}
-                  columnDefs={modalColumnDefs}
-                />
-              </div>
+              <ContractWorkerAttendanceGrid
+                attendanceData={filterEntries}
+                onSelectionChange={handleSelectionChange}
+                showImgInNewWindow={true}
+              />
             </div>
           </div>
         </div>

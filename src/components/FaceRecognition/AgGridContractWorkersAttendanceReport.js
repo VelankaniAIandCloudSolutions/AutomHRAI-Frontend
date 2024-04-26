@@ -21,6 +21,7 @@ function AgGridUserList({ rowData, onDeleteContractWorker }) {
   };
   const handleSelectionChange = (selectedRows) => {
     setSelectedRows(selectedRows);
+    console.log("The rows", selectedRows);
   };
 
   // function ActionsCellRenderer(props) {
