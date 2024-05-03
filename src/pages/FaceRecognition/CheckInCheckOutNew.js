@@ -284,7 +284,7 @@ export default function CheckInCheckOutNew() {
                   Check Out
                 </button>
               </div>
-              <div className="col-auto">
+              {/* <div className="col-auto">
                 <button
                   type="button"
                   className="btn btn-success"
@@ -307,7 +307,7 @@ export default function CheckInCheckOutNew() {
                   <i className="fas fa-coffee me-1"></i>
                   Break Out
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
