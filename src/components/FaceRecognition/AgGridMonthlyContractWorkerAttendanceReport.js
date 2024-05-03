@@ -123,6 +123,45 @@ function AgGridMonthlyContractWorkerAttendanceReport({
   //     return dynamicColumns;
   //   };
 
+  //   const generateDynamicColumns = (data) => {
+  //     const dynamicColumns = [];
+  //     if (data && data.length > 0) {
+  //       const dates = Object.keys(data[0]).filter(
+  //         (key) =>
+  //           key !== "contract_worker_name" &&
+  //           key !== "agency" &&
+  //           key !== "subcategory"
+  //       );
+  //       for (const date of dates) {
+  //         dynamicColumns.push({
+  //           headerName: date,
+  //           field: date,
+  //           width: 150,
+  //           cellRenderer: (params) => {
+  //             const rowData = params.data[date];
+  //             const status = rowData ? rowData.status : "";
+  //             let statusColor = "";
+  //             if (status === "Absent") {
+  //               statusColor = "red"; // Change to red for Absent status
+  //             } else if (status === "Present") {
+  //               statusColor = "darkgreen"; // Change to dark green for Present status
+  //             }
+  //             return (
+  //               <div>
+  //                 <span style={{ color: statusColor }}>{status.charAt(0)}</span> -{" "}
+  //                 {formatTimeFromSeconds(
+  //                   rowData ? rowData.effective_working_time : 0
+  //                 )}
+  //               </div>
+  //             );
+  //           },
+  //           autoHeight: true, // To ensure the cell height adjusts based on content
+  //         });
+  //       }
+  //     }
+  //     return dynamicColumns;
+  //   };
+
   const generateDynamicColumns = (data) => {
     const dynamicColumns = [];
     if (data && data.length > 0) {
@@ -133,11 +172,16 @@ function AgGridMonthlyContractWorkerAttendanceReport({
           key !== "subcategory"
       );
       for (const date of dates) {
+        // Format the date to display in a readable format
+        const formattedDate = new Date(date).toLocaleDateString("en-US", {
+          day: "numeric",
+          month: "short",
+        });
         dynamicColumns.push({
-          headerName: date,
+          headerName: formattedDate,
           field: date,
-          width: 300,
-          cellRendererFramework: (params) => {
+          width: 100,
+          cellRenderer: (params) => {
             const rowData = params.data[date];
             const status = rowData ? rowData.status : "";
             let statusColor = "";
@@ -147,8 +191,8 @@ function AgGridMonthlyContractWorkerAttendanceReport({
               statusColor = "darkgreen"; // Change to dark green for Present status
             }
             return (
-              <div style={{ color: statusColor }}>
-                {status.charAt(0)} -{" "}
+              <div>
+                <span style={{ color: statusColor }}>{status.charAt(0)}</span> -{" "}
                 {formatTimeFromSeconds(
                   rowData ? rowData.effective_working_time : 0
                 )}
@@ -166,19 +210,19 @@ function AgGridMonthlyContractWorkerAttendanceReport({
     {
       headerName: "Name",
       field: "contract_worker_name", // Update field name to match response JSON
-      width: 200,
+      width: 150,
       filter: true,
     },
     {
       headerName: "Agency",
       field: "agency", // Update field name to match response JSON
-      width: 200,
+      width: 150,
       filter: true,
     },
     {
       headerName: "Subcategory",
       field: "subcategory", // Update field name to match response JSON
-      width: 200,
+      width: 150,
       filter: true,
     },
     ...generateDynamicColumns(rowData),
