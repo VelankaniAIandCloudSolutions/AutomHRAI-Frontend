@@ -273,15 +273,11 @@ function CreateContractWorker() {
         toast.error("Error Creating Contract Worker");
         dispatch(hideLoading());
       });
-
-      
   };
 
   const handleCancel = () => {
     history.push("/contract-workers");
   };
-
-  
 
   return (
     <div className="container">
@@ -304,7 +300,7 @@ function CreateContractWorker() {
                     <li className="breadcrumb-item">
                       <a href="/contract-workers">
                         <i className="fas fa-users"></i>
-                         Contract Workers
+                        Contract Workers
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
@@ -315,7 +311,7 @@ function CreateContractWorker() {
               </div>
             </div>
             <div className="col-md-3 d-flex justify-content-end mt-4">
-            <button
+              <button
                 className="btn btn-secondary"
                 style={{ marginRight: "2%" }}
                 onClick={handleCancel}
@@ -325,7 +321,7 @@ function CreateContractWorker() {
               </button>
               <button className="btn btn-primary" onClick={handleCreateUser}>
                 {/* <i className="fas fa-save"></i>  */}
-                Save
+                Create
               </button>
             </div>
           </div>
