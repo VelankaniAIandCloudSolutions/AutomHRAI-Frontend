@@ -38,6 +38,7 @@ const ContractWorkerAgGrid = ({ responseData }) => {
     },
     {
       headerName: "Attendance List",
+      field: "list",
       width: 260,
       cellRenderer: (params) => (
         <button
