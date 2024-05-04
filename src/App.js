@@ -40,6 +40,7 @@ import ContractWorkersAttendanceReport from "./pages/Accounts/ContractWorkersAtt
 import SubCategoryLanding from "./pages/Accounts/SubCategoryLanding";
 import ContractWorkersTimesheet from "./pages/FaceRecognition/ContractWorkersTimesheet";
 import FaceRecognitionReports from "./pages/FaceRecognition/FaceRecognitionReports";
+import MonthlyContractWorkerAttendanceReport from "./pages/FaceRecognition/MonthlyContractWorkerAttendanceReport";
 
 import useAxiosInterceptor from "./interceptors/axios";
 export default function App() {
@@ -70,6 +71,11 @@ export default function App() {
               <Route path="/login" exact component={Login} />
               <Route path="/load" exact component={LoadingScreen} />
               <Route path="/checkin" exact component={CheckInCheckOut} />
+              <Route
+                path="/monthly-contract-worker-attendance-report"
+                exact
+                component={MonthlyContractWorkerAttendanceReport}
+              />
               <Route
                 path="/bulk-attendance-report"
                 exact

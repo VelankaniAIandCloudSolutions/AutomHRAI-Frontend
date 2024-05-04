@@ -55,7 +55,7 @@ function AgGridUserList({ rowData, onDeleteContractWorker }) {
     { headerName: "Employee ID", field: "emp_id", filter: true },
     { headerName: "Employee Name", field: "employeeName", filter: true },
     { headerName: "Agency", field: "agency.name", filter: true },
-    { headerName: "Email", field: "email", filter: true },
+    // { headerName: "Email", field: "email", filter: true },
     { headerName: "Mobile No", field: "phone_number", filter: true },
 
     {

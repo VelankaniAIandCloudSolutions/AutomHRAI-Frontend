@@ -32,13 +32,13 @@ function CreateContractWorker() {
   const [subcategories, setSubcategories] = useState([]);
 
   const history = useHistory();
-  const [automaticGeneration, setAutomaticGeneration] = useState(false);
+  const [automaticGeneration, setAutomaticGeneration] = useState(true);
   const [generatedEmail, setGeneratedEmail] = useState("");
   const [generatedPassword, setGeneratedPassword] = useState("");
   const [requiredFields, setRequiredFields] = useState([
     "first_name",
-    "email",
-    "password",
+    // "email",
+    // "password",
   ]);
   const [showPassword, setShowPassword] = useState(false);
   // Define a state variable to hold the selected image option
@@ -194,7 +194,7 @@ function CreateContractWorker() {
     if (e.target.checked) {
       // Generate email and password
       const generatedEmail = `${formData.first_name}@automhr.com`;
-      const generatedPassword = "test"; // You can replace 'test' with your password generation logic
+      const generatedPassword = "password"; // You can replace 'test' with your password generation logic
       setGeneratedEmail(generatedEmail);
       setGeneratedPassword(generatedPassword);
 
@@ -250,6 +250,13 @@ function CreateContractWorker() {
     if (panCard) {
       formDataToSend.append("pan", panCard);
     }
+    // Hardcoded email and password
+    const generatedEmail = `${formData.first_name}@automhr.com`;
+    const generatedPassword = "password";
+
+    // Update formDataToSend with hardcoded email and password
+    formDataToSend.append("email", generatedEmail);
+    formDataToSend.append("password", generatedPassword);
     console.log("Multipart form data:", formDataToSend);
 
     dispatch(showLoading());
@@ -272,15 +279,11 @@ function CreateContractWorker() {
         toast.error("Error Creating Contract Worker");
         dispatch(hideLoading());
       });
-
-      
   };
 
   const handleCancel = () => {
     history.push("/contract-workers");
   };
-
-  
 
   return (
     <div className="container">
@@ -289,7 +292,7 @@ function CreateContractWorker() {
       ) : (
         <>
           <div className="row align-items-center">
-            <div className="col-md-9 mt-4">
+            <div className="col-md-9 mt-2">
               <div className="d-flex align-items-center">
                 <h2 className="mb-0">Contract Workers</h2>
                 <span className="ms-3 fs-4 text-muted">|</span>
@@ -302,19 +305,19 @@ function CreateContractWorker() {
                     </li>
                     <li className="breadcrumb-item">
                       <a href="/contract-workers">
-                        <i className="fas fa-users"></i>
-                         Contract Workers
+                        <i className="fas fa-users me-2"></i>
+                        Contract Workers
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      <i className="fas fa-user-plus"></i> Create Worker
+                      <i className="fas fa-user-plus "></i> Create Worker
                     </li>
                   </ol>
                 </nav>
               </div>
             </div>
             <div className="col-md-3 d-flex justify-content-end mt-4">
-            <button
+              <button
                 className="btn btn-secondary"
                 style={{ marginRight: "2%" }}
                 onClick={handleCancel}
@@ -358,7 +361,7 @@ function CreateContractWorker() {
                     </div>
                   </div>
                   <div className="row g-3 mb-2">
-                    <div className="col-md-6">
+                    {/* <div className="col-md-6">
                       <label
                         htmlFor="automaticGeneration"
                         className="form-label"
@@ -380,7 +383,7 @@ function CreateContractWorker() {
                           Auto Generate Email & Password
                         </label>
                       </div>
-                    </div>
+                    </div> */}
                     <div className="col-md-6 ">
                       <label htmlFor="subcategory" className="form-label">
                         Subcategory
@@ -408,8 +411,20 @@ function CreateContractWorker() {
                         )}
                       </select>
                     </div>
+                    <div className="col-md-6">
+                      <label htmlFor="phone_number" className="form-label">
+                        Mobile Number
+                      </label>
+                      <input
+                        type="tel"
+                        className="form-control"
+                        id="phone_number"
+                        onChange={handleChange}
+                      />
+                    </div>
                   </div>
-                  <div className="row g-3 mb-2">
+
+                  {/* <div className="row g-3 mb-2">
                     <div className="col-md-6">
                       <label htmlFor="email" className="form-label">
                         Email <span className="text-danger">*</span>
@@ -447,9 +462,9 @@ function CreateContractWorker() {
                         </button>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="row g-3 mb-2">
-                    <div className="col-md-6">
+                    {/* <div className="col-md-6">
                       <label htmlFor="emp_id" className="form-label">
                         Employee ID
                       </label>
@@ -459,8 +474,8 @@ function CreateContractWorker() {
                         id="emp_id"
                         onChange={handleChange}
                       />
-                    </div>
-                    <div className="col-md-6">
+                    </div> */}
+                    {/* <div className="col-md-6">
                       <label htmlFor="phone_number" className="form-label">
                         Mobile Number
                       </label>
@@ -470,7 +485,7 @@ function CreateContractWorker() {
                         id="phone_number"
                         onChange={handleChange}
                       />
-                    </div>
+                    </div> */}
                   </div>
                   <div className="row g-3 mb-2">
                     <div className="col-md-6 ">
