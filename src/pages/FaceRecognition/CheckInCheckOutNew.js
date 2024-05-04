@@ -40,6 +40,7 @@ export default function CheckInCheckOutNew() {
     getContractWorkerAttendance(event.target.value);
   };
   const getContractWorkerAttendance = async (date) => {
+    console.log("datesasasasas", date);
     setIsLoading(true);
     try {
       const response = await axios.post(
@@ -51,7 +52,7 @@ export default function CheckInCheckOutNew() {
       setAttendanceData(response.data.checks_breaks);
       setProjects(response.data.projects);
       setIsLoading(false);
-      console.log(response.data);
+      console.log("sasassasasas", response.data);
     } catch (error) {
       setIsLoading(false);
       console.error("Error fetching contract worker attendance:", error);
@@ -223,8 +224,10 @@ export default function CheckInCheckOutNew() {
       .then((response) => {
         setIsLoading(false);
         console.log(response.data);
+
         toast.success(response.data.message);
-        getContractWorkerAttendance();
+
+        getContractWorkerAttendance(selectedDate);
       })
       .catch((error) => {
         console.log(error);
