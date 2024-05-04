@@ -293,7 +293,7 @@ function CreateContractWorker() {
       ) : (
         <>
           <div className="row align-items-center">
-            <div className="col-md-9 mt-4">
+            <div className="col-md-9 mt-2">
               <div className="d-flex align-items-center">
                 <h2 className="mb-0">Contract Workers</h2>
                 <span className="ms-3 fs-4 text-muted">|</span>
