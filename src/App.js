@@ -72,7 +72,7 @@ export default function App() {
               <Route path="/load" exact component={LoadingScreen} />
               <Route path="/checkin" exact component={CheckInCheckOut} />
               <Route
-                path="/test"
+                path="/monthly-contract-worker-attendance-report"
                 exact
                 component={MonthlyContractWorkerAttendanceReport}
               />

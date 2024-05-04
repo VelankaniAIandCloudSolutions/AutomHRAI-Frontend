@@ -180,19 +180,22 @@ function AgGridMonthlyContractWorkerAttendanceReport({
         dynamicColumns.push({
           headerName: formattedDate,
           field: date,
-          width: 100,
+          width: 120,
           cellRenderer: (params) => {
             const rowData = params.data[date];
             const status = rowData ? rowData.status : "";
-            let statusColor = "";
+            let badgeContent = "";
+            let badgeClass = "";
             if (status === "Absent") {
-              statusColor = "red"; // Change to red for Absent status
+              badgeContent = "A";
+              badgeClass = "badge badge-danger"; // Bootstrap class for red badge
             } else if (status === "Present") {
-              statusColor = "darkgreen"; // Change to dark green for Present status
+              badgeContent = "P";
+              badgeClass = "badge badge-success"; // Bootstrap class for green badge
             }
             return (
               <div>
-                <span style={{ color: statusColor }}>{status.charAt(0)}</span> -{" "}
+                <span className={badgeClass}>{badgeContent}</span> -{" "}
                 {formatTimeFromSeconds(
                   rowData ? rowData.effective_working_time : 0
                 )}
@@ -210,19 +213,19 @@ function AgGridMonthlyContractWorkerAttendanceReport({
     {
       headerName: "Name",
       field: "contract_worker_name", // Update field name to match response JSON
-      width: 150,
+      width: 140,
       filter: true,
     },
     {
       headerName: "Agency",
       field: "agency", // Update field name to match response JSON
-      width: 150,
+      width: 140,
       filter: true,
     },
     {
       headerName: "Subcategory",
       field: "subcategory", // Update field name to match response JSON
-      width: 150,
+      width: 140,
       filter: true,
     },
     ...generateDynamicColumns(rowData),
@@ -286,3 +289,28 @@ function AgGridMonthlyContractWorkerAttendanceReport({
 }
 
 export default AgGridMonthlyContractWorkerAttendanceReport;
+
+// dynamicColumns.push({
+//     headerName: formattedDate,
+//     field: date,
+//     width: 100,
+//     cellRenderer: (params) => {
+//       const rowData = params.data[date];
+//       const status = rowData ? rowData.status : "";
+//       let statusColor = "";
+//       if (status === "Absent") {
+//         statusColor = "red"; // Change to red for Absent status
+//       } else if (status === "Present") {
+//         statusColor = "darkgreen"; // Change to dark green for Present status
+//       }
+//       return (
+//         <div>
+//           <span style={{ color: statusColor }}>{status.charAt(0)}</span> -{" "}
+//           {formatTimeFromSeconds(
+//             rowData ? rowData.effective_working_time : 0
+//           )}
+//         </div>
+//       );
+//     },
+//     autoHeight: true, // To ensure the cell height adjusts based on content
+//   });

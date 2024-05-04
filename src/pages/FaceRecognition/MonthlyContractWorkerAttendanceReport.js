@@ -85,8 +85,13 @@ function MonthlyContractWorkerAttendanceReport() {
   };
 
   const handleGenerateReport = async () => {
+    if (!formData.month) {
+      toast.error("Please select a month!");
+      return;
+    }
     try {
       // Make the API call
+      dispatch(showLoading());
       console.log("formData", formData);
       const response = await axios.post(
         "/facial-recognition/calculate-monthly-contract-worker-timesheet-report/",
@@ -95,12 +100,15 @@ function MonthlyContractWorkerAttendanceReport() {
 
       // Log the response data to the console
       console.log(response.data);
+      dispatch(hideLoading());
 
       // If you need to store the response data for further processing, you can set it to a state variable
       setRowData(response.data);
     } catch (error) {
       // Handle errors
       console.error("Error:", error);
+      dispatch(hideLoading());
+      toast.error("Error generating report");
     }
   };
   return (
@@ -110,25 +118,25 @@ function MonthlyContractWorkerAttendanceReport() {
       ) : (
         <>
           <div className="row align-items-center">
-            <div className="col-md-9 mt-4">
-              <div className="d-flex align-items-center">
-                <h2 className="mb-0">Monthly Attendance Report</h2>
-                <span className="ms-3 fs-4 text-muted">|</span>
-                <nav aria-label="breadcrumb" className="d-inline-block ms-3">
-                  <ol className="breadcrumb bg-transparent m-0 p-0">
-                    <li className="breadcrumb-item">
-                      <a href="/">
-                        <i className="fas fa-home"></i> Home
-                      </a>
-                    </li>
-                    <li className="breadcrumb-item active" aria-current="page">
-                      <i className="fas fa-file"> </i> Report
-                    </li>
-                  </ol>
-                </nav>
-              </div>
+            <div className="d-flex align-items-center mt-4">
+              <h2 className="mb-0">
+                Contract Workers Monthly Attendance Report
+              </h2>
+              <span className="ms-3 fs-4 text-muted">|</span>
+              <nav aria-label="breadcrumb" className="d-inline-block ms-3">
+                <ol className="breadcrumb bg-transparent m-0 p-0">
+                  <li className="breadcrumb-item">
+                    <a href="/checkin-checkout">
+                      <i className="fas fa-home"></i> Home
+                    </a>
+                  </li>
+                  <li className="breadcrumb-item active" aria-current="page">
+                    <i className="fas fa-file"> </i> Report
+                  </li>
+                </ol>
+              </nav>
             </div>
-            {/* card start */}
+            {/*  select filters card start */}
 
             <div class="card mt-4 card-outline card-primary">
               <div class="card-header">
@@ -178,7 +186,6 @@ function MonthlyContractWorkerAttendanceReport() {
                         multiple
                       >
                         <option value="All_Workers">All Workers</option>
-
                         {filteredContractWorkers.map((worker) => (
                           <option key={worker.id} value={worker.id}>
                             {worker.full_name}
@@ -230,10 +237,39 @@ function MonthlyContractWorkerAttendanceReport() {
                 </div>
               </div>
             </div>
-            {/* card end */}
+            {/*  filter card end */}
 
-            <div className="container" style={{ marginTop: "25px" }}>
-              <AgGridMonthlyContractWorkerAttendanceReport rowData={rowData} />
+            {/* legend card  start */}
+
+            <div class="card card-outline card-warning mt-4">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <strong>Legends:</strong>
+                </h3>
+                {/* <div class="card-tools">
+                  <span class="badge badge-primary">Label</span>
+                </div> */}
+              </div>
+
+              <div class="card-body" style={{ display: "flex" }}>
+                {/* Legends */}
+                <div>
+                  <span class="badge badge-danger me-2">A</span>- Absent
+                </div>
+                <div style={{ marginLeft: "50px" }}>
+                  <span class="badge bg-success me-2">P</span>- Present
+                </div>
+              </div>
+            </div>
+
+            {/* legend card end */}
+
+            <div className="container mt-4">
+              {rowData.length > 0 && (
+                <AgGridMonthlyContractWorkerAttendanceReport
+                  rowData={rowData}
+                />
+              )}
             </div>
           </div>
         </>
