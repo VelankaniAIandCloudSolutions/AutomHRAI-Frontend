@@ -299,12 +299,12 @@ function CreateContractWorker() {
                     </li>
                     <li className="breadcrumb-item">
                       <a href="/contract-workers">
-                        <i className="fas fa-users"></i>
+                        <i className="fas fa-users me-2"></i>
                         Contract Workers
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      <i className="fas fa-user-plus"></i> Create Worker
+                      <i className="fas fa-user-plus "></i> Create Worker
                     </li>
                   </ol>
                 </nav>
