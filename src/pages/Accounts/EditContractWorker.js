@@ -166,13 +166,15 @@ function EditContractWorker() {
     const context = canvas.getContext("2d");
     context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
     canvas.toBlob((blob) => {
+      const timestamp = new Date().getTime(); // Generate a unique timestamp
+      const fileName = `captured_photo_${timestamp}.jpg`; // Construct unique file name
       const img = new Image();
       img.src = URL.createObjectURL(blob);
       img.className = "captured-image";
       imageRef.current.innerHTML = "";
       imageRef.current.appendChild(img);
       setCapturedImage(blob);
-      const file = new File([blob], "captured_photo.jpg", {
+      const file = new File([blob], fileName, {
         type: blob.type,
       });
       const files = [file];
