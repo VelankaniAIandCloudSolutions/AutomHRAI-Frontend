@@ -172,6 +172,9 @@ function AgGridMonthlyContractWorkerAttendanceReport({
           rowData={rowData}
           columnDefs={colDefs}
           onGridReady={onGridReady}
+          pagination={true}
+          paginationPageSize={10}
+          paginationPageSizeSelector={[10, 20, 50]}
           // Enable CSV Export
         />
       </div>

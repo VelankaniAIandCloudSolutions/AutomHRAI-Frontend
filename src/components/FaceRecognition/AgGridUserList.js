@@ -64,7 +64,13 @@ function AgGridUserList({ rowData, onDeleteUser }) {
   return (
     <div>
       <div className="ag-theme-quartz" style={{ height: 500 }}>
-        <AgGridReact rowData={rowData} columnDefs={colDefs} />
+        <AgGridReact
+          rowData={rowData}
+          columnDefs={colDefs}
+          pagination={true}
+          paginationPageSize={10}
+          paginationPageSizeSelector={[10, 20, 50]}
+        />
       </div>
 
       <div

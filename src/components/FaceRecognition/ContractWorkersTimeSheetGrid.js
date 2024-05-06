@@ -95,9 +95,10 @@ const ContractWorkerAgGrid = ({ responseData }) => {
         <AgGridReact
           rowData={rowData}
           columnDefs={columnDefs}
+          domLayout="autoHeight"
           pagination={true}
           paginationPageSize={10}
-          domLayout="autoHeight"
+          paginationPageSizeSelector={[10, 20, 50]}
         />
       </div>
 
