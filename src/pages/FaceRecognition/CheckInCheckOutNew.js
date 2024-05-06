@@ -26,6 +26,14 @@ export default function CheckInCheckOutNew() {
   const authState = useSelector((state) => state.auth);
   const userDetails = authState.userData?.user_account;
 
+  // useEffect(() => {
+  //   setupCamera();
+  //   getContractWorkerAttendance(selectedDate);
+  //   const modal = modalRef.current;
+  //   if (modal) {
+  //     new Modal(modal);
+  //   }
+  // }, [selectedDate]);
   useEffect(() => {
     setupCamera();
     getContractWorkerAttendance(selectedDate);
@@ -33,6 +41,33 @@ export default function CheckInCheckOutNew() {
     if (modal) {
       new Modal(modal);
     }
+
+    // Add event listener for Enter key press
+    const handleKeyDown = (event) => {
+      if (event.key === "Enter") {
+        // Log that the Check In button is clicked
+        console.log("Check In button clicked");
+
+        // Trigger click event on Check In button if it exists
+        const checkInButton = document.getElementById("checkInButton");
+        if (checkInButton) {
+          checkInButton.click();
+        }
+      }
+      if (event.key === "Backspace") {
+        // Trigger click event on Check Out button if Backspace is pressed
+        const checkOutButton = document.getElementById("checkOutButton");
+        if (checkOutButton) {
+          checkOutButton.click();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, [selectedDate]);
 
   const handleChange = (event) => {
@@ -60,8 +95,11 @@ export default function CheckInCheckOutNew() {
   };
 
   const handleCapture = async (type) => {
+    console.log("handleCapture func() called");
     if (!videoStream) return;
     setTimeout(async () => {
+      console.log(" inside setTimeout of handleCapture func() ");
+
       const track = videoStream.getVideoTracks()[0];
       const imageCapture = new ImageCapture(track);
 
@@ -266,6 +304,7 @@ export default function CheckInCheckOutNew() {
               <div className="col-auto">
                 <button
                   type="button"
+                  id="checkInButton"
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
                   onClick={() => handleCapture("checkin")}
@@ -278,6 +317,7 @@ export default function CheckInCheckOutNew() {
               <div className="col-auto">
                 <button
                   type="button"
+                  id="checkOutButton"
                   className="btn btn-danger"
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
