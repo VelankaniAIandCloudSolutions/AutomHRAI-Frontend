@@ -19,9 +19,15 @@ const SubCategoryForm = ({
   const history = useHistory();
 
   useEffect(() => {
-    if (mode === "edit" && initialData) {
+    console.log("Initial Data:", initialData);
+    console.log("Mode:", mode);
+    if (mode === "edit" && initialData && initialData.name) {
       setName(initialData.name);
-      setCategoryId(initialData.category.id);
+      if (initialData.category) {
+        setCategoryId(initialData.category.id);
+      } else {
+        setCategoryId("");
+      }
     }
   }, [mode, initialData]);
 
@@ -125,7 +131,7 @@ const SubCategoryForm = ({
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <button
           className="btn btn-secondary"
-          data-bs-dismiss = 'modal'
+          data-bs-dismiss="modal"
           style={{ marginLeft: "70%" }}
         >
           Cancel
