@@ -45,7 +45,7 @@ function SubCategoryAgGrid({
     };
     const handleEditButtonClick = (event) => {
       const rowData = props.node.data; // Access the row data from the event
-      console.log("Row Data:", rowData); // Log the row data
+
       setSelectedSubCategory(rowData);
       setMode("edit");
     };
