@@ -11,6 +11,7 @@ import Webcam from "react-webcam";
 import { useParams } from "react-router-dom";
 
 function EditContractWorker() {
+  const indexRef = useRef(null);
   const { id } = useParams();
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading.loading);
@@ -29,6 +30,7 @@ function EditContractWorker() {
       pan: "",
     },
     user_documents: [],
+    deleted_images: [],
   });
 
   const [uploadedImages, setUploadedImages] = useState([]);
@@ -144,6 +146,10 @@ function EditContractWorker() {
     confirmedCapturedImages,
   ]);
 
+  useEffect(() => {
+    console.log(" this is allImages", allImages);
+  }, [allImages]);
+
   const handleCapture = () => {
     const modal = modalRef.current;
 
@@ -231,15 +237,30 @@ function EditContractWorker() {
 
   const handleDeleteImage = (index) => {
     console.log("Deleting image at index:", index);
+    indexRef.current = index;
+
     const deletedImage = allImages[index];
     // Add the deleted image to deletedImages array
+    console.log("images being deleted", deletedImage);
+
     setDeletedImages((prevDeletedImages) => [
       ...prevDeletedImages,
       deletedImage,
     ]);
-    const updatedImages = [...allImages];
-    updatedImages.splice(index, 1);
-    setAllImages(updatedImages);
+
+    // const updatedImages = [...allImages];
+
+    // console.log("updated images before slicing", updatedImages);
+    // updatedImages.splice(index, 1);
+    // console.log("updated images after slicing", updatedImages);
+    // setAllImages(updatedImages);
+    // setAllImages((allImages) => allImages.filter((_, i) => i !== index));
+    // setConfirmedCapturedImages((confirmedCapturedImages) =>
+    //   confirmedCapturedImages.filter((_, i) => i != index)
+    // );
+    // setConfirmedUploadedImages((confirmedUploadedImages) =>
+    //   confirmedUploadedImages.filter((_, i) => i != index)
+    // );
 
     const updatedUserDocuments = [...formData.user_documents];
     updatedUserDocuments.splice(index, 1); // Remove the deleted image from formData.user_documents array
@@ -248,6 +269,22 @@ function EditContractWorker() {
       user_documents: updatedUserDocuments,
     }));
   };
+
+  useEffect(() => {
+    // Check if indexRef has a value
+    // if (indexRef.current !== null) {
+    //   // Remove the image at the stored index
+    //   setAllImages((allImages) =>
+    //     allImages.filter((_, i) => i !== indexRef.current)
+    //   );
+    //   setConfirmedCapturedImages((confirmedCapturedImages) =>
+    //     confirmedCapturedImages.filter((_, i) => i !== indexRef.current)
+    //   );
+    //   // Reset the indexRef value
+    //   indexRef.current = null;
+    // }
+    console.log("these are deleted images", deletedImages);
+  }, [deletedImages]);
 
   const handleUpdateUser = () => {
     const formDataToSend = new FormData();
@@ -278,9 +315,19 @@ function EditContractWorker() {
       }
     });
 
-    // Append deleted images
-    const deletedImageIds = deletedImages.map((image) => image.id);
-    formDataToSend.append("deleted_images", JSON.stringify(deletedImageIds));
+    if (deletedImages) {
+      deletedImages.forEach((image) => {
+        if (image instanceof File) {
+          formDataToSend.append("deleted_image", image);
+        } else {
+          formDataToSend.append("deleted_images", image.document);
+        }
+      });
+    }
+
+    // // Append deleted images
+    // const deletedImageIds = deletedImages.map((image) => image.id);
+    // formDataToSend.append("deleted_images", JSON.stringify(deletedImageIds));
 
     // Append user image IDs
     const allImageIds = allImages.map((image) => image.id);
@@ -411,6 +458,10 @@ function EditContractWorker() {
   const handleCancel = () => {
     history.push("/contract-workers");
   };
+  const filteredImages = allImages.filter((document) => {
+    // Check if the document is not present in the deletedImages state
+    return !deletedImages.includes(document);
+  });
 
   return (
     <div className="container">
@@ -607,7 +658,7 @@ function EditContractWorker() {
 
                   <div className="row g-3 mb-2">
                     <div className="row g-3">
-                      {allImages.map((document, index) => (
+                      {filteredImages.map((document, index) => (
                         <div className="col-md-2" key={index}>
                           <div className="card position-relative">
                             {document && document.document && (
