@@ -7,6 +7,7 @@ import LoadingScreen from "../../components/Layout/LoadingScreen";
 import ContractWorkerAttendanceGrid from "../../components/FaceRecognition/ContractWorkerAttendanceGrid";
 import DigitalClock from "../../components/Layout/DigitalClock";
 import { useSelector } from "react-redux";
+import io from "socket.io-client";
 
 export default function CheckInCheckOutNew() {
   const formatDate = (date) => {
@@ -34,10 +35,29 @@ export default function CheckInCheckOutNew() {
   //     new Modal(modal);
   //   }
   // }, [selectedDate]);
+
+  useEffect(() => {
+    const handleMessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("Received WebSocket message:", data);
+    };
+
+    const socket = new WebSocket("ws://localhost:8000/ws/check-in-out/");
+    socket.addEventListener("open", () => {
+      console.log("WebSocket connection opened");
+    });
+    socket.addEventListener("message", handleMessage);
+
+    return () => {
+      socket.close();
+    };
+  }, []);
+
   useEffect(() => {
     setupCamera();
     getContractWorkerAttendance(selectedDate);
     const modal = modalRef.current;
+
     if (modal) {
       new Modal(modal);
     }
