@@ -238,10 +238,22 @@ function CreateContractWorker() {
     userImages.forEach((imageFile) => {
       formDataToSend.append("user_images", imageFile);
     });
-    capturedImages.forEach((image) => {
-      const file = new File([image.blob], "captured_photo.jpg", {
+    // capturedImages.forEach((image) => {
+    //   const file = new File([image.blob], "captured_photo.jpg", {
+    //     type: "image/jpeg",
+    //   });
+    //   formDataToSend.append("user_images", file);
+    // });
+
+    capturedImages.forEach((image, index) => {
+      const timestamp = new Date().getTime();
+      const randomString = Math.random().toString(36).substring(7);
+      const uniqueFilename = `captured_photo_${timestamp}_${randomString}_${index}.jpg`;
+
+      const file = new File([image.blob], uniqueFilename, {
         type: "image/jpeg",
       });
+
       formDataToSend.append("user_images", file);
     });
     if (aadhaarCard) {
