@@ -40,6 +40,7 @@ export default function CheckInCheckOutNew() {
     const handleMessage = (event) => {
       const data = JSON.parse(event.data);
       console.log("Received WebSocket message:", data);
+      getContractWorkerAttendance(selectedDate);
     };
 
     const socket = new WebSocket("ws://localhost:8000/ws/check-in-out/");
