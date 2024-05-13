@@ -43,7 +43,7 @@ export default function CheckInCheckOutNew() {
       getContractWorkerAttendance(selectedDate);
     };
 
-    const socket = new WebSocket("ws://aidev.automhr.com/ws/check-in-out/");
+    const socket = new WebSocket("wss://aidev.automhr.com/ws/check-in-out/");
     socket.addEventListener("open", () => {
       console.log("WebSocket connection opened");
     });
