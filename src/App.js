@@ -41,7 +41,7 @@ import SubCategoryLanding from "./pages/Accounts/SubCategoryLanding";
 import ContractWorkersTimesheet from "./pages/FaceRecognition/ContractWorkersTimesheet";
 import FaceRecognitionReports from "./pages/FaceRecognition/FaceRecognitionReports";
 import MonthlyContractWorkerAttendanceReport from "./pages/FaceRecognition/MonthlyContractWorkerAttendanceReport";
-
+import ContractWorkerBillGeneration from "./pages/BillGeneration/ContractWorkerBillGeneration";
 import useAxiosInterceptor from "./interceptors/axios";
 export default function App() {
   const authState = useSelector((state) => state.auth);
@@ -92,6 +92,11 @@ export default function App() {
                 component={FaceRecognitionReports}
               />
               <Route path="/attendance" exact component={attendanceList} />
+              <Route
+                path="/contract-workers/bill-generation"
+                exact
+                component={ContractWorkerBillGeneration}
+              />
               <Route path="/contract-workers">
                 {userDetails?.is_supervisor_admin ||
                 userDetails?.is_superuser ? (
