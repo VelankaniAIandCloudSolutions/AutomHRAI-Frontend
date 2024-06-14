@@ -7,6 +7,9 @@ import ContractWorkerAttendanceGrid from "../../components/FaceRecognition/Contr
 
 function AgGridContractWorkerBillGenerationInfo({
   rowData = [],
+  fromDate,
+  toDate,
+  agencyId,
   onDeleteContractWorker,
 }) {
   const [selectedProjectId, setSelectedProjectId] = useState(null);
@@ -90,7 +93,33 @@ function AgGridContractWorkerBillGenerationInfo({
     gridApiRef.current = params.api; // Store grid API reference
   };
 
+  const handleViewClick = async (workerId) => {
+    try {
+      // Assuming you have fromDate and toDate in state or local variables
+
+      // Example API call using axios
+      const response = await axios.get(`/api/contract_workers/${workerId}`, {
+        data: {
+          fromDate,
+          toDate,
+          agencyId,
+        },
+      });
+
+      setModalData(response.data);
+    } catch (error) {
+      console.error("Error fetching contract worker details", error);
+    }
+  };
+
   const colDefs = [
+    {
+      headerName: "id",
+      field: "worker_id", // Update field name to match response JSON
+      width: 100,
+      filter: true,
+      hide: false,
+    },
     {
       headerName: "Name",
       field: "contract_worker_name", // Update field name to match response JSON
@@ -111,46 +140,80 @@ function AgGridContractWorkerBillGenerationInfo({
     },
 
     {
-      headerName: "Worked Hours",
-      field: "subcategory", // Update field name to match response JSON
+      headerName: "Hourly Rate",
+      field: "hourly_rate",
       width: 140,
       filter: true,
+      cellRenderer: (params) => `₹${params.value}/hr`, // Add rupee symbol and "/hr"
+    },
+    {
+      headerName: "Working Hours",
+      field: "total_normal_shift_hours",
+      width: 140,
+      filter: true,
+      cellRenderer: (params) => {
+        const totalSeconds = params.value * 3600;
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+          2,
+          "0"
+        )}:${String(seconds).padStart(2, "0")}`;
+      },
     },
     {
       headerName: "Extra Hours",
-      field: "subcategory", // Update field name to match response JSON
+      field: "total_extra_shift_hours",
       width: 140,
       filter: true,
+      cellRenderer: (params) => {
+        const totalSeconds = params.value * 3600;
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+          2,
+          "0"
+        )}:${String(seconds).padStart(2, "0")}`;
+      },
     },
     {
       headerName: "Total Hours",
-      field: "subcategory", // Update field name to match response JSON
+      field: "total_hours",
       width: 140,
       filter: true,
+      cellRenderer: (params) => {
+        const totalSeconds = params.value * 3600;
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+          2,
+          "0"
+        )}:${String(seconds).padStart(2, "0")}`;
+      },
     },
     {
       headerName: "Working Bill",
-      field: "subcategory", // Update field name to match response JSON
+      field: "total_working_bill",
       width: 140,
       filter: true,
-    },
-    {
-      headerName: "Working Bill",
-      field: "subcategory", // Update field name to match response JSON
-      width: 140,
-      filter: true,
+      cellRenderer: (params) => `₹${params.value}`, // Add rupee symbol
     },
     {
       headerName: "Extra Bill",
-      field: "subcategory", // Update field name to match response JSON
+      field: "total_extra_bill",
       width: 140,
       filter: true,
+      cellRenderer: (params) => `₹${params.value}`, // Add rupee symbol
     },
     {
       headerName: "Total Bill",
-      field: "subcategory", // Update field name to match response JSON
+      field: "total_bill",
       width: 140,
       filter: true,
+      cellRenderer: (params) => `₹${params.value}`, // Add rupee symbol
     },
     {
       headerName: "View Details",
@@ -161,8 +224,8 @@ function AgGridContractWorkerBillGenerationInfo({
           type="button"
           className="btn btn-primary btn-sm"
           data-bs-toggle="modal"
-          data-bs-target="#imageModal"
-          onClick={() => handleViewImage(params.data)}
+          data-bs-target="#exampleModal"
+          onClick={() => handleViewClick(params.data.worker_id)}
         >
           <i className="fas fa-eye"></i>
         </button>
@@ -183,6 +246,53 @@ function AgGridContractWorkerBillGenerationInfo({
           paginationPageSizeSelector={[10, 20, 50]}
           // Enable CSV Export
         />
+        <div
+          className="modal fade"
+          id="exampleModal"
+          tabIndex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-xl">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="exampleModalLabel">
+                  All Entries
+                </h1>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body">
+                <ContractWorkerAttendanceGrid
+                  attendanceData={modalData}
+                  onSelectionChange={handleSelectionChange}
+                  showImgInNewWindow={true}
+                />
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                {/* <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleConfirmDelete}
+                data-bs-dismiss="modal"
+              >
+                Confirm
+              </button> */}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

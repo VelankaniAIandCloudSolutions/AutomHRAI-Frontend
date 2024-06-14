@@ -98,9 +98,13 @@ function ContractWorkerBillGeneration() {
     }
   };
 
-  const handleGenerateReport = async () => {
-    if (!formData.month) {
-      toast.error("Please select a month!");
+  const handleGenerateBill = async () => {
+    if (!formData.fromDate) {
+      toast.error("Please select start date!");
+      return;
+    }
+    if (!formData.toDate) {
+      toast.error("Please select end date!");
       return;
     }
     try {
@@ -108,7 +112,7 @@ function ContractWorkerBillGeneration() {
       dispatch(showLoading());
       console.log("formData", formData);
       const response = await axios.post(
-        "/facial-recognition/calculate-monthly-contract-worker-timesheet-report/",
+        "/facial-recognition/calculate-cumulative-daily-contract-worker-timesheet-for-all-dates",
         formData
       );
 
@@ -122,7 +126,7 @@ function ContractWorkerBillGeneration() {
       // Handle errors
       console.error("Error:", error);
       dispatch(hideLoading());
-      toast.error("Error generating report");
+      toast.error("Error generating bill");
     }
   };
   return (
@@ -158,7 +162,7 @@ function ContractWorkerBillGeneration() {
                 <div class="card-tools">
                   <button
                     class="btn-sm btn-primary"
-                    onClick={handleGenerateReport}
+                    onClick={handleGenerateBill}
                   >
                     Generate Bill
                   </button>
@@ -241,7 +245,13 @@ function ContractWorkerBillGeneration() {
               {/* {rowData.length > 0 && (
                 <AgGridContractWorkerBillGenerationInfo rowData={rowData} />
               )} */}
-              <AgGridContractWorkerBillGenerationInfo />
+              <AgGridContractWorkerBillGenerationInfo
+                rowData={rowData}
+                agency={formData.agency}
+                workers={formData.workers}
+                fromDate={formData.fromDate}
+                toDate={formData.toDate}
+              />
             </div>
           </div>
         </>
