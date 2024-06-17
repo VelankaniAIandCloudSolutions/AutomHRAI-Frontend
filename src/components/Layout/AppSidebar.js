@@ -69,6 +69,17 @@ export default function AppSidebar() {
                   </li>
                 </ul>
               </li> */}
+              <SidebarMenuItem
+                title="Billing"
+                icon="fas fa-money-bill"
+                items={[
+                  {
+                    label: "Generate Bill",
+                    link: "/contract-workers/bill-generation",
+                  },
+                  // { label: "Reports", link: "/face-recognition-reports" },
+                ]}
+              />
             </ul>
           </nav>
         </div>

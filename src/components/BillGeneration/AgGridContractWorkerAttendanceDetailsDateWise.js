@@ -5,7 +5,7 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 
 export default function ContractWorkerAttendanceGrid({
   attendanceData,
-  onSelectionChange,
+
   showImgInNewWindow = false,
 }) {
   const [selectedImage, setSelectedImage] = useState({});
@@ -48,7 +48,7 @@ export default function ContractWorkerAttendanceGrid({
       cellRenderer: (params) => {
         const handleClick = () => {
           if (showImgInNewWindow) {
-            window.open(params?.data?.user?.user_image, "_blank");
+            window.open(params.data.image, "_blank");
           } else {
             handleViewImage(params.data);
           }
@@ -74,19 +74,19 @@ export default function ContractWorkerAttendanceGrid({
     },
   ]);
 
-  useEffect(() => {
-    onSelectionChange(selectedRows);
-  }, [selectedRows]);
+  //   useEffect(() => {
+  //     onSelectionChange(selectedRows);
+  //   }, [selectedRows]);
 
   const handleViewImage = (data) => {
     setSelectedImage(data);
   };
 
-  const onSelectionChanged = () => {
-    const selectedNodes = gridApi.getSelectedNodes();
-    const selectedData = selectedNodes.map((node) => node.data);
-    setSelectedRows(selectedData);
-  };
+  //   const onSelectionChanged = () => {
+  //     const selectedNodes = gridApi.getSelectedNodes();
+  //     const selectedData = selectedNodes.map((node) => node.data);
+  //     setSelectedRows(selectedData);
+  //   };
 
   const gridOptions = {
     onGridReady: (params) => {
@@ -105,7 +105,7 @@ export default function ContractWorkerAttendanceGrid({
           rowSelection={"multiple"}
           rowMultiSelectWithClick={true}
           gridOptions={gridOptions}
-          onSelectionChanged={onSelectionChanged}
+          //   onSelectionChanged={onSelectionChanged}
         />
       </div>
       <div
