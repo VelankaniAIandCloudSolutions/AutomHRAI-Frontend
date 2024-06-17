@@ -41,6 +41,7 @@ import SubCategoryLanding from "./pages/Accounts/SubCategoryLanding";
 import ContractWorkersTimesheet from "./pages/FaceRecognition/ContractWorkersTimesheet";
 import FaceRecognitionReports from "./pages/FaceRecognition/FaceRecognitionReports";
 import MonthlyContractWorkerAttendanceReport from "./pages/FaceRecognition/MonthlyContractWorkerAttendanceReport";
+import ContractWorkerBillsApproval from "./pages/BillsApproval.js/ContractWorkerBillsApproval";
 
 import useAxiosInterceptor from "./interceptors/axios";
 export default function App() {
@@ -238,6 +239,11 @@ export default function App() {
                       path="/contract-workers-timesheet"
                       exact
                       component={ContractWorkersTimesheet}
+                    />
+                    <Route
+                      path="/contractworker-bills-approval"
+                      exact
+                      component={ContractWorkerBillsApproval}
                     />
                   </>
                 ) : (
