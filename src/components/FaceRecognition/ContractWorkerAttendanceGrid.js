@@ -48,7 +48,7 @@ export default function ContractWorkerAttendanceGrid({
       cellRenderer: (params) => {
         const handleClick = () => {
           if (showImgInNewWindow) {
-            window.open(params.data.image, "_blank");
+            window.open(params?.data?.user?.user_image, "_blank");
           } else {
             handleViewImage(params.data);
           }
