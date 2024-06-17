@@ -3,7 +3,8 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { useHistory } from "react-router-dom";
-import ContractWorkerAttendanceGrid from "../../components/FaceRecognition/ContractWorkerAttendanceGrid";
+import axios from "axios";
+import AgGridContractWorkerBillGenerationInfoIndividual from "./AgGridContractWorkerBillGenerationInfoIndividual";
 
 function AgGridContractWorkerBillGenerationInfo({
   rowData = [],
@@ -96,15 +97,20 @@ function AgGridContractWorkerBillGenerationInfo({
   const handleViewClick = async (workerId) => {
     try {
       // Assuming you have fromDate and toDate in state or local variables
+      console.log("inside handle view func");
+      console.log("worker id innside view detaisl api call func", workerId);
+      console.log("fromDate being passed as props to the function", fromDate);
+      console.log("toDate being passed as props to the function", toDate);
 
       // Example API call using axios
-      const response = await axios.get(`/api/contract_workers/${workerId}`, {
-        data: {
-          fromDate,
-          toDate,
-          agencyId,
-        },
-      });
+      const response = await axios.post(
+        `/facial-recognition/calculate-daily-contract-worker-timesheet-date-wise/${workerId}/`,
+        {
+          fromDate: fromDate,
+          toDate: toDate,
+        }
+      );
+      console.log("response data", response.data);
 
       setModalData(response.data);
     } catch (error) {
@@ -257,7 +263,7 @@ function AgGridContractWorkerBillGenerationInfo({
             <div className="modal-content">
               <div className="modal-header">
                 <h1 className="modal-title fs-5" id="exampleModalLabel">
-                  All Entries
+                  Date Wise Time-Sheet
                 </h1>
                 <button
                   type="button"
@@ -267,10 +273,8 @@ function AgGridContractWorkerBillGenerationInfo({
                 ></button>
               </div>
               <div className="modal-body">
-                <ContractWorkerAttendanceGrid
-                  attendanceData={modalData}
-                  onSelectionChange={handleSelectionChange}
-                  showImgInNewWindow={true}
+                <AgGridContractWorkerBillGenerationInfoIndividual
+                  billData={modalData}
                 />
               </div>
               <div className="modal-footer">
@@ -281,14 +285,6 @@ function AgGridContractWorkerBillGenerationInfo({
                 >
                   Close
                 </button>
-                {/* <button
-                type="button"
-                className="btn btn-primary"
-                onClick={handleConfirmDelete}
-                data-bs-dismiss="modal"
-              >
-                Confirm
-              </button> */}
               </div>
             </div>
           </div>
