@@ -23,6 +23,12 @@ function ContractWorkerBillGeneration() {
   });
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading.loading);
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  const handleSelectedRows = (rows) => {
+    setSelectedRows(rows);
+    console.log("Selected rows in parent:", rows);
+  };
 
   const handleAgencyChange = (e) => {
     const selectedAgency = e.target.value;
@@ -129,6 +135,27 @@ function ContractWorkerBillGeneration() {
       toast.error("Error generating bill");
     }
   };
+
+  console.log("the selected Worker:", selectedRows);
+  const generateBillsRequest = async () => {
+    try {
+      if (selectedRows && selectedRows.length > 0) {
+        const response = await axios.post(
+          "/facial-recognition/create_attendance_billing/",
+          selectedRows
+        );
+        console.log("Bills generated successfully:", response.data);
+        toast.success("Bills Request send successfully.");
+      } else {
+        console.error("No rows selected");
+        toast.error("Please select Generated Bill");
+      }
+    } catch (error) {
+      console.error("Error generating bills:", error);
+      toast.error("Error generating bills Request");
+    }
+  };
+
   return (
     <div className="container">
       {loading ? (
@@ -245,12 +272,21 @@ function ContractWorkerBillGeneration() {
               {/* {rowData.length > 0 && (
                 <AgGridContractWorkerBillGenerationInfo rowData={rowData} />
               )} */}
+              <div className="d-flex justify-content-end mt-3">
+                <button
+                  className="btn btn-primary me-2"
+                  onClick={generateBillsRequest}
+                >
+                  Generate Bill Request
+                </button>
+              </div>
               <AgGridContractWorkerBillGenerationInfo
                 rowData={rowData}
                 agency={formData.agency}
                 workers={formData.workers}
                 fromDate={formData.fromDate}
                 toDate={formData.toDate}
+                onSelectedRowsChange={handleSelectedRows}
               />
             </div>
           </div>

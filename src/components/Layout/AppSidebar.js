@@ -77,6 +77,10 @@ export default function AppSidebar() {
                     label: "Generate Bill",
                     link: "/contract-workers/bill-generation",
                   },
+                  {
+                    label: "Requested Bills",
+                    link: "/contractworker-bills-approval",
+                  },
                   // { label: "Reports", link: "/face-recognition-reports" },
                 ]}
               />

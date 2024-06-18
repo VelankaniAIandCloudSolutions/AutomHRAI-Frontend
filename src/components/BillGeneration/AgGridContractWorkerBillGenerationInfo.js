@@ -12,10 +12,12 @@ function AgGridContractWorkerBillGenerationInfo({
   toDate,
   agencyId,
   onDeleteContractWorker,
+  onSelectedRowsChange,
 }) {
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [modalData, setModalData] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
+
   const gridApiRef = useRef(null);
 
   const handleDeleteClick = (projectId) => {
@@ -27,10 +29,6 @@ function AgGridContractWorkerBillGenerationInfo({
 
   const handleConfirmDelete = () => {
     onDeleteContractWorker(selectedProjectId, handleClose);
-  };
-  const handleSelectionChange = (selectedRows) => {
-    setSelectedRows(selectedRows);
-    console.log("The rows", selectedRows);
   };
 
   const formatTimeFromSeconds = (seconds) => {
@@ -118,15 +116,16 @@ function AgGridContractWorkerBillGenerationInfo({
     }
   };
 
+  const handleSelectionChanged = (event) => {
+    const selectedRows = event.api.getSelectedRows();
+    setSelectedRows(selectedRows);
+    onSelectedRowsChange(selectedRows);
+  };
+
   const colDefs = [
     {
-      headerName: "id",
-      field: "worker_id", // Update field name to match response JSON
-      width: 100,
-      filter: true,
-      hide: false,
-    },
-    {
+      headerCheckboxSelection: true,
+      checkboxSelection: true,
       headerName: "Name",
       field: "contract_worker_name", // Update field name to match response JSON
       width: 140,
@@ -250,6 +249,8 @@ function AgGridContractWorkerBillGenerationInfo({
           pagination={true}
           paginationPageSize={10}
           paginationPageSizeSelector={[10, 20, 50]}
+          rowSelection="multiple"
+          onSelectionChanged={handleSelectionChanged}
           // Enable CSV Export
         />
         <div
