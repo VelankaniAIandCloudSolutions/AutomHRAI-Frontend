@@ -199,7 +199,7 @@ const ContractWorkerBillsApproval = () => {
           </div>
         )}
         <div
-          className="ag-theme-alpine mt-3"
+          className="ag-theme-quartz mt-3"
           style={{ height: "500px", width: "100%" }}
         >
           <AgGridReact
