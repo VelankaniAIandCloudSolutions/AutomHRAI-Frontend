@@ -3,9 +3,11 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { useHistory } from "react-router-dom";
+import ContractWorkerBillsApproval from "../../pages/BillsApproval.js/ContractWorkerBillsApproval";
 function AgGridUserList({ rowData, onDeleteContractWorker }) {
   const [selectedContractWorkerId, setSelectedContractWorkerId] =
     useState(null);
+  const [selectedBillId, setSelectedBillId] = useState(null); // State to store selected bill id
 
   const handleDeleteClick = (contractWorkerId) => {
     setSelectedContractWorkerId(contractWorkerId);
@@ -50,13 +52,32 @@ function AgGridUserList({ rowData, onDeleteContractWorker }) {
       </div>
     );
   }
-
+  const handleViewClick = async (params) => {
+    const billId = params.data.id;
+    console.log(billId);
+    setSelectedBillId(billId);
+  };
   const colDefs = [
     { headerName: "Employee ID", field: "emp_id", filter: true },
     { headerName: "Employee Name", field: "employeeName", filter: true },
     { headerName: "Agency", field: "agency.name", filter: true },
     // { headerName: "Email", field: "email", filter: true },
     { headerName: "Mobile No", field: "phone_number", filter: true },
+    {
+      headerName: "Employee Bills",
+      field: "list",
+      cellRenderer: (params) => (
+        <button
+          type="button"
+          className="btn btn-primary btn-sm"
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+          onClick={() => handleViewClick(params)}
+        >
+          <i className="fas fa-eye"></i>
+        </button>
+      ),
+    },
 
     {
       field: "id",
@@ -113,6 +134,44 @@ function AgGridUserList({ rowData, onDeleteContractWorker }) {
                 data-bs-dismiss="modal"
               >
                 Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade"
+        id="exampleModal"
+        tabIndex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-xl">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">
+                All Generated Bills
+              </h1>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <ContractWorkerBillsApproval
+                isApproval={true}
+                selectedBillId={selectedBillId}
+              />
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
               </button>
             </div>
           </div>

@@ -8,11 +8,12 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { toBeRequired } from "@testing-library/jest-dom/matchers";
 
-const ContractWorkerBillsApproval = () => {
+const ContractWorkerBillsApproval = ({ isApproval, selectedBillId }) => {
   const [attendanceBillings, setAttendanceBillings] = useState([]);
   const [filteredBillings, setFilteredBillings] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("Pending");
   const [selectedRows, setSelectedRows] = useState([]);
+  const [individualBilling, setIndividualBilling] = useState([]);
 
   const handleSelectionChanged = (event) => {
     setSelectedRows(event.api.getSelectedRows());
@@ -48,6 +49,27 @@ const ContractWorkerBillsApproval = () => {
     fetchAttendanceBillings();
   }, []);
 
+  console.log("individualBilling:", individualBilling);
+  useEffect(() => {
+    if (selectedBillId) {
+      fetchIndividualAttendanceBillings(selectedStatus);
+    }
+  }, [selectedBillId, selectedStatus]);
+
+  const fetchIndividualAttendanceBillings = async (status) => {
+    try {
+      const response = await axios.get(
+        `/facial-recognition/get_individual_attendance_billing/${selectedBillId}/`
+      );
+      const filteredData = response.data.filter(
+        (billing) => billing.status === status
+      );
+      setIndividualBilling(filteredData);
+    } catch (error) {
+      toast.error("An error occurred while fetching the data.");
+    }
+  };
+
   const fetchAttendanceBillings = async () => {
     try {
       const response = await axios.get(
@@ -81,14 +103,14 @@ const ContractWorkerBillsApproval = () => {
 
   const columnDefs = [
     {
-      headerCheckboxSelection: true,
-      checkboxSelection: true,
+      headerCheckboxSelection: !isApproval,
+      checkboxSelection: !isApproval,
       headerName: "Name",
       field: "user.full_name",
       filter: true,
     },
     { headerName: "Employee Id", field: "user.emp_id" },
-    { headerName: "Date", field: "date" },
+    { headerName: "Date", field: "date", filter: true },
     {
       headerName: "Working Hours",
       field: "working_hours",
@@ -140,27 +162,29 @@ const ContractWorkerBillsApproval = () => {
   ];
   return (
     <div className="container">
-      <div className="row align-items-center">
-        <div className="col-md-12 mt-4">
-          <div className="d-flex align-items-center">
-            <h2 className="mb-0">Contract Worker Bills Approval</h2>
-            <span className="ms-3 fs-4 text-muted">|</span>
-            <nav aria-label="breadcrumb" className="d-inline-block ms-3">
-              <ol className="breadcrumb bg-transparent m-0 p-0">
-                <li className="breadcrumb-item">
-                  <a href="/">
-                    <i className="fas fa-home me-1"></i>Home
-                  </a>
-                </li>
-                <li className="breadcrumb-item active" aria-current="page">
-                  <i className="fas fa-list-alt me-1"></i>
-                  Contract Worker Bills Approval
-                </li>
-              </ol>
-            </nav>
+      {!isApproval && (
+        <div className="row align-items-center">
+          <div className="col-md-12 mt-4">
+            <div className="d-flex align-items-center">
+              <h2 className="mb-0">Contract Worker Bills Approval</h2>
+              <span className="ms-3 fs-4 text-muted">|</span>
+              <nav aria-label="breadcrumb" className="d-inline-block ms-3">
+                <ol className="breadcrumb bg-transparent m-0 p-0">
+                  <li className="breadcrumb-item">
+                    <a href="/">
+                      <i className="fas fa-home me-1"></i>Home
+                    </a>
+                  </li>
+                  <li className="breadcrumb-item active" aria-current="page">
+                    <i className="fas fa-list-alt me-1"></i>
+                    Contract Worker Bills Approval
+                  </li>
+                </ol>
+              </nav>
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <div className="container">
         <nav className="nav nav-pills flex-column flex-sm-row mt-3">
           <button
@@ -188,7 +212,7 @@ const ContractWorkerBillsApproval = () => {
             <h6>Rejected</h6>
           </button>
         </nav>
-        {selectedStatus === "Pending" && (
+        {!isApproval && selectedStatus === "Pending" && (
           <div className="d-flex justify-content-end mt-3">
             <button className="btn btn-primary me-2" onClick={handleApprove}>
               <FontAwesomeIcon icon={faCheck} /> Approve
@@ -203,7 +227,7 @@ const ContractWorkerBillsApproval = () => {
           style={{ height: "500px", width: "100%" }}
         >
           <AgGridReact
-            rowData={filteredBillings}
+            rowData={isApproval ? individualBilling : filteredBillings}
             columnDefs={columnDefs}
             pagination={true}
             paginationPageSize={10}
