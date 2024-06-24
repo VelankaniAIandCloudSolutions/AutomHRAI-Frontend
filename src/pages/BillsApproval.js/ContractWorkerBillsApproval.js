@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
+import "ag-grid-community/styles/ag-theme-quartz.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
@@ -199,7 +199,7 @@ const ContractWorkerBillsApproval = () => {
           </div>
         )}
         <div
-          className="ag-theme-alpine mt-3"
+          className="ag-theme-quartz mt-3"
           style={{ height: "500px", width: "100%" }}
         >
           <AgGridReact
